@@ -1,19 +1,27 @@
+html * {
+  /* font-weight: bold; */
+}
+
 :root {
-  /* header */
-  --color-dark-blue:#002855;
+/******** COLORS *******/
+/* header */
+--color-dark-blue:#002855;
+--color-blue:#004f55;
+
+
+/* font colors */
+--color-font-white: #fff;
+/******** SIZES *******/
+
+--font-size-header-lg: 50px;
+--font-size-header-md: 40px;
+--font-size-header-sm: 30px;
+--font-size-header-xs: 20px;
+--font-size-header-mobile: 15px;
+--font-size-large: 30px;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
 
