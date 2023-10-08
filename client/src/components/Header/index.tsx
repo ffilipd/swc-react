@@ -29,6 +29,9 @@ function Header() {
     null
   );
 
+  const loggedInUser = {
+    name: "John Doe",
+  };
   const accountMenuOpen = Boolean(menuAnchorEl);
 
   const updateLanguage = (newLanguage: string) => {
@@ -83,16 +86,57 @@ function Header() {
             SAILING AND WINDSURFING CENTER
           </Typography>
         </Box>
-        <Box
+        <ButtonGroup
           sx={{
             display: "flex",
             flexDirection: "row",
+            justifyContent: "space-between",
             width: "100%",
+            // border: "1px solid white",
           }}
+          variant="outlined"
+          aria-label="header button group"
         >
-          <ButtonGroup variant="outlined" aria-label="header button group">
+          <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
             <SwcButton>{t("Report")}</SwcButton>
             <SwcButton>{t("Book Equipment")}</SwcButton>
+          </Box>
+          <Box sx={{ display: "flex" }}>
+            {isAuth ? (
+              <>
+                <Button
+                  id="login-header-btn"
+                  aria-controls={accountMenuOpen ? "account-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={accountMenuOpen ? "true" : undefined}
+                  onClick={handleAccountMenuClick}
+                >
+                  {loggedInUser.name}
+                  {accountMenuOpen ? (
+                    <KeyboardControlKeyIcon />
+                  ) : (
+                    <KeyboardArrowDownIcon />
+                  )}
+                </Button>
+                <Menu
+                  anchorEl={menuAnchorEl}
+                  open={accountMenuOpen}
+                  onClose={handleAccountMenuClose}
+                  MenuListProps={{
+                    "aria-labelledby": "account-button",
+                  }}
+                >
+                  <MenuItem onClick={handleAccountDetailsClick}>
+                    {t("Account details")}
+                  </MenuItem>
+                  <MenuItem value={1} onClick={handleLogout}>
+                    {t("Logout")}
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <SwcButton>{t("Login")}</SwcButton>
+            )}
             <Select
               variant="outlined"
               className="swc-select"
@@ -116,10 +160,10 @@ function Header() {
               value={language}
               startAdornment={
                 <InputAdornment position="start">
-                  <LanguageSharpIcon sx={{ color: "#fff" }} />
+                  {/* <LanguageSharpIcon sx={{ color: "#fff" }} /> */}
                 </InputAdornment>
               }
-              inputProps={{}}
+              inputProps={{ style: { textTransform: "capitalize" } }}
               onChange={(e: SelectChangeEvent) =>
                 updateLanguage(e.target.value)
               }
@@ -128,67 +172,8 @@ function Header() {
               <MenuItem value={"fi"}>Suomi</MenuItem>
               <MenuItem value={"sv"}>Svenska</MenuItem>
             </Select>
-            {isAuth ? (
-              <>
-                <Button
-                  fullWidth
-                  id="login-header-btn"
-                  aria-controls={accountMenuOpen ? "account-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={accountMenuOpen ? "true" : undefined}
-                  onClick={handleAccountMenuClick}
-                  //   variant="header"
-                  size="medium"
-                  color="inherit"
-                  sx={{
-                    textTransform: "none",
-                    display: "flex",
-                    flexDirection: "row",
-                    fontWeight: 400,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignContent: "flex-start",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", flexDirection: "row" }}>
-                      {accountMenuOpen ? (
-                        <KeyboardControlKeyIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </Box>
-                    <Box sx={{ margin: "0 0 0 31px" }}>
-                      <Typography align="left" fontSize={14}>
-                        {"user role"}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Button>
-                <Menu
-                  anchorEl={menuAnchorEl}
-                  open={accountMenuOpen}
-                  onClose={handleAccountMenuClose}
-                  MenuListProps={{
-                    "aria-labelledby": "account-button",
-                  }}
-                >
-                  <MenuItem onClick={handleAccountDetailsClick}>
-                    {t("Account details")}
-                  </MenuItem>
-                  <MenuItem value={1} onClick={handleLogout}>
-                    {t("Logout")}
-                  </MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <SwcButton>{t("Login")}</SwcButton>
-            )}
-          </ButtonGroup>
-        </Box>
+          </Box>
+        </ButtonGroup>
       </Box>
     </Box>
   );
