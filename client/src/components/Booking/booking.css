@@ -11,3 +11,13 @@
     /* width: 300px; */
     padding: 0 0 10px 0;
 }
+
+@media only screen and (max-width:600px) {
+    #select-box{
+        margin: 20px 0;
+    }
+    #booking-container{
+        flex-direction: column;
+        align-items: center;
+    }
+}

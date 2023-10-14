@@ -7,17 +7,20 @@ import {
   ListItemText,
 } from "@mui/material";
 import { SwcButton } from "../../utils/buttons";
-import { useState } from "react";
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { ExpandMore, ExpandLess, Key } from "@mui/icons-material";
+import { Languages } from "../../interfaces";
+import React from "react";
 
 interface MobileDrawerProps {
   isOpen: boolean;
-  languages: string[];
+  languages: Languages;
   toggleDrawer: (open: boolean) => (event: any) => void;
+  handleMenuItemClick: (event: any) => void;
 }
 
 const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
-  const { languages, isOpen, toggleDrawer } = props;
+  const { languages, isOpen, toggleDrawer, handleMenuItemClick } = props;
   const [openLanguageCollapse, setOpenLanguageCollapse] =
     useState<boolean>(false);
 
@@ -25,6 +28,12 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
     if (openLanguageCollapse) setOpenLanguageCollapse(false);
     else setOpenLanguageCollapse(true);
   };
+
+  useEffect(() => {
+    if (openLanguageCollapse) setOpenLanguageCollapse(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleDrawer]);
+
   return (
     <>
       <SwcButton onClick={toggleDrawer(true)}>Menu</SwcButton>
@@ -36,20 +45,22 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
         onClose={toggleDrawer(false)}
       >
         <List>
-          {["Report", "Book equipment", "Account", "Language"].map(
+          {["Home", "Report", "Book equipment", "Account", "Language"].map(
             (text, index) => (
-              <>
-                <ListItemButton
-                  onClick={
-                    text === "Language"
-                      ? handleExpandLanguageCollapse
-                      : undefined
-                  }
-                >
-                  <ListItemText primary={text} />
-                  {text === "Language" &&
-                    (openLanguageCollapse ? <ExpandLess /> : <ExpandMore />)}
-                </ListItemButton>
+              <React.Fragment key={`${text}-${index}`}>
+                <ListItem>
+                  <ListItemButton
+                    onClick={
+                      text === "Language"
+                        ? handleExpandLanguageCollapse
+                        : () => handleMenuItemClick(text)
+                    }
+                  >
+                    <ListItemText primary={text} />
+                    {text === "Language" &&
+                      (openLanguageCollapse ? <ExpandLess /> : <ExpandMore />)}
+                  </ListItemButton>
+                </ListItem>
                 {text === "Language" && (
                   <Collapse
                     id="language-collapse"
@@ -59,15 +70,15 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
                     orientation="vertical"
                   >
                     <List disablePadding>
-                      {languages.map((lang) => (
-                        <ListItemButton sx={{ pl: 4 }}>
-                          <ListItemText>{lang}</ListItemText>
+                      {Object.entries(languages).map((lang) => (
+                        <ListItemButton key={lang[0]} sx={{ pl: 4 }}>
+                          <ListItemText>{lang[1]}</ListItemText>
                         </ListItemButton>
                       ))}
                     </List>
                   </Collapse>
                 )}
-              </>
+              </React.Fragment>
             )
           )}
         </List>

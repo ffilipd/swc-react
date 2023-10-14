@@ -2,13 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Drawer,
   InputAdornment,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Menu,
   MenuItem,
   Select,
@@ -26,11 +20,15 @@ import LanguageSharpIcon from "@mui/icons-material/LanguageSharp";
 import LoginSharpIcon from "@mui/icons-material/LoginSharp";
 import { useNavigate } from "react-router-dom";
 import MobileDrawer from "./MobileDrawer";
+import i18next from "i18next";
 
 function Header() {
-  const languages: string[] =
-    process.env.REACT_APP_LANGUAGES?.split(", ") || [];
-  const [language, setLanguage] = useState<string>("English");
+  const languages = {
+    en: "English",
+    sv: "Svenska",
+    fi: "Suomi",
+  };
+  const [language, setLanguage] = useState<string>("en");
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isAuth = true;
@@ -38,9 +36,15 @@ function Header() {
     null
   );
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   window.addEventListener("resize", () => {
     setIsMobile(window.innerWidth <= 600);
   });
+
+  // Update page when language changes
+  useEffect(() => {
+    i18next.changeLanguage(language);
+  }, [language]);
 
   const loggedInUser = {
     name: "John Doe",
@@ -78,8 +82,6 @@ function Header() {
     console.log("navigate to account details");
   };
 
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-
   const toggleDrawer = (open: boolean) => (event: any) => {
     if (
       event &&
@@ -89,6 +91,12 @@ function Header() {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  const handleMenuItemClick = (clickedItem: any) => {
+    setDrawerOpen(false);
+    if (clickedItem === "Home") navigate("/");
+    if (clickedItem === "Book equipment") navigate("/booking");
   };
 
   return (
@@ -105,6 +113,7 @@ function Header() {
             isOpen={drawerOpen}
             toggleDrawer={toggleDrawer}
             languages={languages}
+            handleMenuItemClick={handleMenuItemClick}
           />
         ) : (
           <ButtonGroup
@@ -190,9 +199,9 @@ function Header() {
                   updateLanguage(e.target.value)
                 }
               >
-                {languages.map((lang) => (
-                  <MenuItem key={`language-${lang}`} value={lang}>
-                    {lang}
+                {Object.entries(languages).map((lang) => (
+                  <MenuItem key={`language-${lang[0]}`} value={lang[0]}>
+                    {lang[1]}
                   </MenuItem>
                 ))}
               </Select>
