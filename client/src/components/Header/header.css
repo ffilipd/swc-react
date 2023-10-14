@@ -7,10 +7,6 @@
     align-items: flex-start;
 }
 
-#app-bar{
-    position: static;
-}
-
 #header-and-buttongroup {
     display: flex;
     flex-direction: column;

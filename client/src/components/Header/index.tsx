@@ -191,7 +191,9 @@ function Header() {
                 }
               >
                 {languages.map((lang) => (
-                  <MenuItem value={lang}>{lang}</MenuItem>
+                  <MenuItem key={`language-${lang}`} value={lang}>
+                    {lang}
+                  </MenuItem>
                 ))}
               </Select>
             </Box>

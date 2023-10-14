@@ -1,0 +1,13 @@
+#booking-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#select-box {
+    width: 300px;
+}
+
+#select-box .booking-select-item {
+    /* width: 300px; */
+    padding: 0 0 10px 0;
+}
