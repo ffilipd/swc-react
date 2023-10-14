@@ -10,7 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { HssLogo2, SwcTextLogo } from "../../utils/svg-components";
+import {
+  HssFleetLogo,
+  HssFleetLogo2,
+  HssLogo2,
+  SwcTextLogo,
+} from "../../utils/svg-components";
 import "./header.css";
 import { useTranslation } from "react-i18next";
 import { SwcButton } from "../../utils/buttons";
@@ -107,7 +112,8 @@ function Header() {
       </Box>
       <Box id="header-and-buttongroup">
         <Box id="swc-header-text">
-          <SwcTextLogo width={350} />
+          {/* <SwcTextLogo width={350} /> */}
+          <HssFleetLogo2 />
         </Box>
         {isMobile ? (
           <MobileDrawer

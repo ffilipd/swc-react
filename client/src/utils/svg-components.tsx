@@ -504,3 +504,64 @@ export const SwcTextLogo = ({
     </div>
   );
 };
+
+export const HssFleetLogo = (): any => {
+  return (
+    <svg
+      viewBox="1025.71 220.467 528.7657 94"
+      width="528.766"
+      height="94"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="https://boxy-svg.com"
+    >
+      <defs>
+        <style>
+          @import
+          url(https://fonts.googleapis.com/css2?family=Jost%3Aital%2Cwght%400%2C100%3B0%2C200%3B0%2C300%3B0%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B0%2C800%3B0%2C900%3B1%2C100%3B1%2C200%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C600%3B1%2C700%3B1%2C800%3B1%2C900&amp;display=swap);
+        </style>
+      </defs>
+      <text
+        style={{
+          fill: "rgb(255, 255, 255)",
+          fontFamily: "Jost",
+          fontSize: "55px",
+          whiteSpace: "pre",
+        }}
+        x="1025.71"
+        y="290.467"
+      >
+        Fleet Manager
+      </text>
+    </svg>
+  );
+};
+export const HssFleetLogo2 = (): any => {
+  return (
+    <svg
+      viewBox="1120.665 235.542 457.6719 87.3713"
+      width="457.672"
+      height="87.371"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="https://boxy-svg.com"
+    >
+      <defs>
+        <style>
+          @import
+          url(https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace%3Aital%2Cwght%400%2C400&amp;display=swap);
+        </style>
+      </defs>
+      <text
+        style={{
+          fill: "#fff",
+          fontFamily: "Covered By Your Grace",
+          fontSize: "65px",
+          whiteSpace: "pre",
+        }}
+        x="1120.665"
+        y="298.542"
+      >
+        Fleet Manager
+      </text>
+    </svg>
+  );
+};
