@@ -1,17 +1,22 @@
-#swc-header-text {
-    font-size: var(--font-size-header-lg);
-    color: var(--color-font-white);
-    margin: 20px auto 0 auto;
+#header-wrapper {
+    display: flex;
+    flex-direction: row;
+    min-height: 140px;
+    background-color: var(--color-dark-blue);
+    width: 100%;
+    align-items: flex-start;
+}
+
+#app-bar{
+    position: static;
 }
 
 #header-and-buttongroup {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     width: 100%;
     margin: 0 20px 0 0;
-    height:200px;
-    border: "1px solid white";
+    align-content: space-between;
 }
 
 #login-header-btn, #login-header-btn:hover {
@@ -22,37 +27,33 @@
     flex-wrap: nowrap;
 }
 
+#drawer .MuiDrawer-paperAnchorTop {
+        background-color: var(--color-dark-blue);
+        color:#fff
+}
+
+#language-collapse {
+    background-color: var(--color-dark-blue2);
+}
+
 @media screen and (max-width: 1200px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-md);
-    }
 }
 @media screen and (max-width: 1000px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-sm);
-    }
 }
 @media screen and (max-width: 800px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-xs);
-    }
-    #header-and-buttongroup {
-        flex-grow: none;
-        border: 1px solid white;
-        align-items: center;
-    }
+
 }
 @media only screen and (max-width: 600px) {
+    #button-group {
+        padding: 0 10px;
+    }
     #swc-header-text {
-        font-size: var(--font-size-header-mobile);
-        margin: 10px auto 10px auto;
+        align-self: center;
     }
     #header-wrapper {
-        flex-direction: column;
         align-items: center;
     }
-}
-
-.swc-select {
-
+    #hss-logo {
+        display: none;
+    }
 }

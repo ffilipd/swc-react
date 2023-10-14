@@ -1,13 +1,18 @@
 import { Suspense } from "react";
 import Header from "../Header";
 import { Outlet } from "react-router-dom";
-import { Grid } from "@mui/material";
+import Wrapper from "./Wrapper";
+import Inner from "./Inner";
 
 function Home() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Header />
-      <Outlet />
+      <Wrapper>
+        <Header />
+        <Inner>
+          <Outlet />
+        </Inner>
+      </Wrapper>
     </Suspense>
   );
 }

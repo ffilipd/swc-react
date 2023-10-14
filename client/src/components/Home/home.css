@@ -1,0 +1,20 @@
+#home-wrapper {
+    height: 100vh;
+    background-color: var(--color-white);
+}
+
+#home-inner {
+    background-color: #fff;
+    height: 100%;
+}
+
+@media screen and (min-width: 1800px) {
+    #home-inner {
+        margin: 0 200px;
+    }
+}
+@media screen and (min-width: 1400px) {
+    #home-inner {
+        margin: 0 150px;
+    }
+}
