@@ -52,6 +52,7 @@ function Header() {
   const accountMenuOpen = Boolean(menuAnchorEl);
 
   const updateLanguage = (newLanguage: string) => {
+    console.log(language);
     setLanguage(newLanguage);
   };
   function handleAccountMenuClose(e: any) {
@@ -112,7 +113,9 @@ function Header() {
           <MobileDrawer
             isOpen={drawerOpen}
             toggleDrawer={toggleDrawer}
+            language={language}
             languages={languages}
+            updateLanguage={updateLanguage}
             handleMenuItemClick={handleMenuItemClick}
           />
         ) : (
@@ -130,7 +133,7 @@ function Header() {
           >
             <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
               <SwcButton>{t("Report")}</SwcButton>
-              <SwcButton>{t("Book Equipment")}</SwcButton>
+              <SwcButton>{t("Book equipment")}</SwcButton>
             </Box>
             <Box sx={{ display: "flex" }}>
               {isAuth ? (

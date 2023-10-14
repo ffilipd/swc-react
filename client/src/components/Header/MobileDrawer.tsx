@@ -8,19 +8,37 @@ import {
 } from "@mui/material";
 import { SwcButton } from "../../utils/buttons";
 import { useEffect, useState } from "react";
-import { ExpandMore, ExpandLess, Key } from "@mui/icons-material";
+import { ExpandMore, ExpandLess, Key, Language } from "@mui/icons-material";
 import { Languages } from "../../interfaces";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface MobileDrawerProps {
   isOpen: boolean;
+  language: string;
   languages: Languages;
+  updateLanguage: (newLanguage: string) => void;
   toggleDrawer: (open: boolean) => (event: any) => void;
   handleMenuItemClick: (event: any) => void;
 }
 
 const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
-  const { languages, isOpen, toggleDrawer, handleMenuItemClick } = props;
+  const {
+    language,
+    languages,
+    updateLanguage,
+    isOpen,
+    toggleDrawer,
+    handleMenuItemClick,
+  } = props;
+  const { t } = useTranslation();
+  const menuItems = [
+    t("Home"),
+    t("Report"),
+    t("Book equipment"),
+    t("Account details"),
+  ];
+
   const [openLanguageCollapse, setOpenLanguageCollapse] =
     useState<boolean>(false);
 
@@ -36,7 +54,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
 
   return (
     <>
-      <SwcButton onClick={toggleDrawer(true)}>Menu</SwcButton>
+      <SwcButton onClick={toggleDrawer(true)}>{t("Menu")}</SwcButton>
       <Drawer
         id="drawer"
         transitionDuration={500}
@@ -45,42 +63,37 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
         onClose={toggleDrawer(false)}
       >
         <List>
-          {["Home", "Report", "Book equipment", "Account", "Language"].map(
-            (text, index) => (
-              <React.Fragment key={`${text}-${index}`}>
-                <ListItem>
-                  <ListItemButton
-                    onClick={
-                      text === "Language"
-                        ? handleExpandLanguageCollapse
-                        : () => handleMenuItemClick(text)
-                    }
-                  >
-                    <ListItemText primary={text} />
-                    {text === "Language" &&
-                      (openLanguageCollapse ? <ExpandLess /> : <ExpandMore />)}
-                  </ListItemButton>
-                </ListItem>
-                {text === "Language" && (
-                  <Collapse
-                    id="language-collapse"
-                    in={openLanguageCollapse}
-                    timeout="auto"
-                    unmountOnExit
-                    orientation="vertical"
-                  >
-                    <List disablePadding>
-                      {Object.entries(languages).map((lang) => (
-                        <ListItemButton key={lang[0]} sx={{ pl: 4 }}>
-                          <ListItemText>{lang[1]}</ListItemText>
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
-              </React.Fragment>
-            )
-          )}
+          {menuItems.map((text, index) => (
+            <ListItem key={`${text}-${index}`}>
+              <ListItemButton onClick={() => handleMenuItemClick(text)}>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+          <ListItem>
+            <ListItemButton onClick={handleExpandLanguageCollapse}>
+              <ListItemText primary={languages[language as keyof Languages]} />
+              {openLanguageCollapse ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+          </ListItem>
+          <Collapse
+            id="language-collapse"
+            in={openLanguageCollapse}
+            timeout="auto"
+            unmountOnExit
+          >
+            <List disablePadding>
+              {Object.entries(languages).map((lang) => (
+                <ListItemButton
+                  key={lang[0]}
+                  sx={{ pl: 4 }}
+                  onClick={() => updateLanguage(lang[0])}
+                >
+                  <ListItemText>{lang[1]}</ListItemText>
+                </ListItemButton>
+              ))}
+            </List>
+          </Collapse>
         </List>
       </Drawer>
     </>

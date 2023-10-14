@@ -3,8 +3,10 @@
   "Class / Name": "Klass / Namn",
   "Number": "Nummer",
   "Report": "Rapport",
-  "Book Equipment": "Boka utrustnig",
   "Account details": "Kontodetaljer",
   "Logout": "Logga ut",
-  "Login": "Logga in"
+  "Login": "Logga in",
+  "Home": "Hem",
+  "Book equipment": "Boka utrustning",
+  "Menu": "Meny"
 }
