@@ -17,3 +17,22 @@ export const SwcButton = styled(Button)<ButtonProps>(({ theme }) => ({
     fill: "#fff",
   },
 }));
+
+export const SwcButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
+  variant: "outlined",
+  border: "none",
+  backgroundColor: "#002855",
+  color: "#fff",
+  padding: "16px",
+  borderRadius: "8px",
+  "&.Mui-focused": {
+    border: "none",
+  },
+  "&:hover": {
+    backgroundColor: "#003865",
+    border: "none",
+  },
+  ".MuiSvgIcon-root ": {
+    fill: "#fff",
+  },
+}));

@@ -538,8 +538,8 @@ export const HssFleetLogo = (): any => {
 export const HssFleetLogo2 = (): any => {
   return (
     <svg
-      viewBox="1120.665 235.542 457.6719 87.3713"
-      width="457.672"
+      viewBox="1120.665 235.542 340 87.3713"
+      width="340"
       height="87.371"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="https://boxy-svg.com"

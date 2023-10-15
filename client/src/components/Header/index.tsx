@@ -40,8 +40,8 @@ function Header() {
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
   window.addEventListener("resize", () => {
     setIsMobile(window.innerWidth <= 600);
   });
@@ -138,8 +138,11 @@ function Header() {
             aria-label="header button group"
           >
             <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
+              <SwcButton onClick={() => navigate("/")}>{t("Home")}</SwcButton>
               <SwcButton>{t("Report")}</SwcButton>
-              <SwcButton>{t("Book equipment")}</SwcButton>
+              <SwcButton onClick={() => navigate("/booking")}>
+                {t("Book equipment")}
+              </SwcButton>
             </Box>
             <Box sx={{ display: "flex" }}>
               {isAuth ? (
