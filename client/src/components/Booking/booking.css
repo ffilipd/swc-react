@@ -17,6 +17,7 @@
 #booking-wrapper {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     margin: 20px 0 0 0;
 }
 
@@ -29,6 +30,10 @@
 
 #calendar-box {
     display: flex;
+    flex-direction: column;
+}
+
+#calendar-box .MuiDateCalendar-root {
     width: 100%;
     border: 1px solid var(--color-white);
     border-radius: 8px;
@@ -37,7 +42,7 @@
 }
 
 /* DATE PICKER FOR MOBILE */
-#calendar-box .MuiInputBase-root{
+#calendar-box .MuiFormControl-root{
     width: 100%;
     border: 1px solid var(--color-white);
     border-radius: 8px;
@@ -46,6 +51,8 @@
 
 #select-box {
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #select-box .booking-select-button {
@@ -55,7 +62,7 @@
 }
 
 #select-box .booking-select-item{
-    margin: 0 0 10px 0;
+    margin: 0 0 16px 0;
 }
 
 #book-button {
@@ -63,6 +70,22 @@
     width: 100%;
 }
 
+#time-picker {
+    margin: 16px 0 16px 0;
+    display: flex;
+    flex-direction: row;
+}
+
+#time-picker .MuiInputBase-root{
+    box-shadow: 1px 1px var(--color-white);
+    border-radius: 8px;
+}
+
+.label {
+    font-size: large;
+    color: var(--color-dark-blue);
+    font-weight: 600;
+}
 @media only screen and (max-width:600px) {
     #booking-root{
         margin:0;
@@ -76,7 +99,6 @@
     }
     #calendar-box{
         width: 100%;
-        margin: 20px 0;
     }
     #booking-container{
         width: 100vw;

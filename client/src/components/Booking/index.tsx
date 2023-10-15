@@ -22,9 +22,14 @@ import {
   getEquipmentTypes,
   getNumbersByTypeAndName,
 } from "../../service/equipment.service";
-import { SettingsInputComponent } from "@mui/icons-material";
+import { Label, SettingsInputComponent } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  TimePicker,
+  renderDigitalClockTimeView,
+  renderTimeViewClock,
+} from "@mui/x-date-pickers";
 import { SwcButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking } from "../../interfaces";
@@ -92,14 +97,48 @@ const BookingComponent = () => {
                   format="DD-MM-YYYY"
                   value={selectedDate}
                   sx={{ borderRadius: "8px" }}
+                  label={t("Select Date")}
                   onChange={(newDate) => setSelectedDate(newDate)}
                 />
               ) : (
-                <DateCalendar
-                  value={selectedDate}
-                  onChange={(newDate) => setSelectedDate(newDate)}
-                />
+                <>
+                  <Typography className="label">{t("Select Date")}</Typography>
+                  <DateCalendar
+                    value={selectedDate}
+                    onChange={(newDate) => setSelectedDate(newDate)}
+                  />
+                </>
               )}
+            </LocalizationProvider>
+          </Box>
+          <Box id="time-picker">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Box>
+                <TimePicker
+                  className="time"
+                  ampm={false}
+                  sx={{ paddingRight: "4px" }}
+                  minutesStep={30}
+                  label={t("From")}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                  }}
+                />
+              </Box>
+              <Box>
+                <TimePicker
+                  className="time"
+                  sx={{ paddingLeft: "4px" }}
+                  ampm={false}
+                  minutesStep={30}
+                  label={t("To")}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                  }}
+                />
+              </Box>
             </LocalizationProvider>
           </Box>
 
@@ -176,7 +215,7 @@ const BookingComponent = () => {
             <SwcButton2 id="book-button">Book</SwcButton2>
           </Box>
         </Box>
-        <BookingTable bookings={bookings} />
+        <BookingTable bookings={bookings} isMobile={isMobile} />
       </Box>
     </Box>
   );
