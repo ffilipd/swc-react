@@ -1,5 +1,5 @@
 import { bookings as data } from "../bookings"
-import { Booking } from "../interfaces";
+import { Booking, BookingSearchParams } from "../interfaces";
 
 const bookings: Booking[] = data;
 
@@ -10,6 +10,17 @@ export const getBookings = () => {
 
 export const getBookingsByDate = (date: any): Booking[] => {
     return bookings.filter(booking => booking.date === date);
+}
+
+export const getBookingsByParams = (params: BookingSearchParams): Booking[] => {
+    const { type, name, swc_number, date, time_from, time_to } = params;
+    const filteredBookings = bookings.filter(booking => {
+        return booking.type === type ||
+            booking.date === date ||
+            booking.swc_number === swc_number ||
+            booking.name === name;
+    })
+    return filteredBookings;
 }
 // export const getNumbersByTypeAndName = (targetType: string, targetName: string): string[] => {
 //     const matchingNumbers: string[] = [];

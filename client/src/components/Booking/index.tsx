@@ -58,7 +58,7 @@ const BookingComponent = () => {
     names: string[];
     numbers: string[];
   }>({
-    types: [],
+    types: getEquipmentTypes(),
     names: [],
     numbers: [],
   });
@@ -70,12 +70,7 @@ const BookingComponent = () => {
     setIsMobile(window.innerWidth <= 600);
   });
 
-  useEffect(() => {
-    setAvailableEquipment({
-      ...availableEquipment,
-      types: getEquipmentTypes(),
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const names: string[] =
@@ -176,11 +171,13 @@ const BookingComponent = () => {
                   })
                 }
               >
-                {availableEquipment.types.map((type: string, index: number) => (
-                  <MenuItem key={`${type}-${index}`} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
+                {availableEquipment.types?.map(
+                  (type: string, index: number) => (
+                    <MenuItem key={`${type}-${index}`} value={type}>
+                      {type}
+                    </MenuItem>
+                  )
+                )}
               </Select>
             </FormControl>
 
@@ -244,9 +241,10 @@ const BookingComponent = () => {
         </Box>
         <BookingTable
           bookings={bookings}
+          setBookings={setBookings}
           isMobile={isMobile}
           labels={labels}
-          availableEquipment={availableEquipment}
+          availableTypes={availableEquipment.types}
         />
       </Box>
     </Box>

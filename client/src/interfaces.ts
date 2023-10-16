@@ -6,6 +6,7 @@ export interface Languages {
 
 export interface Booking {
     id: string;
+    type: string;
     name: string;
     swc_number: string;
     date: string;
@@ -13,4 +14,13 @@ export interface Booking {
     time_to: string;
     equipment_id: string;
     user_id: string;
+};
+
+export interface BookingSearchParams {
+    type?: string;
+    name?: string;
+    swc_number?: string;
+    date?: string;
+    time_from?: string;
+    time_to?: string;
 };

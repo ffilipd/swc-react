@@ -15,14 +15,22 @@ import {
   styled,
   tableCellClasses,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Booking } from "../../interfaces";
-import { getBookings } from "../../service/booking.service";
+import {
+  getBookings,
+  getBookingsByParams,
+} from "../../service/booking.service";
 import { useTranslation } from "react-i18next";
 import "./table.css";
+import {
+  getEquipmentNamesByType,
+  getNumbersByTypeAndName,
+} from "../../service/equipment.service";
 
 interface BookingsProps {
   bookings: Booking[] | null;
+  setBookings: Dispatch<SetStateAction<Booking[] | null>>;
   isMobile: boolean;
   labels: {
     equipment: {
@@ -31,11 +39,7 @@ interface BookingsProps {
       number: string;
     };
   };
-  availableEquipment: {
-    types: string[];
-    names: string[];
-    numbers: string[];
-  };
+  availableTypes: string[];
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -59,7 +63,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const BookingTable = (props: BookingsProps) => {
-  const { isMobile, bookings, labels, availableEquipment } = props;
+  const { isMobile, bookings, setBookings, labels, availableTypes } = props;
   const { t } = useTranslation();
 
   const [filters, setFilters] = useState<{
@@ -71,17 +75,47 @@ const BookingTable = (props: BookingsProps) => {
     name: "",
     number: "",
   });
+  const [availableFilters, setAvailableFilters] = useState<{
+    types: string[];
+    names: string[];
+    numbers: string[];
+  }>({
+    types: availableTypes,
+    names: [],
+    numbers: [],
+  });
+
+  useEffect(() => {
+    // get bookings by filter
+    setBookings(
+      getBookingsByParams({
+        type: filters.type,
+        name: filters.name,
+        swc_number: filters.number,
+      })
+    );
+  }, [filters]);
+
+  useEffect(() => {
+    const _names: string[] = getEquipmentNamesByType(filters.type);
+    setAvailableFilters({ ...availableFilters, names: _names });
+  }, [filters.type]);
+  useEffect(() => {
+    const _numbers: string[] = getNumbersByTypeAndName(
+      filters.type,
+      filters.name
+    );
+    setAvailableFilters({ ...availableFilters, numbers: _numbers });
+  }, [filters.number]);
 
   return (
     <React.Fragment>
       <Box id="table-wrapper">
         <Typography className="label">
-          {t("Bookings for selected date and time")}
+          {t("Bookings for selected date, time and equipment")}
         </Typography>
-        FILTER
-        <Box id="table-filter-container">
-          {/* TYPE */}
-          <FormControl fullWidth className="booking-select-item">
+        {/* <Box id="table-filter-container">
+          <FormControl className="booking-select-item">
             <InputLabel id="equipment-type">{labels.equipment.type}</InputLabel>
             <Select
               className="booking-select-button"
@@ -93,7 +127,7 @@ const BookingTable = (props: BookingsProps) => {
                 setFilters({ ...filters, type: e.target.value })
               }
             >
-              {availableEquipment.types.map((type: string, index: number) => (
+              {availableFilters.types.map((type: string, index: number) => (
                 <MenuItem key={`${type}-${index}`} value={type}>
                   {type}
                 </MenuItem>
@@ -101,8 +135,7 @@ const BookingTable = (props: BookingsProps) => {
             </Select>
           </FormControl>
 
-          {/* CLASS/NAME */}
-          <FormControl fullWidth className="booking-select-item">
+          <FormControl className="booking-select-item">
             <InputLabel id="equipment-name">{labels.equipment.name}</InputLabel>
             <Select
               className="booking-select-button"
@@ -115,7 +148,7 @@ const BookingTable = (props: BookingsProps) => {
                 setFilters({ ...filters, name: e.target.value });
               }}
             >
-              {availableEquipment.names.map((name: string, index: number) => (
+              {availableFilters.names.map((name: string, index: number) => (
                 <MenuItem key={`${name}-${index}`} value={name}>
                   {name}
                 </MenuItem>
@@ -123,8 +156,7 @@ const BookingTable = (props: BookingsProps) => {
             </Select>
           </FormControl>
 
-          {/* SWC NUMBER */}
-          <FormControl fullWidth className="booking-select-item">
+          <FormControl className="booking-select-item">
             <InputLabel id="equipment-swc-nbr">
               {labels.equipment.number}
             </InputLabel>
@@ -139,14 +171,14 @@ const BookingTable = (props: BookingsProps) => {
                 setFilters({ ...filters, number: e.target.value });
               }}
             >
-              {availableEquipment.numbers.map((name: string, index: number) => (
+              {availableFilters.numbers.map((name: string, index: number) => (
                 <MenuItem key={`${name}-${index}`} value={name}>
                   {name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-        </Box>
+        </Box> */}
         <Box id="table-content">
           <TableContainer>
             <Table>
