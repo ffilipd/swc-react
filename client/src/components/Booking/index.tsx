@@ -15,13 +15,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import i18next from "i18next";
 import "./booking.css";
-import { equipment as equipmentJson } from "../../equipment";
 import { useEffect, useState } from "react";
-import {
-  getEquipmentNamesByType,
-  getEquipmentTypes,
-  getNumbersByTypeAndName,
-} from "../../service/equipment.service";
+import { getEquipment } from "../../service/equipment.service";
 import { Label, SettingsInputComponent } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -33,7 +28,7 @@ import {
 import { SwcButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking } from "../../interfaces";
-import { getBookingsByDate } from "../../service/booking.service";
+// import { getBookings } from "../../service/booking.service";
 
 const BookingComponent = () => {
   const { t } = useTranslation();
@@ -58,7 +53,7 @@ const BookingComponent = () => {
     names: string[];
     numbers: string[];
   }>({
-    types: getEquipmentTypes(),
+    types: [],
     names: [],
     numbers: [],
   });
@@ -70,27 +65,37 @@ const BookingComponent = () => {
     setIsMobile(window.innerWidth <= 600);
   });
 
-  useEffect(() => {}, []);
+  const fetchEquipment = async () => {
+    try {
+      getEquipment();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const names: string[] =
-      getEquipmentNamesByType(selectedEquipment.type) || [];
-    setAvailableEquipment({ ...availableEquipment, names: names });
-  }, [selectedEquipment.type]);
+    fetchEquipment();
+  }, []);
 
-  useEffect(() => {
-    const numbers: string[] = getNumbersByTypeAndName(
-      selectedEquipment.type,
-      selectedEquipment.name
-    );
-    setAvailableEquipment({ ...availableEquipment, numbers: numbers });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEquipment.name]);
+  // useEffect(() => {
+  //   const names: string[] =
+  //     getEquipment(type:selectedEquipment.type) || [];
+  //   setAvailableEquipment({ ...availableEquipment, names: names });
+  // }, [selectedEquipment.type]);
 
-  useEffect(() => {
-    const bookingsData = getBookingsByDate(selectedDate?.format("DD-MM-YYYY"));
-    setBookings(bookingsData);
-  }, [selectedDate]);
+  // useEffect(() => {
+  //   const numbers: string[] = getNumbersByTypeAndName(
+  //     selectedEquipment.type,
+  //     selectedEquipment.name
+  //   );
+  //   setAvailableEquipment({ ...availableEquipment, numbers: numbers });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [selectedEquipment.name]);
+
+  // useEffect(() => {
+  //   const bookingsData = getBookingsByDate(selectedDate?.format("DD-MM-YYYY"));
+  //   setBookings(bookingsData);
+  // }, [selectedDate]);
 
   return (
     <Box id="booking-root">

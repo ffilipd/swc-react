@@ -17,16 +17,8 @@ import {
 } from "@mui/material";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Booking } from "../../interfaces";
-import {
-  getBookings,
-  getBookingsByParams,
-} from "../../service/booking.service";
 import { useTranslation } from "react-i18next";
 import "./table.css";
-import {
-  getEquipmentNamesByType,
-  getNumbersByTypeAndName,
-} from "../../service/equipment.service";
 
 interface BookingsProps {
   bookings: Booking[] | null;
@@ -85,28 +77,28 @@ const BookingTable = (props: BookingsProps) => {
     numbers: [],
   });
 
-  useEffect(() => {
-    // get bookings by filter
-    setBookings(
-      getBookingsByParams({
-        type: filters.type,
-        name: filters.name,
-        swc_number: filters.number,
-      })
-    );
-  }, [filters]);
+  // useEffect(() => {
+  //   // get bookings by filter
+  //   setBookings(
+  //     getBookingsByParams({
+  //       type: filters.type,
+  //       name: filters.name,
+  //       swc_number: filters.number,
+  //     })
+  //   );
+  // }, [filters]);
 
-  useEffect(() => {
-    const _names: string[] = getEquipmentNamesByType(filters.type);
-    setAvailableFilters({ ...availableFilters, names: _names });
-  }, [filters.type]);
-  useEffect(() => {
-    const _numbers: string[] = getNumbersByTypeAndName(
-      filters.type,
-      filters.name
-    );
-    setAvailableFilters({ ...availableFilters, numbers: _numbers });
-  }, [filters.number]);
+  // useEffect(() => {
+  //   const _names: string[] = getEquipmentNamesByType(filters.type);
+  //   setAvailableFilters({ ...availableFilters, names: _names });
+  // }, [filters.type]);
+  // useEffect(() => {
+  //   const _numbers: string[] = getNumbersByTypeAndName(
+  //     filters.type,
+  //     filters.name
+  //   );
+  //   setAvailableFilters({ ...availableFilters, numbers: _numbers });
+  // }, [filters.number]);
 
   return (
     <React.Fragment>
@@ -114,71 +106,6 @@ const BookingTable = (props: BookingsProps) => {
         <Typography className="label">
           {t("Bookings for selected date, time and equipment")}
         </Typography>
-        {/* <Box id="table-filter-container">
-          <FormControl className="booking-select-item">
-            <InputLabel id="equipment-type">{labels.equipment.type}</InputLabel>
-            <Select
-              className="booking-select-button"
-              labelId="equipment-type-label"
-              id="equipment-type"
-              label={labels.equipment.type}
-              value={filters.type}
-              onChange={(e: SelectChangeEvent) =>
-                setFilters({ ...filters, type: e.target.value })
-              }
-            >
-              {availableFilters.types.map((type: string, index: number) => (
-                <MenuItem key={`${type}-${index}`} value={type}>
-                  {type}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl className="booking-select-item">
-            <InputLabel id="equipment-name">{labels.equipment.name}</InputLabel>
-            <Select
-              className="booking-select-button"
-              labelId="equipment-name-label"
-              // disabled={selectedEquipmentType === ""}
-              id="equipment-name"
-              label={labels.equipment.name}
-              value={filters.name}
-              onChange={(e: SelectChangeEvent) => {
-                setFilters({ ...filters, name: e.target.value });
-              }}
-            >
-              {availableFilters.names.map((name: string, index: number) => (
-                <MenuItem key={`${name}-${index}`} value={name}>
-                  {name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl className="booking-select-item">
-            <InputLabel id="equipment-swc-nbr">
-              {labels.equipment.number}
-            </InputLabel>
-            <Select
-              className="booking-select-button"
-              labelId="equipment-swc-nbr-label"
-              // disabled={selectedEquipmentName === ""}
-              id="equipment-swc-nbr"
-              label={labels.equipment.number}
-              value={filters.number}
-              onChange={(e: SelectChangeEvent) => {
-                setFilters({ ...filters, number: e.target.value });
-              }}
-            >
-              {availableFilters.numbers.map((name: string, index: number) => (
-                <MenuItem key={`${name}-${index}`} value={name}>
-                  {name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box> */}
         <Box id="table-content">
           <TableContainer>
             <Table>

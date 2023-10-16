@@ -6,7 +6,7 @@ export interface Languages {
 
 export interface Booking {
     id: string;
-    type: string;
+    type: string
     name: string;
     swc_number: string;
     date: string;
@@ -24,3 +24,5 @@ export interface BookingSearchParams {
     time_from?: string;
     time_to?: string;
 };
+
+export type FilterTargetType = "type" | "name" | "number";

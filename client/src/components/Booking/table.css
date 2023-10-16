@@ -5,24 +5,6 @@
     margin: 0 0 0 20px;
 }
 
-#table-filter-container {
-    display: flex;
-    flex-direction: row;
-    padding: 8px 0;
-}
-
-
-
-#table-filter-container .MuiInputBase-root {
-    width: 220px;
-    display: flex;
-    margin-right: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--color-white);
-    box-shadow: 1px 1px var(--color-white);
-
-}
-
 #table-header {
     font-weight: 600;
 }
