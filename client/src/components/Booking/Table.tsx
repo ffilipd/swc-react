@@ -1,5 +1,10 @@
 import {
   Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +24,18 @@ import "./table.css";
 interface BookingsProps {
   bookings: Booking[] | null;
   isMobile: boolean;
+  labels: {
+    equipment: {
+      type: string;
+      name: string;
+      number: string;
+    };
+  };
+  availableEquipment: {
+    types: string[];
+    names: string[];
+    numbers: string[];
+  };
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -42,8 +59,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const BookingTable = (props: BookingsProps) => {
-  const { isMobile, bookings } = props;
+  const { isMobile, bookings, labels, availableEquipment } = props;
   const { t } = useTranslation();
+
+  const [filters, setFilters] = useState<{
+    type: string;
+    name: string;
+    number: string;
+  }>({
+    type: "",
+    name: "",
+    number: "",
+  });
 
   return (
     <React.Fragment>
@@ -51,6 +78,75 @@ const BookingTable = (props: BookingsProps) => {
         <Typography className="label">
           {t("Bookings for selected date and time")}
         </Typography>
+        FILTER
+        <Box id="table-filter-container">
+          {/* TYPE */}
+          <FormControl fullWidth className="booking-select-item">
+            <InputLabel id="equipment-type">{labels.equipment.type}</InputLabel>
+            <Select
+              className="booking-select-button"
+              labelId="equipment-type-label"
+              id="equipment-type"
+              label={labels.equipment.type}
+              value={filters.type}
+              onChange={(e: SelectChangeEvent) =>
+                setFilters({ ...filters, type: e.target.value })
+              }
+            >
+              {availableEquipment.types.map((type: string, index: number) => (
+                <MenuItem key={`${type}-${index}`} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* CLASS/NAME */}
+          <FormControl fullWidth className="booking-select-item">
+            <InputLabel id="equipment-name">{labels.equipment.name}</InputLabel>
+            <Select
+              className="booking-select-button"
+              labelId="equipment-name-label"
+              // disabled={selectedEquipmentType === ""}
+              id="equipment-name"
+              label={labels.equipment.name}
+              value={filters.name}
+              onChange={(e: SelectChangeEvent) => {
+                setFilters({ ...filters, name: e.target.value });
+              }}
+            >
+              {availableEquipment.names.map((name: string, index: number) => (
+                <MenuItem key={`${name}-${index}`} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* SWC NUMBER */}
+          <FormControl fullWidth className="booking-select-item">
+            <InputLabel id="equipment-swc-nbr">
+              {labels.equipment.number}
+            </InputLabel>
+            <Select
+              className="booking-select-button"
+              labelId="equipment-swc-nbr-label"
+              // disabled={selectedEquipmentName === ""}
+              id="equipment-swc-nbr"
+              label={labels.equipment.number}
+              value={filters.number}
+              onChange={(e: SelectChangeEvent) => {
+                setFilters({ ...filters, number: e.target.value });
+              }}
+            >
+              {availableEquipment.numbers.map((name: string, index: number) => (
+                <MenuItem key={`${name}-${index}`} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
         <Box id="table-content">
           <TableContainer>
             <Table>

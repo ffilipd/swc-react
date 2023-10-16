@@ -37,24 +37,31 @@ import { getBookingsByDate } from "../../service/booking.service";
 
 const BookingComponent = () => {
   const { t } = useTranslation();
-  const equipmentTypes = getEquipmentTypes();
-  const equipmentTypeLabel: string = i18next.t("Equipment type");
-  const equipmentNameLabel: string = i18next.t("Class / Name");
-  const equipmentSwcNbrLabel: string = i18next.t("Number");
+  // const equipmentTypes = getEquipmentTypes();
+  const labels = {
+    equipment: {
+      type: i18next.t("Equipment type"),
+      name: i18next.t("Class / Name"),
+      number: i18next.t("Number"),
+    },
+  };
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
 
-  const [selectedEquipmentType, setSelectedEquipmentType] =
-    useState<string>("");
-  const [selectedEquipmentName, setSelectedEquipmentName] =
-    useState<string>("");
-  const [selectedEquipmentNumber, setSelectedEquipmentNumber] =
-    useState<string>("");
-  const [availableEquipmentNames, setAvailableEquipmentNames] = useState<
-    string[]
-  >([]);
-  const [availableEquipmentNumbers, setAvailableEquipmentNumbers] = useState<
-    string[]
-  >([]);
+  const [selectedEquipment, setSelectedEquipment] = useState<{
+    type: string;
+    name: string;
+    number: string;
+  }>({ type: "", name: "", number: "" });
+
+  const [availableEquipment, setAvailableEquipment] = useState<{
+    types: string[];
+    names: string[];
+    numbers: string[];
+  }>({
+    types: [],
+    names: [],
+    numbers: [],
+  });
 
   const [bookings, setBookings] = useState<Booking[] | null>([]);
 
@@ -64,19 +71,26 @@ const BookingComponent = () => {
   });
 
   useEffect(() => {
+    setAvailableEquipment({
+      ...availableEquipment,
+      types: getEquipmentTypes(),
+    });
+  }, []);
+
+  useEffect(() => {
     const names: string[] =
-      getEquipmentNamesByType(selectedEquipmentType) || [];
-    setAvailableEquipmentNames(names);
-  }, [selectedEquipmentType]);
+      getEquipmentNamesByType(selectedEquipment.type) || [];
+    setAvailableEquipment({ ...availableEquipment, names: names });
+  }, [selectedEquipment.type]);
 
   useEffect(() => {
     const numbers: string[] = getNumbersByTypeAndName(
-      selectedEquipmentType,
-      selectedEquipmentName
+      selectedEquipment.type,
+      selectedEquipment.name
     );
-    setAvailableEquipmentNumbers(numbers);
+    setAvailableEquipment({ ...availableEquipment, numbers: numbers });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEquipmentName]);
+  }, [selectedEquipment.name]);
 
   useEffect(() => {
     const bookingsData = getBookingsByDate(selectedDate?.format("DD-MM-YYYY"));
@@ -146,18 +160,23 @@ const BookingComponent = () => {
           <Box id="select-box">
             {/* TYPE */}
             <FormControl fullWidth className="booking-select-item">
-              <InputLabel id="equipment-type">{equipmentTypeLabel}</InputLabel>
+              <InputLabel id="equipment-type">
+                {labels.equipment.type}
+              </InputLabel>
               <Select
                 className="booking-select-button"
                 labelId="equipment-type-label"
                 id="equipment-type"
-                label={equipmentTypeLabel}
-                value={selectedEquipmentType}
+                label={labels.equipment.type}
+                value={selectedEquipment.type}
                 onChange={(e: SelectChangeEvent) =>
-                  setSelectedEquipmentType(e.target.value)
+                  setSelectedEquipment({
+                    ...selectedEquipment,
+                    type: e.target.value,
+                  })
                 }
               >
-                {equipmentTypes.map((type: string, index: number) => (
+                {availableEquipment.types.map((type: string, index: number) => (
                   <MenuItem key={`${type}-${index}`} value={type}>
                     {type}
                   </MenuItem>
@@ -167,19 +186,24 @@ const BookingComponent = () => {
 
             {/* CLASS/NAME */}
             <FormControl fullWidth className="booking-select-item">
-              <InputLabel id="equipment-name">{equipmentNameLabel}</InputLabel>
+              <InputLabel id="equipment-name">
+                {labels.equipment.name}
+              </InputLabel>
               <Select
                 className="booking-select-button"
                 labelId="equipment-name-label"
-                disabled={selectedEquipmentType === ""}
+                disabled={selectedEquipment.type === ""}
                 id="equipment-name"
-                label={equipmentNameLabel}
-                value={selectedEquipmentName}
+                label={labels.equipment.name}
+                value={selectedEquipment.name}
                 onChange={(e: SelectChangeEvent) => {
-                  setSelectedEquipmentName(e.target.value);
+                  setSelectedEquipment({
+                    ...selectedEquipment,
+                    name: e.target.value,
+                  });
                 }}
               >
-                {availableEquipmentNames.map((name: string, index: number) => (
+                {availableEquipment.names.map((name: string, index: number) => (
                   <MenuItem key={`${name}-${index}`} value={name}>
                     {name}
                   </MenuItem>
@@ -190,20 +214,23 @@ const BookingComponent = () => {
             {/* SWC NUMBER */}
             <FormControl fullWidth className="booking-select-item">
               <InputLabel id="equipment-swc-nbr">
-                {equipmentSwcNbrLabel}
+                {labels.equipment.number}
               </InputLabel>
               <Select
                 className="booking-select-button"
                 labelId="equipment-swc-nbr-label"
-                disabled={selectedEquipmentName === ""}
+                disabled={selectedEquipment.name === ""}
                 id="equipment-swc-nbr"
-                label={equipmentSwcNbrLabel}
-                value={selectedEquipmentNumber}
+                label={labels.equipment.number}
+                value={selectedEquipment.number}
                 onChange={(e: SelectChangeEvent) => {
-                  setSelectedEquipmentNumber(e.target.value);
+                  setSelectedEquipment({
+                    ...selectedEquipment,
+                    number: e.target.value,
+                  });
                 }}
               >
-                {availableEquipmentNumbers.map(
+                {availableEquipment.numbers.map(
                   (name: string, index: number) => (
                     <MenuItem key={`${name}-${index}`} value={name}>
                       {name}
@@ -215,7 +242,12 @@ const BookingComponent = () => {
             <SwcButton2 id="book-button">Book</SwcButton2>
           </Box>
         </Box>
-        <BookingTable bookings={bookings} isMobile={isMobile} />
+        <BookingTable
+          bookings={bookings}
+          isMobile={isMobile}
+          labels={labels}
+          availableEquipment={availableEquipment}
+        />
       </Box>
     </Box>
   );

@@ -5,6 +5,11 @@
     margin: 0 0 0 20px;
 }
 
+#table-filter-container {
+    display: flex;
+    flex-direction: row;
+}
+
 #table-header {
     font-weight: 600;
 }
