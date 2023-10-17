@@ -5,7 +5,12 @@ const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+    origin: '*', // Replace with your allowed origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true // Enable credentials (cookies, authorization headers, etc.)
+}));
+
 
 const data = require('./data')
 
@@ -28,12 +33,43 @@ app.get('/equipment', (req, res) => {
     res.json(filteredData);
 });
 
+// Endpoint to handle /equipment/filters
+app.get('/equipment/filters', (req, res) => {
+    const { type, equipment_name } = req.query;
+    let filteredData = Object.values(data.equipment);
+
+    // Filter based on type parameter
+    if (type) {
+        filteredData = filteredData.filter(item => item.type === type);
+    }
+    // Filter based on name parameter if provided
+    if (equipment_name) {
+        filteredData = filteredData.filter(item => item.equipment_name === equipment_name);
+    }
+
+    // Return unique names or unique numbers based on parameters
+    if (type && equipment_name) {
+        const uniqueNumbers = [...new Set(filteredData.map(item => item.swc_number))];
+        res.json(uniqueNumbers);
+    } else if (type) {
+        const uniqueNames = [...new Set(filteredData.map(item => item.equipment_name))];
+        res.json(uniqueNames);
+    } else {
+        const uniqueTypes = [...new Set(filteredData.map(item => item.type))];
+        res.json(uniqueTypes);
+    }
+});
+
 app.get('/bookings', (req, res) => {
-    const { date, equipment_name, time_from, time_to, swc_number } = req.query;
+    const { date, type, equipment_name, time_from, time_to, swc_number } = req.query;
     let filteredData = data.bookings;
 
     if (date) {
         filteredData = filteredData.filter(item => item.date === date);
+    }
+
+    if (type) {
+        filteredData = filteredData.filter(item => item.type === type);
     }
 
     if (equipment_name) {
