@@ -7,7 +7,7 @@ export interface Languages {
 export interface Booking {
     id: string;
     type: string
-    name: string;
+    equipment_name: string;
     swc_number: string;
     date: string;
     time_from: string;
@@ -18,7 +18,7 @@ export interface Booking {
 
 export interface BookingSearchParams {
     type?: string;
-    name?: string;
+    equipment_name?: string;
     swc_number?: string;
     date?: string;
     time_from?: string;

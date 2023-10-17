@@ -16,7 +16,11 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import i18next from "i18next";
 import "./booking.css";
 import { useEffect, useState } from "react";
-import { getEquipment } from "../../service/equipment.service";
+import {
+  getEquipment,
+  getEquipmentFilters,
+} from "../../service/equipment.service";
+import { getBookings } from "../../service/booking.service";
 import { Label, SettingsInputComponent } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -28,7 +32,6 @@ import {
 import { SwcButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking } from "../../interfaces";
-// import { getBookings } from "../../service/booking.service";
 
 const BookingComponent = () => {
   const { t } = useTranslation();
@@ -44,9 +47,9 @@ const BookingComponent = () => {
 
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
-    name: string;
+    equipment_name: string;
     number: string;
-  }>({ type: "", name: "", number: "" });
+  }>({ type: "", equipment_name: "", number: "" });
 
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
@@ -65,37 +68,64 @@ const BookingComponent = () => {
     setIsMobile(window.innerWidth <= 600);
   });
 
-  const fetchEquipment = async () => {
+  const getFilters = async (params?: {
+    type?: string;
+    equipment_name?: string;
+  }) => {
     try {
-      getEquipment();
+      const response = await getEquipmentFilters({
+        type: params?.type,
+        equipment_name: params?.equipment_name,
+      });
+      return response;
     } catch (error) {
-      console.log(error);
+      return [];
     }
   };
 
   useEffect(() => {
-    fetchEquipment();
+    setFilterTypes();
   }, []);
 
-  // useEffect(() => {
-  //   const names: string[] =
-  //     getEquipment(type:selectedEquipment.type) || [];
-  //   setAvailableEquipment({ ...availableEquipment, names: names });
-  // }, [selectedEquipment.type]);
+  const setFilterTypes = async () => {
+    const types = await getFilters();
+    setAvailableEquipment({ ...availableEquipment, types });
+  };
 
-  // useEffect(() => {
-  //   const numbers: string[] = getNumbersByTypeAndName(
-  //     selectedEquipment.type,
-  //     selectedEquipment.name
-  //   );
-  //   setAvailableEquipment({ ...availableEquipment, numbers: numbers });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [selectedEquipment.name]);
+  const handleSetType = async (type: string) => {
+    setSelectedEquipment({
+      ...selectedEquipment,
+      type,
+      equipment_name: "",
+      number: "",
+    });
+    const names = await getFilters({ type });
+    setAvailableEquipment({ ...availableEquipment, names });
+  };
 
-  // useEffect(() => {
-  //   const bookingsData = getBookingsByDate(selectedDate?.format("DD-MM-YYYY"));
-  //   setBookings(bookingsData);
-  // }, [selectedDate]);
+  const handleSetName = async (equipment_name: string) => {
+    setSelectedEquipment({ ...selectedEquipment, equipment_name, number: "" });
+    const numbers = await getFilters({
+      type: selectedEquipment.type,
+      equipment_name: equipment_name,
+    });
+    setAvailableEquipment({ ...availableEquipment, numbers });
+  };
+
+  const fetchBookings = async () => {
+    // const bookingsData = getBookingsByDate(selectedDate?.format("DD-MM-YYYY"));
+    const bookingsData: Booking[] = await getBookings({
+      type: selectedEquipment.type,
+      equipment_name: selectedEquipment.equipment_name,
+      swc_number: selectedEquipment.number,
+      date: selectedDate?.format("DD-MM-YYYY"),
+    });
+    setBookings(bookingsData);
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, [selectedDate, selectedEquipment]);
 
   return (
     <Box id="booking-root">
@@ -169,12 +199,9 @@ const BookingComponent = () => {
                 id="equipment-type"
                 label={labels.equipment.type}
                 value={selectedEquipment.type}
-                onChange={(e: SelectChangeEvent) =>
-                  setSelectedEquipment({
-                    ...selectedEquipment,
-                    type: e.target.value,
-                  })
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  handleSetType(e.target.value);
+                }}
               >
                 {availableEquipment.types?.map(
                   (type: string, index: number) => (
@@ -197,12 +224,9 @@ const BookingComponent = () => {
                 disabled={selectedEquipment.type === ""}
                 id="equipment-name"
                 label={labels.equipment.name}
-                value={selectedEquipment.name}
+                value={selectedEquipment.equipment_name}
                 onChange={(e: SelectChangeEvent) => {
-                  setSelectedEquipment({
-                    ...selectedEquipment,
-                    name: e.target.value,
-                  });
+                  handleSetName(e.target.value);
                 }}
               >
                 {availableEquipment.names.map((name: string, index: number) => (
@@ -221,7 +245,7 @@ const BookingComponent = () => {
               <Select
                 className="booking-select-button"
                 labelId="equipment-swc-nbr-label"
-                disabled={selectedEquipment.name === ""}
+                disabled={selectedEquipment.equipment_name === ""}
                 id="equipment-swc-nbr"
                 label={labels.equipment.number}
                 value={selectedEquipment.number}

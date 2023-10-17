@@ -132,12 +132,14 @@ const BookingTable = (props: BookingsProps) => {
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {bookings?.map((row) => (
+                {bookings?.map((row, i) => (
                   <StyledTableRow
-                    key={row.id}
+                    key={`${row.id}-${row.equipment_name}-${i}`}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <StyledTableCell align="left">{row.name}</StyledTableCell>
+                    <StyledTableCell align="left">
+                      {row.equipment_name}
+                    </StyledTableCell>
                     <StyledTableCell align="left">
                       {row.swc_number}
                     </StyledTableCell>
