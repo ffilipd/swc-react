@@ -1,203 +1,298 @@
 {
-    "bookings": [
-        {
-            "id": "1",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "2",
-            "date": "19-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2002",
-            "user_id": "1"
-        },
-        {
-            "id": "1",
-            "type": "Sailboat",
-            "equipment_name": "J70",
-            "swc_number": "2",
-            "date": "19-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2002",
-            "user_id": "1"
-        },
-        {
-            "id": "2",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "1",
-            "date": "18-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2001",
-            "user_id": "2"
-        },
-        {
-            "id": "3",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "3",
-            "date": "18-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2003",
-            "user_id": "3"
-        },
-        {
-            "id": "1",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "2",
-            "date": "19-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2002",
-            "user_id": "1"
-        },
-        {
-            "id": "2",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "1",
-            "date": "18-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2001",
-            "user_id": "2"
-        },
-        {
-            "id": "3",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "3",
-            "date": "18-10-2023",
-            "time_from": "12:00",
-            "time_to": "15:00",
-            "equipment_id": "2003",
-            "user_id": "3"
-        }
-    ],
-    "equipment": [
-        {
-            "id": "1001",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "1"
-        },
-        {
-            "id": "1002",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "2"
-        },
-        {
-            "id": "1003",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "3"
-        },
-        {
-            "id": "1004",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "4"
-        },
-        {
-            "id": "1005",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "5"
-        },
-        {
-            "id": "1006",
-            "type": "Sailboat",
-            "equipment_name": "Elliott 6M",
-            "swc_number": "6"
-        },
-        {
-            "id": "2001",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "1"
-        },
-        {
-            "id": "2002",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "2"
-        },
-        {
-            "id": "2003",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "3"
-        },
-        {
-            "id": "2004",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "4"
-        },
-        {
-            "id": "2005",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "5"
-        },
-        {
-            "id": "2006",
-            "type": "Sailboat",
-            "equipment_name": "RS Toura",
-            "swc_number": "6"
-        },
-        {
-            "id": "3001",
-            "type": "Sailboat",
-            "equipment_name": "J70",
-            "swc_number": "1"
-        },
-        {
-            "id": "4001",
-            "type": "Windsurfing board",
-            "equipment_name": "Zimmer",
-            "swc_number": "1",
-            "size": "130L"
-        },
-        {
-            "id": "4002",
-            "type": "Windsurfing board",
-            "equipment_name": "Windsurfer",
-            "swc_number": "2",
-            "size": "140L"
-        },
-        {
-            "id": "4003",
-            "type": "Windsurfing board",
-            "equipment_name": "Quest",
-            "swc_number": "3",
-            "size": "160L"
-        },
-        {
-            "id": "5001",
-            "type": "Windsurfing sail",
-            "equipment_name": "Zimmer",
-            "swc_number": "1",
-            "size": "5.8"
-        },
-        {
-            "id": "5002",
-            "type": "Windsurfing sail",
-            "equipment_name": "Quest",
-            "swc_number": "3",
-            "size": "5.4"
-        },
-        {
-            "id": "5003",
-            "type": "Windsurfing sail",
-            "equipment_name": "Windsurfer",
-            "swc_number": "3",
-            "size": "8.5"
-        }
-    ]
+  "bookings": [
+    {
+      "id": "1",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "2",
+      "date": "19-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2002",
+      "user_id": "1"
+    },
+    {
+      "id": "1",
+      "type": "Sailboat",
+      "equipment_name": "J70",
+      "swc_number": "2",
+      "date": "19-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2002",
+      "user_id": "1"
+    },
+    {
+      "id": "2",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "1",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2001",
+      "user_id": "2"
+    },
+    {
+      "id": "3",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "3",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2003",
+      "user_id": "3"
+    },
+    {
+      "id": "1",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "2",
+      "date": "19-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2002",
+      "user_id": "1"
+    },
+    {
+      "id": "2",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "1",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2001",
+      "user_id": "2"
+    },
+    {
+      "id": "3",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "3",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "equipment_id": "2003",
+      "user_id": "3"
+    },
+    {
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "5",
+      "date": "21-10-2023",
+      "time_from": "17:00",
+      "time_to": "20:00",
+      "equipment_id": "2005",
+      "user_id": "1",
+      "id": "1697630446793"
+    },
+    {
+      "newBooking": {
+        "type": "Sailboat",
+        "equipment_name": "Elliott 6M",
+        "swc_number": "3",
+        "date": "18-10-2023",
+        "time_from": "17:00",
+        "time_to": "20:00",
+        "user_id": "1"
+      },
+      "id": "1697631556884"
+    },
+    {
+      "newBooking": {
+        "type": "Sailboat",
+        "equipment_name": "Elliott 6M",
+        "swc_number": "3",
+        "date": "18-10-2023",
+        "time_from": "17:00",
+        "time_to": "20:00",
+        "user_id": "1"
+      },
+      "id": "1697631566038"
+    },
+    {
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "3",
+      "date": "18-10-2023",
+      "time_from": "17:00",
+      "time_to": "20:00",
+      "user_id": "1",
+      "id": "1697631634176"
+    },
+    {
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "1",
+      "date": "18-10-2023",
+      "time_from": "16:00",
+      "time_to": "19:00",
+      "user_id": "1",
+      "id": "1697631671579"
+    },
+    {
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "4",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "user_id": "1",
+      "id": "1697632562217"
+    },
+    {
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "5",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "15:00",
+      "user_id": "1",
+      "id": "1697632665716"
+    },
+    {
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "2",
+      "date": "18-10-2023",
+      "time_from": "12:00",
+      "time_to": "16:00",
+      "user_id": "1",
+      "id": "1697632728011"
+    },
+    {
+      "type": "Windsurfing board",
+      "equipment_name": "Zimmer",
+      "swc_number": "1",
+      "date": "18-10-2023",
+      "time_from": "12:30",
+      "time_to": "15:00",
+      "user_id": "1",
+      "id": "1697633176726"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "1001",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "1"
+    },
+    {
+      "id": "1002",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "2"
+    },
+    {
+      "id": "1003",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "3"
+    },
+    {
+      "id": "1004",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "4"
+    },
+    {
+      "id": "1005",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "5"
+    },
+    {
+      "id": "1006",
+      "type": "Sailboat",
+      "equipment_name": "Elliott 6M",
+      "swc_number": "6"
+    },
+    {
+      "id": "2001",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "1"
+    },
+    {
+      "id": "2002",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "2"
+    },
+    {
+      "id": "2003",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "3"
+    },
+    {
+      "id": "2004",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "4"
+    },
+    {
+      "id": "2005",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "5"
+    },
+    {
+      "id": "2006",
+      "type": "Sailboat",
+      "equipment_name": "RS Toura",
+      "swc_number": "6"
+    },
+    {
+      "id": "3001",
+      "type": "Sailboat",
+      "equipment_name": "J70",
+      "swc_number": "1"
+    },
+    {
+      "id": "4001",
+      "type": "Windsurfing board",
+      "equipment_name": "Zimmer",
+      "swc_number": "1",
+      "size": "130L"
+    },
+    {
+      "id": "4002",
+      "type": "Windsurfing board",
+      "equipment_name": "Windsurfer",
+      "swc_number": "2",
+      "size": "140L"
+    },
+    {
+      "id": "4003",
+      "type": "Windsurfing board",
+      "equipment_name": "Quest",
+      "swc_number": "3",
+      "size": "160L"
+    },
+    {
+      "id": "5001",
+      "type": "Windsurfing sail",
+      "equipment_name": "Zimmer",
+      "swc_number": "1",
+      "size": "5.8"
+    },
+    {
+      "id": "5002",
+      "type": "Windsurfing sail",
+      "equipment_name": "Quest",
+      "swc_number": "3",
+      "size": "5.4"
+    },
+    {
+      "id": "5003",
+      "type": "Windsurfing sail",
+      "equipment_name": "Windsurfer",
+      "swc_number": "3",
+      "size": "8.5"
+    }
+  ]
 }

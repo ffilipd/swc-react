@@ -17,6 +17,15 @@ export const getBookings = async (_params?: BookingSearchParams): Promise<Bookin
     }
 }
 
+export const addBooking = async (newBooking: Booking): Promise<void> => {
+    const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
+    try {
+        await axios.post(URL, { ...newBooking })
+    } catch (error) {
+        throw new Error('Error adding new booking: ' + error)
+    }
+}
+
 /******* BUILD PARAMETERS *******/
 function buildParams(options: BookingSearchParams): URLSearchParams {
     // add parameters to the url

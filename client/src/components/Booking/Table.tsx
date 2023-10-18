@@ -1,6 +1,8 @@
 import {
   Box,
+  Collapse,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -15,6 +17,8 @@ import {
   styled,
   tableCellClasses,
 } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Booking } from "../../interfaces";
 import { useTranslation } from "react-i18next";
@@ -56,6 +60,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const BookingTable = (props: BookingsProps) => {
   const { isMobile, bookings, setBookings, labels, availableTypes } = props;
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { t } = useTranslation();
 
   const [filters, setFilters] = useState<{
@@ -115,7 +120,7 @@ const BookingTable = (props: BookingsProps) => {
                     {t("Class / Name")}
                   </StyledTableCell>
                   <StyledTableCell align="left">{t("Number")}</StyledTableCell>
-                  {isMobile === false && (
+                  {isMobile === false ? (
                     <>
                       <StyledTableCell align="left">
                         {t("Date")}
@@ -125,26 +130,132 @@ const BookingTable = (props: BookingsProps) => {
                       </StyledTableCell>
                       <StyledTableCell align="left">{t("To")}</StyledTableCell>
                       <StyledTableCell align="left">
-                        {t("Booker")}
+                        {t("User")}
                       </StyledTableCell>
                     </>
+                  ) : (
+                    <StyledTableCell></StyledTableCell>
                   )}
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {bookings?.map((row, i) => (
-                  <StyledTableRow
-                    key={`${row.id}-${row.equipment_name}-${i}`}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <StyledTableCell align="left">
-                      {row.equipment_name}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {row.swc_number}
-                    </StyledTableCell>
-                    {isMobile === false && (
-                      <>
+                {isMobile && (
+                  <>
+                    {Array.from(
+                      new Set(
+                        bookings?.map(
+                          (row) => `${row.equipment_name}-${row.swc_number}`
+                        )
+                      )
+                    ).map((uniqueKey, i) => {
+                      const groupedRows = bookings?.filter(
+                        (row) =>
+                          `${row.equipment_name}-${row.swc_number}` ===
+                          uniqueKey
+                      );
+                      const firstRow = groupedRows && groupedRows[0];
+                      const isRowSelected = selectedRow === i;
+
+                      return (
+                        <React.Fragment key={uniqueKey}>
+                          <StyledTableRow
+                            sx={{
+                              "& > *": { borderBottom: "unset" },
+                            }}
+                          >
+                            <StyledTableCell align="left">
+                              {firstRow?.equipment_name}
+                            </StyledTableCell>
+                            <StyledTableCell>
+                              {firstRow?.swc_number}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              <IconButton
+                                aria-label="expand row"
+                                size="small"
+                                onClick={() =>
+                                  setSelectedRow(isRowSelected ? null : i)
+                                }
+                              >
+                                {isRowSelected ? (
+                                  <KeyboardArrowUpIcon />
+                                ) : (
+                                  <KeyboardArrowDownIcon />
+                                )}
+                              </IconButton>
+                            </StyledTableCell>
+                          </StyledTableRow>
+                          <TableRow sx={{ padding: 0 }}>
+                            <StyledTableCell
+                              size="small"
+                              sx={{ padding: 0 }}
+                              colSpan={3}
+                            >
+                              <Collapse
+                                in={isRowSelected}
+                                timeout="auto"
+                                unmountOnExit
+                              >
+                                <Box padding={"0 0 10px 0"}>
+                                  <Table size="small">
+                                    <TableHead>
+                                      <TableRow
+                                        sx={{ backgroundColor: "#89a" }}
+                                      >
+                                        <StyledTableCell align="left">
+                                          {t("From")}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                          {t("To")}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                          {t("User")}
+                                        </StyledTableCell>
+                                      </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                      {groupedRows?.map((row, index) => (
+                                        <StyledTableRow
+                                          key={`${row.id}-${row.equipment_name}-${index}`}
+                                        >
+                                          <StyledTableCell align="left">
+                                            {row.time_from}
+                                          </StyledTableCell>
+                                          <StyledTableCell align="left">
+                                            {row.time_to}
+                                          </StyledTableCell>
+                                          <StyledTableCell align="left">
+                                            {row.user_id}
+                                          </StyledTableCell>
+                                        </StyledTableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </Box>
+                              </Collapse>
+                            </StyledTableCell>
+                          </TableRow>
+                        </React.Fragment>
+                      );
+                    })}
+                  </>
+                )}
+                {!isMobile &&
+                  bookings?.map((row, i) => (
+                    <React.Fragment
+                      key={`${row.id}-${row.equipment_name}-${i}`}
+                    >
+                      <StyledTableRow
+                        sx={{
+                          "& > *": { borderBottom: "unset" },
+                        }}
+                      >
+                        <StyledTableCell align="left">
+                          {row.equipment_name}
+                        </StyledTableCell>
+                        <StyledTableCell align="left">
+                          {row.swc_number}
+                        </StyledTableCell>
                         <StyledTableCell align="left">
                           {row.date}
                         </StyledTableCell>
@@ -157,10 +268,9 @@ const BookingTable = (props: BookingsProps) => {
                         <StyledTableCell align="left">
                           {row.user_id}
                         </StyledTableCell>
-                      </>
-                    )}
-                  </StyledTableRow>
-                ))}
+                      </StyledTableRow>
+                    </React.Fragment>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

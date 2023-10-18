@@ -12,7 +12,18 @@ app.use(cors({
 }));
 
 
-const data = require('./data')
+// const data = require('./data')
+let data = {}
+
+const dataFilePath = './data.json';
+
+// Load existing data from data.json
+try {
+    data = JSON.parse(fs.readFileSync(dataFilePath));
+} catch (error) {
+    console.log('Error loading data:', error);
+}
+
 
 app.get('/equipment', (req, res) => {
     const { type, equipment_name, swc_number } = req.query;
@@ -100,6 +111,25 @@ app.get('/bookings', (req, res) => {
 
     res.json(filteredData);
 });
+
+app.post('/bookings', (req, res) => {
+    const newBooking = req.body;
+    newBooking.id = generateUniqueId();
+
+    // Add the new booking to the bookings array in data.json
+    data.bookings.push(newBooking);
+
+    // Save the updated data back to data.json
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
+
+    res.status(201).json(newBooking);
+});
+
+function generateUniqueId() {
+    // Logic to generate a unique ID, for example using a UUID library
+    // For demonstration purposes, let's use a simple timestamp-based ID
+    return Date.now().toString();
+}
 
 const PORT = 8000;
 app.listen(PORT, () => {

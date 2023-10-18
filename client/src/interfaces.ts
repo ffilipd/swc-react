@@ -5,14 +5,14 @@ export interface Languages {
 }
 
 export interface Booking {
-    id: string;
+    id?: string;
     type: string
     equipment_name: string;
     swc_number: string;
-    date: string;
-    time_from: string;
-    time_to: string;
-    equipment_id: string;
+    date: string | undefined;
+    time_from: string | undefined;
+    time_to: string | undefined;
+    equipment_id?: string;
     user_id: string;
 };
 

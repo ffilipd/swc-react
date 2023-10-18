@@ -69,7 +69,15 @@
     margin: 20px 0;
     width: 100%;
 }
+
+#disabled-button{
+    border: 1px solid var(--color-disabled-border);
+    background-color: var(--color-disabled);
+    margin: 20px 0;
+    width: 100%;
+}
 #clear-selections-button {
+    margin: 20px 0;
     border: 1px solid var(--color-disabled-border);
     border-radius: 8px;
     color: var(--color-disabled-button);

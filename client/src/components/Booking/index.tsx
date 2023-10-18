@@ -20,7 +20,7 @@ import {
   getEquipment,
   getEquipmentFilters,
 } from "../../service/equipment.service";
-import { getBookings } from "../../service/booking.service";
+import { addBooking, getBookings } from "../../service/booking.service";
 import { Label, SettingsInputComponent } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs";
@@ -47,9 +47,9 @@ const BookingComponent = () => {
   // const equipmentTypes = getEquipmentTypes();
   const labels = {
     equipment: {
-      type: i18next.t("Equipment type"),
-      name: i18next.t("Class / Name"),
-      number: i18next.t("Number"),
+      type: "*" + i18next.t("Equipment type"),
+      name: "*" + i18next.t("Class / Name"),
+      number: "*" + i18next.t("Number"),
     },
   };
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
@@ -77,6 +77,7 @@ const BookingComponent = () => {
     numbers: [],
   });
 
+  const [timeToPickerOpen, setTimeToPickerOpen] = useState<boolean>(false);
   const [bookings, setBookings] = useState<Booking[] | null>([]);
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
@@ -129,20 +130,20 @@ const BookingComponent = () => {
   };
 
   const fetchBookings = async () => {
-    // const bookingsData = getBookingsByDate(selectedDate?.format("DD-MM-YYYY"));
     const bookingsData: Booking[] = await getBookings({
       type: selectedEquipment.type,
       equipment_name: selectedEquipment.equipment_name,
       swc_number: selectedEquipment.number,
-      date: selectedDate?.format("DD-MM-YYYY"),
-      time_from: selectedTime.fromTime?.format("HH:mm"),
-      time_to: selectedTime.toTime?.format("HH:mm"),
+      date: selectedDate?.format("DD-MM-YYYY") || "",
+      time_from: selectedTime.fromTime?.format("HH:mm") || "",
+      time_to: selectedTime.toTime?.format("HH:mm") || "",
     });
     setBookings(bookingsData);
   };
 
   const handleClearSelections = (): void => {
     setSelectedEquipment({ equipment_name: "", type: "", number: "" });
+    setSelectedTime({ ...selectedTime, fromTime: null, toTime: null });
   };
 
   const handleSetTimeFrom = (newTime: any) => {
@@ -152,13 +153,53 @@ const BookingComponent = () => {
     setSelectedTime({ ...selectedTime, toTime: newTime });
   };
 
+  const handleBookEquipmentClick = async () => {
+    const { type, equipment_name, number } = selectedEquipment;
+    const date = selectedDate?.format("DD-MM-YYYY").toString();
+    const { fromTime, toTime } = selectedTime;
+    const newBooking: Booking = {
+      type,
+      equipment_name,
+      swc_number: number,
+      date,
+      time_from: fromTime?.format("HH:mm").toString(),
+      time_to: toTime?.format("HH:mm").toString(),
+      user_id: "1",
+    };
+    try {
+      await addBooking(newBooking);
+      fetchBookings();
+      setSelectedEquipment({ ...selectedEquipment, number: "" });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const bookingFilledOut = (): boolean => {
+    if (
+      selectedDate &&
+      selectedTime.fromTime &&
+      selectedTime.toTime &&
+      selectedEquipment.type &&
+      selectedEquipment.equipment_name &&
+      selectedEquipment.number
+    )
+      return true;
+    return false;
+  };
+
+  const openTimeToPicker = () => {
+    if (timeToPickerOpen) return setTimeToPickerOpen(false);
+    setTimeToPickerOpen(true);
+  };
+
   useEffect(() => {
     fetchBookings();
   }, [selectedDate, selectedEquipment, selectedTime]);
 
   return (
     <Box id="booking-root">
-      <Box id="booking-header">{t("Book Equipment")}</Box>
+      <Box id="booking-header">{t("Book equipment")}</Box>
       <Divider />
       <Box id="booking-wrapper">
         <Box id="booking-container">
@@ -184,6 +225,13 @@ const BookingComponent = () => {
               )}
             </LocalizationProvider>
           </Box>
+          <Button
+            variant="outlined"
+            id="clear-selections-button"
+            onClick={handleClearSelections}
+          >
+            {t("Clear Selections")}
+          </Button>
           <Box id="time-picker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box>
@@ -193,7 +241,7 @@ const BookingComponent = () => {
                   ampm={false}
                   sx={{ paddingRight: "4px" }}
                   minutesStep={30}
-                  label={t("From")}
+                  label={"*" + t("From")}
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
@@ -208,7 +256,7 @@ const BookingComponent = () => {
                   sx={{ paddingLeft: "4px" }}
                   ampm={false}
                   minutesStep={30}
-                  label={t("To")}
+                  label={"*" + t("To")}
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
@@ -307,14 +355,13 @@ const BookingComponent = () => {
                 )}
               </Select>
             </FormControl>
-            <Button
-              variant="outlined"
-              id="clear-selections-button"
-              onClick={handleClearSelections}
+            <SwcButton2
+              id={!bookingFilledOut() ? "disabled-button" : "book-button"}
+              disabled={!bookingFilledOut()}
+              onClick={handleBookEquipmentClick}
             >
-              {t("Clear Selections")}
-            </Button>
-            <SwcButton2 id="book-button">{t("Book")}</SwcButton2>
+              {t("Book")}
+            </SwcButton2>
           </Box>
         </Box>
         <BookingTable
