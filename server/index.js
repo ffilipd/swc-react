@@ -77,12 +77,22 @@ app.get('/bookings', (req, res) => {
     }
 
     if (time_from) {
-        filteredData = filteredData.filter(item => item.time_from === time_from);
+        filteredData = filteredData.filter(item => {
+            const reqTimeFrom = parseInt(time_from.split(':').join(''));
+            const bookingTimeFrom = parseInt(item.time_from.split(':').join(''));
+            const bookingTimeTo = parseInt(item.time_to.split(':').join(''));
+            if (time_to) {
+                const reqTimeTo = parseInt(time_to.split(':').join(''));
+                return reqTimeFrom >= bookingTimeFrom &&
+                    reqTimeFrom < bookingTimeTo ||
+                    reqTimeTo > bookingTimeFrom &&
+                    reqTimeTo < bookingTimeTo
+            } else {
+                return reqTimeFrom >= bookingTimeFrom && reqTimeFrom < bookingTimeTo || reqTimeFrom < bookingTimeTo
+            }
+        })
     }
 
-    if (time_to) {
-        filteredData = filteredData.filter(item => item.time_to === time_to);
-    }
 
     if (swc_number) {
         filteredData = filteredData.filter(item => item.swc_number === swc_number);

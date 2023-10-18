@@ -23,8 +23,10 @@ import {
 import { getBookings } from "../../service/booking.service";
 import { Label, SettingsInputComponent } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
+import customParseFormat from "dayjs";
 import {
   DatePicker,
+  MobileTimePicker,
   TimePicker,
   renderDigitalClockTimeView,
   renderTimeViewClock,
@@ -32,6 +34,13 @@ import {
 import { SwcButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking } from "../../interfaces";
+
+dayjs.extend(customParseFormat);
+const roundedTime = (time: Dayjs): Dayjs => {
+  return time.minute() > 30
+    ? time.startOf("hour").add(30, "minutes")
+    : time.startOf("hour").add(0, "minutes");
+};
 
 const BookingComponent = () => {
   const { t } = useTranslation();
@@ -44,6 +53,13 @@ const BookingComponent = () => {
     },
   };
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+  const [selectedTime, setSelectedTime] = useState<{
+    fromTime: Dayjs | null;
+    toTime: Dayjs | null;
+  }>({
+    fromTime: null,
+    toTime: null,
+  });
 
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
@@ -119,13 +135,26 @@ const BookingComponent = () => {
       equipment_name: selectedEquipment.equipment_name,
       swc_number: selectedEquipment.number,
       date: selectedDate?.format("DD-MM-YYYY"),
+      time_from: selectedTime.fromTime?.format("HH:mm"),
+      time_to: selectedTime.toTime?.format("HH:mm"),
     });
     setBookings(bookingsData);
   };
 
+  const handleClearSelections = (): void => {
+    setSelectedEquipment({ equipment_name: "", type: "", number: "" });
+  };
+
+  const handleSetTimeFrom = (newTime: any) => {
+    setSelectedTime({ ...selectedTime, fromTime: newTime });
+  };
+  const handleSetTimeTo = (newTime: any) => {
+    setSelectedTime({ ...selectedTime, toTime: newTime });
+  };
+
   useEffect(() => {
     fetchBookings();
-  }, [selectedDate, selectedEquipment]);
+  }, [selectedDate, selectedEquipment, selectedTime]);
 
   return (
     <Box id="booking-root">
@@ -158,8 +187,9 @@ const BookingComponent = () => {
           <Box id="time-picker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box>
-                <TimePicker
+                <MobileTimePicker
                   className="time"
+                  value={selectedTime.fromTime}
                   ampm={false}
                   sx={{ paddingRight: "4px" }}
                   minutesStep={30}
@@ -168,11 +198,13 @@ const BookingComponent = () => {
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                   }}
+                  onChange={handleSetTimeFrom}
                 />
               </Box>
               <Box>
-                <TimePicker
+                <MobileTimePicker
                   className="time"
+                  value={selectedTime.toTime}
                   sx={{ paddingLeft: "4px" }}
                   ampm={false}
                   minutesStep={30}
@@ -181,6 +213,7 @@ const BookingComponent = () => {
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                   }}
+                  onChange={handleSetTimeTo}
                 />
               </Box>
             </LocalizationProvider>
@@ -258,14 +291,30 @@ const BookingComponent = () => {
               >
                 {availableEquipment.numbers.map(
                   (name: string, index: number) => (
-                    <MenuItem key={`${name}-${index}`} value={name}>
+                    <MenuItem
+                      key={`${name}-${index}`}
+                      value={name}
+                      disabled={bookings?.some(
+                        (booking) => booking.swc_number === name
+                      )}
+                    >
                       {name}
+                      {bookings?.some(
+                        (booking) => booking.swc_number === name
+                      ) && <i> - {t("booked")}</i>}
                     </MenuItem>
                   )
                 )}
               </Select>
             </FormControl>
-            <SwcButton2 id="book-button">Book</SwcButton2>
+            <Button
+              variant="outlined"
+              id="clear-selections-button"
+              onClick={handleClearSelections}
+            >
+              {t("Clear Selections")}
+            </Button>
+            <SwcButton2 id="book-button">{t("Book")}</SwcButton2>
           </Box>
         </Box>
         <BookingTable

@@ -12,6 +12,9 @@
 --color-dark-blue:#002855;
 --color-dark-blue2:#002047;
 --color-blue:#004f55;
+/* buttons */
+--color-disabled-border: #dddddd;
+--color-disabled-button: #469;
 
 
 /* font colors */
