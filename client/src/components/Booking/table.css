@@ -18,12 +18,6 @@
     border-radius: 8px;
 }
 
-.label {
-    font-size: large;
-    color: var(--color-dark-blue);
-    font-weight: 600;
-}
-
 @media only screen and (max-width:600px) {
     #table-wrapper {
         max-width: 320px;

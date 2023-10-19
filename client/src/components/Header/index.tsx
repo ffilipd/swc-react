@@ -103,6 +103,7 @@ function Header() {
     setDrawerOpen(false);
     if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
+    if (clickedItem === "Report") navigate("/report");
   };
 
   return (
@@ -139,7 +140,9 @@ function Header() {
           >
             <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
               <SwcButton onClick={() => navigate("/")}>{t("Home")}</SwcButton>
-              <SwcButton>{t("Report")}</SwcButton>
+              <SwcButton onClick={() => navigate("/report")}>
+                {t("Report")}
+              </SwcButton>
               <SwcButton onClick={() => navigate("/booking")}>
                 {t("Book equipment")}
               </SwcButton>
