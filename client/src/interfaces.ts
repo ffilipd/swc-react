@@ -17,6 +17,7 @@ export interface Booking {
 };
 
 export interface BookingSearchParams {
+    user_id?: string;
     type?: string;
     equipment_name?: string;
     swc_number?: string;
@@ -24,5 +25,26 @@ export interface BookingSearchParams {
     time_from?: string;
     time_to?: string;
 };
+
+export interface ReportSearchParams {
+    booking_id?: string;
+    type?: string;
+    equipment_name?: string;
+    swc_number?: string;
+    date?: string;
+    user_id?: string;
+    damage_type?: string;
+};
+
+export interface Report {
+    booking_id?: string;
+    type?: string;
+    equipment_name?: string;
+    swc_number?: string;
+    date?: string;
+    user_id: string;
+    notes?: string;
+    damage_type: string;
+}
 
 export type FilterTargetType = "type" | "name" | "number";

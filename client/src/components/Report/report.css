@@ -53,6 +53,18 @@
     justify-content: space-between;
 }
 
+#submit-report-button {
+    margin: 20px 0;
+    width: 100%;
+}
+
+#submit-disabled-button {
+    border: 1px solid var(--color-disabled-border);
+    background-color: var(--color-disabled);
+    margin: 20px 0;
+    width: 100%;
+}
+
 @media only screen and (max-width:600px) {
     #report-root {
         margin: 0;
