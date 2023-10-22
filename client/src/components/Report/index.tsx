@@ -123,7 +123,8 @@ const ReportComponent = () => {
   const handleSelectBooking = async (bookingId: string) => {
     const reportExists = await getReports({ booking_id: bookingId });
     console.log(reportExists);
-    if (reportExists.length > 0) setReportExistsNote(true);
+    if (reportExists.length > 0 && bookingId !== "no-booking")
+      setReportExistsNote(true);
     else setReportExistsNote(false);
     setNewReport({ ...newReport, booking_id: bookingId });
     setSelectedBookingId(bookingId);
@@ -235,7 +236,7 @@ const ReportComponent = () => {
               format="DD-MM-YYYY"
               value={selectedDate}
               sx={{ borderRadius: "8px" }}
-              label={t("Select date of booking")}
+              label={t("Select date of booking / usage")}
               onChange={(newDate) => handleSelectDate(newDate)}
             />
           </LocalizationProvider>

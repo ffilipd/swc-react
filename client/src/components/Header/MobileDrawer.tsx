@@ -37,6 +37,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
     t("Report"),
     t("Book equipment"),
     t("Account details"),
+    t("Login"),
   ];
 
   const [openLanguageCollapse, setOpenLanguageCollapse] =

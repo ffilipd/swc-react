@@ -6,6 +6,8 @@ import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18next";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import config from "./oauth-config";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") ?? new Element()
@@ -15,7 +17,9 @@ root.render(
   <Router>
     <I18nextProvider i18n={i18n} defaultNS={"translation"}>
       <React.StrictMode>
-        <App />
+        <GoogleOAuthProvider clientId={config.googleOAuthClientId}>
+          <App />
+        </GoogleOAuthProvider>
       </React.StrictMode>
     </I18nextProvider>
   </Router>

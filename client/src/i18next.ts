@@ -10,7 +10,7 @@ i18n
     .use(initReactI18next)
     .init({
         // debug: true,
-        fallbackLng: 'fi',
+        fallbackLng: 'en',
         /** Interpolation let you integrate dynamic values into translations
          * if escapeValue is set to false, the dynamic values will not be escaped and the application will be vulnerable to XXS attacks
         */

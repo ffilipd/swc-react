@@ -2,6 +2,11 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   InputAdornment,
   Menu,
   MenuItem,
@@ -26,6 +31,8 @@ import LoginSharpIcon from "@mui/icons-material/LoginSharp";
 import { useNavigate } from "react-router-dom";
 import MobileDrawer from "./MobileDrawer";
 import i18next from "i18next";
+import { GoogleLogin } from "@react-oauth/google";
+import i18n from "../../i18next";
 
 function Header() {
   const languages = {
@@ -36,7 +43,8 @@ function Header() {
   const [language, setLanguage] = useState<string>("en");
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const isAuth = true;
+  const isAuth = false;
+  const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
@@ -45,6 +53,13 @@ function Header() {
   window.addEventListener("resize", () => {
     setIsMobile(window.innerWidth <= 600);
   });
+
+  const handleLoginDialogClose = () => {
+    setLoginDialogOpen(false);
+  };
+  const handleLoginDialogOpen = () => {
+    setLoginDialogOpen(true);
+  };
 
   // Update page when language changes
   useEffect(() => {
@@ -71,8 +86,13 @@ function Header() {
   function handleUserManagement() {
     navigate("/users");
   }
-  function handleLogin() {
-    navigate("/login");
+  function handleClickLogin() {
+    // navigate("/login");
+    setLoginDialogOpen(true);
+  }
+  function handleLoginSuccess(responseObject: any) {
+    console.log(responseObject.credential);
+    setLoginDialogOpen(false);
   }
   function handleLogout() {
     console.log("logout");
@@ -104,6 +124,7 @@ function Header() {
     if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
+    if (clickedItem === "Login") handleClickLogin();
   };
 
   return (
@@ -181,7 +202,7 @@ function Header() {
                   </Menu>
                 </>
               ) : (
-                <SwcButton>{t("Login")}</SwcButton>
+                <SwcButton onClick={handleClickLogin}>{t("Login")}</SwcButton>
               )}
               <Select
                 variant="outlined"
@@ -224,6 +245,33 @@ function Header() {
           </ButtonGroup>
         )}
       </Box>
+      <Dialog fullWidth open={loginDialogOpen} onClose={handleLoginDialogClose}>
+        <DialogTitle id="submit-dialog-title" sx={{ textAlign: "center" }}>
+          {t("Login with Google Account")}
+        </DialogTitle>
+        <DialogContent>
+          {/* <DialogContentText id="submit-dialog-description">
+            {t("Thank you for the report!")}
+          </DialogContentText> */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <GoogleLogin
+              locale={i18n.language}
+              theme="outline"
+              onSuccess={(res) => handleLoginSuccess(res)}
+              onError={() => console.log("Login failed")}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLoginDialogClose}>{t("Close")}</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
