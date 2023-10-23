@@ -49,7 +49,6 @@ function Header() {
   const accountMenuOpen = Boolean(menuAnchorEl) || false;
 
   const updateLanguage = (newLanguage: string) => {
-    console.log(language);
     setLanguage(newLanguage);
   };
   function handleAccountMenuClose(e: any) {

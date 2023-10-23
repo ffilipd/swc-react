@@ -9,6 +9,8 @@ import React, {
 import { FMProfile, Profile } from "./interfaces";
 import { createUser } from "./service/user.service";
 import { googleLogout } from "@react-oauth/google";
+import i18n from "./i18next";
+import i18next from "./i18next";
 
 type User = {
   access_token: string;
@@ -57,8 +59,9 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           }
         )
         .then(async (res) => {
-          const profile = await createUser(res.data);
+          const profile = await createUser(res.data as FMProfile);
           setProfile(profile);
+          i18next.changeLanguage(profile.language);
         })
         .catch((err) => console.log(err));
     }

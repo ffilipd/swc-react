@@ -66,4 +66,5 @@ export interface FMProfile {
     locale: string;
     created_date: string;
     last_login: string;
+    language: "en" | "sv" | "fi";
 }
