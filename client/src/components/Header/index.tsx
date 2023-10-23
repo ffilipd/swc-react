@@ -51,7 +51,7 @@ function Header() {
     i18next.changeLanguage(language);
   }, [language]);
 
-  const accountMenuOpen = Boolean(menuAnchorEl);
+  const accountMenuOpen = Boolean(menuAnchorEl) || false;
 
   const updateLanguage = (newLanguage: string) => {
     console.log(language);
@@ -160,7 +160,7 @@ function Header() {
                   <Button
                     id="login-header-btn"
                     aria-controls={accountMenuOpen ? "account-menu" : undefined}
-                    aria-haspopup="true"
+                    aria-haspopup="false"
                     aria-expanded={accountMenuOpen ? "true" : undefined}
                     onClick={handleAccountMenuClick}
                   >
