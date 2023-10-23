@@ -15,17 +15,17 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <Router>
-    <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-      <React.StrictMode>
-        <GoogleOAuthProvider clientId={config.googleOAuthClientId}>
-          <UserProvider>
+  <GoogleOAuthProvider clientId={config.googleOAuthClientId}>
+    <UserProvider>
+      <Router>
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <React.StrictMode>
             <App />
-          </UserProvider>
-        </GoogleOAuthProvider>
-      </React.StrictMode>
-    </I18nextProvider>
-  </Router>
+          </React.StrictMode>
+        </I18nextProvider>
+      </Router>
+    </UserProvider>
+  </GoogleOAuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

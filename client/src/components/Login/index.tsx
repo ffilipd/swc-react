@@ -1,7 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import "./login.css";
 import { SwcButton2 } from "../../utils/buttons";
-import GoogleIcon from "@mui/icons-material/Google";
 import { GoogleSvgIcon } from "../../utils/svg-components";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useUser } from "../../UserContext";

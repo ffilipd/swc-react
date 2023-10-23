@@ -13,7 +13,7 @@ export interface Booking {
     time_from: string | undefined;
     time_to: string | undefined;
     equipment_id?: string;
-    user_id: string;
+    user_id?: string;
 };
 
 export interface BookingSearchParams {
@@ -48,3 +48,22 @@ export interface Report {
 }
 
 export type FilterTargetType = "type" | "name" | "number";
+
+export type Profile = {
+    id: string;
+    email: string;
+    name: string;
+};
+
+export interface FMProfile {
+    id: string;
+    email: string;
+    verified_email: string;
+    name: string;
+    given_name: string;
+    family_name: string;
+    picture: string;
+    locale: string;
+    created_date: string;
+    last_login: string;
+}

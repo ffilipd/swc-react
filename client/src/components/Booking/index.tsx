@@ -34,6 +34,7 @@ import {
 import { SwcButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking } from "../../interfaces";
+import { useUser } from "../../UserContext";
 
 dayjs.extend(customParseFormat);
 const roundedTime = (time: Dayjs): Dayjs => {
@@ -44,6 +45,7 @@ const roundedTime = (time: Dayjs): Dayjs => {
 
 const BookingComponent = () => {
   const { t } = useTranslation();
+  const { profile } = useUser();
   // const equipmentTypes = getEquipmentTypes();
   const labels = {
     equipment: {
@@ -164,7 +166,7 @@ const BookingComponent = () => {
       date,
       time_from: fromTime?.format("HH:mm").toString(),
       time_to: toTime?.format("HH:mm").toString(),
-      user_id: "1",
+      user_id: profile?.id,
     };
     try {
       await addBooking(newBooking);

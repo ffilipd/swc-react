@@ -37,15 +37,14 @@ import i18next from "i18next";
 import React from "react";
 import { SwcButton2 } from "../../utils/buttons";
 import { addReport, getReports } from "../../service/report.service";
+import { useUser } from "../../UserContext";
 
 const ReportComponent = () => {
+  const { profile } = useUser();
   const { t } = useTranslation();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
   const [selectedBookingId, setSelectedBookingId] = useState<string>("");
-  const [reportWithoutBooking, setReportWithoutBooking] =
-    useState<string>("no-booking");
-
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
     names: string[];
@@ -56,12 +55,8 @@ const ReportComponent = () => {
     numbers: [],
   });
 
-  const loggedInUser = {
-    user_id: "2",
-  };
-
   const initialReportValues: Report = {
-    user_id: loggedInUser.user_id,
+    user_id: profile?.id || "",
     damage_type: "",
     booking_id: undefined,
     type: undefined,
@@ -106,7 +101,7 @@ const ReportComponent = () => {
 
   const fetchBookings = async () => {
     const bookingsData: Booking[] = await getBookings({
-      user_id: yourBooking === "yes" ? loggedInUser.user_id : undefined,
+      user_id: yourBooking === "yes" ? profile?.id : undefined,
       date: selectedDate?.format("DD-MM-YYYY"),
     });
     setBookings(bookingsData);
@@ -268,7 +263,7 @@ const ReportComponent = () => {
               <MenuItem
                 id="report-booking-item"
                 key={"no-booking"}
-                value={reportWithoutBooking}
+                value={"no-booking"}
               >
                 {t("I cannot find the booking")}
               </MenuItem>

@@ -9,19 +9,14 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-  HssFleetLogo,
-  HssFleetLogo2,
-  HssLogo2,
-  SwcTextLogo,
-} from "../../utils/svg-components";
+import { HssFleetLogo2, HssLogo2 } from "../../utils/svg-components";
 import "./header.css";
 import { useTranslation } from "react-i18next";
 import { SwcButton } from "../../utils/buttons";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardControlKeyIcon from "@mui/icons-material/KeyboardControlKey";
-import LanguageSharpIcon from "@mui/icons-material/LanguageSharp";
-import LoginSharpIcon from "@mui/icons-material/LoginSharp";
+// import LanguageSharpIcon from "@mui/icons-material/LanguageSharp";
+// import LoginSharpIcon from "@mui/icons-material/LoginSharp";
 import { useNavigate } from "react-router-dom";
 import MobileDrawer from "./MobileDrawer";
 import i18next from "i18next";
@@ -69,7 +64,7 @@ function Header() {
     navigate("/users");
   }
 
-  const { profile, setUser, setProfile } = useUser();
+  const { profile, setUser, setProfile, logOut } = useUser();
 
   const loginGoogle = useGoogleLogin({
     onSuccess: (res) => setUser(res),
@@ -77,7 +72,7 @@ function Header() {
   });
 
   function handleLogout() {
-    googleLogout();
+    logOut();
     setProfile(null);
     navigate("/");
   }
