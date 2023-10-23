@@ -1,20 +1,7 @@
-import { Suspense } from "react";
-import Header from "../Header";
-import { Outlet } from "react-router-dom";
-import Wrapper from "./Wrapper";
-import Inner from "./Inner";
+import { Box } from "@mui/material";
 
 function Home() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Wrapper>
-        <Header />
-        <Inner>
-          <Outlet />
-        </Inner>
-      </Wrapper>
-    </Suspense>
-  );
+  return <Box>Home</Box>;
 }
 
 export default Home;

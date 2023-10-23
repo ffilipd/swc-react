@@ -20,6 +20,7 @@ interface MobileDrawerProps {
   updateLanguage: (newLanguage: string) => void;
   toggleDrawer: (open: boolean) => (event: any) => void;
   handleMenuItemClick: (event: any) => void;
+  profile: any;
 }
 
 const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
@@ -30,15 +31,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
     isOpen,
     toggleDrawer,
     handleMenuItemClick,
+    profile,
   } = props;
   const { t } = useTranslation();
-  const menuItems = [
-    t("Home"),
-    t("Report"),
-    t("Book equipment"),
-    t("Account details"),
-    t("Login"),
-  ];
 
   const [openLanguageCollapse, setOpenLanguageCollapse] =
     useState<boolean>(false);
@@ -64,13 +59,45 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
         onClose={toggleDrawer(false)}
       >
         <List>
-          {menuItems.map((text, index) => (
-            <ListItem key={`${text}-${index}`}>
-              <ListItemButton onClick={() => handleMenuItemClick(text)}>
-                <ListItemText primary={text} />
+          {profile ? (
+            <>
+              <ListItem>
+                <ListItemButton onClick={() => handleMenuItemClick("Home")}>
+                  <ListItemText primary={t("Home")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton onClick={() => handleMenuItemClick("Report")}>
+                  <ListItemText primary={t("Report")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton
+                  onClick={() => handleMenuItemClick("Book equipment")}
+                >
+                  <ListItemText primary={t("Book equipment")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton
+                  onClick={() => handleMenuItemClick("Account details")}
+                >
+                  <ListItemText primary={t("Account details")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton onClick={() => handleMenuItemClick("Logout")}>
+                  <ListItemText primary={t("Logout")} />
+                </ListItemButton>
+              </ListItem>
+            </>
+          ) : (
+            <ListItem>
+              <ListItemButton onClick={() => handleMenuItemClick("Login")}>
+                <ListItemText primary={t("Login")} />
               </ListItemButton>
             </ListItem>
-          ))}
+          )}
           <ListItem>
             <ListItemButton onClick={handleExpandLanguageCollapse}>
               <ListItemText primary={languages[language as keyof Languages]} />
