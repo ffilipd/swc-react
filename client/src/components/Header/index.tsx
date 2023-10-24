@@ -103,6 +103,10 @@ function Header() {
     if (clickedItem === "Logout") handleLogout();
   };
 
+  const handleAdministrationClick = () => {
+    navigate("/administration");
+  };
+
   return (
     <Box id="header-wrapper">
       <Box id={"hss-logo"}>
@@ -146,6 +150,14 @@ function Header() {
               </SwcButton>
             </Box>
             <Box sx={{ display: "flex" }}>
+              {profile?.role === "admin" && (
+                <SwcButton
+                  onClick={handleAdministrationClick}
+                  sx={{ textTransform: "none" }}
+                >
+                  {t("Administration")}
+                </SwcButton>
+              )}
               {profile ? (
                 <>
                   <Button
