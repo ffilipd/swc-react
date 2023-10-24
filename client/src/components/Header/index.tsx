@@ -20,7 +20,6 @@ import KeyboardControlKeyIcon from "@mui/icons-material/KeyboardControlKey";
 import { useNavigate } from "react-router-dom";
 import MobileDrawer from "./MobileDrawer";
 import i18next from "i18next";
-import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { useUser } from "../../UserContext";
 
 function Header() {
@@ -29,7 +28,9 @@ function Header() {
     sv: "Svenska",
     fi: "Suomi",
   };
+
   const [language, setLanguage] = useState<string>("en");
+  const { profile, logOut, login } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
@@ -44,7 +45,11 @@ function Header() {
   // Update page when language changes
   useEffect(() => {
     i18next.changeLanguage(language);
-  }, [language]);
+    if (profile?.language) {
+      i18next.changeLanguage(profile.language);
+      setLanguage(profile.language);
+    }
+  }, [language, profile]);
 
   const accountMenuOpen = Boolean(menuAnchorEl) || false;
 
@@ -63,16 +68,8 @@ function Header() {
     navigate("/users");
   }
 
-  const { profile, setUser, setProfile, logOut } = useUser();
-
-  const loginGoogle = useGoogleLogin({
-    onSuccess: (res) => setUser(res),
-    onError: (error) => console.log("Login Failed: " + error),
-  });
-
   function handleLogout() {
     logOut();
-    setProfile(null);
     navigate("/");
   }
 
@@ -102,7 +99,7 @@ function Header() {
     if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
-    if (clickedItem === "Login") loginGoogle();
+    if (clickedItem === "Login") login();
     if (clickedItem === "Logout") handleLogout();
   };
 
@@ -182,9 +179,7 @@ function Header() {
                   </Menu>
                 </>
               ) : (
-                <SwcButton onClick={() => loginGoogle()}>
-                  {t("Login")}
-                </SwcButton>
+                <SwcButton onClick={() => login()}>{t("Login")}</SwcButton>
               )}
               <Select
                 variant="outlined"

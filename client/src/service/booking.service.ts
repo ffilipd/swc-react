@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Booking, BookingSearchParams } from "../interfaces";
 
-const base_URL: string = process.env.REACT_APP_API_URL2 || '';
+const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPONTS = {
     BOOKINGS: '/bookings',
 }

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios"
 import { FMProfile, Profile } from "../interfaces";
 import { useUser } from "../UserContext";
 
-const base_URL: string = process.env.REACT_APP_API_URL2 || '';
+const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPOINTS = {
     USERS: '/users',
     USERS_ID: (id: string) => `${API_ENDPOINTS.USERS}/${id}`
@@ -37,12 +37,10 @@ export const createUser = async (googleProfile: Profile): Promise<FMProfile> => 
 
 // UPDATE USER PROFILE
 export const updateUserProfile = async (profile: FMProfile): Promise<FMProfile> => {
-    const URL: string = base_URL + API_ENDPOINTS.USERS;
-
-    const prefillParams: (keyof FMProfile)[] = ['language'];
+    const prefillParams: (keyof FMProfile)[] = ['language', 'role'];
     for (const key of prefillParams) {
         if (!profile[key] && key === 'language') profile[key] = 'en';
-        if (!profile[key] && key !== 'language') profile[key] = '';
+        if (!profile[key] && key === 'role') profile[key] = 'viewer';
     }
 
     const request = await buildRequestConfig({ method: 'PUT', data: profile, id: profile.id })

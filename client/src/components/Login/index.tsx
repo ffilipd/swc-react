@@ -10,19 +10,13 @@ import { useTranslation } from "react-i18next";
 const LoginComponent = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { setUser } = useUser();
-  const loginGoogle = useGoogleLogin({
-    onSuccess: (res) => {
-      setUser(res);
-      navigate("/");
-    },
-    onError: (error) => console.log("Login Failed: " + error),
-  });
+  const { login } = useUser();
+
   return (
     <Box id="login-root">
       <Box id="login-wrapper">
         <Box id="login-container">
-          <SwcButton2 onClick={() => loginGoogle()}>
+          <SwcButton2 onClick={() => login()}>
             <GoogleSvgIcon />
             <Box id="login-button-text">{t("Sign in with google")}</Box>
           </SwcButton2>

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
+const { v4 } = require('uuid');
 
 const app = express();
 app.use(bodyParser.json());
@@ -72,7 +73,7 @@ app.get('/equipment/filters', (req, res) => {
 });
 
 app.get('/bookings', (req, res) => {
-    const { date, type, equipment_name, time_from, time_to, swc_number } = req.query;
+    const { date, type, equipment_name, time_from, time_to, swc_number, user_id } = req.query;
     let filteredData = data.bookings;
 
     if (date) {
@@ -108,6 +109,44 @@ app.get('/bookings', (req, res) => {
     if (swc_number) {
         filteredData = filteredData.filter(item => item.swc_number === swc_number);
     }
+    if (user_id) {
+        filteredData = filteredData.filter(item => item.user_id === user_id);
+    }
+
+    res.json(filteredData);
+});
+
+app.get('/report', (req, res) => {
+    const { date, type, equipment_name, swc_number, user_id, booking_id, damage_type } = req.query;
+    let filteredData = data.reports;
+
+    if (date) {
+        filteredData = filteredData.filter(item => item.date === date);
+    }
+
+    if (type) {
+        filteredData = filteredData.filter(item => item.type === type);
+    }
+
+    if (equipment_name) {
+        filteredData = filteredData.filter(item => item.equipment_name === equipment_name);
+    }
+
+    if (swc_number) {
+        filteredData = filteredData.filter(item => item.swc_number === swc_number);
+    }
+
+    if (user_id) {
+        filteredData = filteredData.filter(item => item.user_id === user_id);
+    }
+
+    if (booking_id) {
+        filteredData = filteredData.filter(item => item.booking_id === booking_id);
+    }
+
+    if (damage_type) {
+        filteredData = filteredData.filter(item => item.damage_type === damage_type);
+    }
 
     res.json(filteredData);
 });
@@ -124,11 +163,50 @@ app.post('/bookings', (req, res) => {
 
     res.status(201).json(newBooking);
 });
+app.post('/report', (req, res) => {
+    const newReport = req.body;
+    newReport.id = generateUniqueId();
+
+    // Add the new booking to the bookings array in data.json
+    data.reports.push(newReport);
+
+    // Save the updated data back to data.json
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
+
+    res.status(201).json(newReport);
+});
+
+app.post('/users', (req, res) => {
+    const user = req.body;
+
+    // check if user exists
+    const existsingUser = data.users.findIndex((existsingUser) => existsingUser.email === user.email)
+
+    if (existsingUser === -1) {
+        // Add the new user to the bookings array in data.json
+        user.id = generateUniqueId();
+        user.created_date = new Date();
+        user.role = 'viewer';
+        if (!user.language) user.language = 'en';
+        console.log('user did not exist')
+        data.users.push(user);
+    } else {
+        data.users[existsingUser].last_login = new Date();
+    }
+
+    const userProfile = data.users.find((existinguser) => existinguser.email === user.email)
+
+    // Save the updated data back to data.json
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
+
+    res.status(201).json(userProfile);
+});
 
 function generateUniqueId() {
     // Logic to generate a unique ID, for example using a UUID library
     // For demonstration purposes, let's use a simple timestamp-based ID
-    return Date.now().toString();
+    // return Date.now().toString();
+    return v4();
 }
 
 const PORT = 8000;

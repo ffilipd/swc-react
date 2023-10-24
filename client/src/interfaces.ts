@@ -14,6 +14,7 @@ export interface Booking {
     time_to: string | undefined;
     equipment_id?: string;
     user_id?: string;
+    user_name?: string;
 };
 
 export interface BookingSearchParams {
@@ -55,6 +56,9 @@ export type Profile = {
     name: string;
 };
 
+export type Language = "en" | "sv" | "fi";
+export type UserRole = "admin" | "user" | "viewer"
+
 export interface FMProfile {
     id: string;
     email: string;
@@ -66,5 +70,6 @@ export interface FMProfile {
     locale: string;
     created_date: string;
     last_login: string;
-    language: "en" | "sv" | "fi";
+    language: Language;
+    role: UserRole;
 }

@@ -6,21 +6,20 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { FMProfile, Profile } from "./interfaces";
+import { FMProfile } from "./interfaces";
 import { createUser } from "./service/user.service";
-import { googleLogout } from "@react-oauth/google";
-import i18n from "./i18next";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import i18next from "./i18next";
 
 type User = {
   access_token: string;
-  // Add other user properties as needed
 };
 
 type UserContextType = {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setProfile: React.Dispatch<React.SetStateAction<FMProfile | null>>;
   logOut: () => void;
+  login: () => void;
   profile: FMProfile | null;
 };
 
@@ -39,7 +38,15 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const logOut = () => {
     googleLogout();
     localStorage.removeItem("user");
+    setUser(null);
+    setProfile(null);
   };
+  const login = useGoogleLogin({
+    onSuccess: (res) => {
+      setUser(res);
+    },
+    onError: (error) => console.log("Login Failed: " + error),
+  });
 
   useEffect(() => {
     if (user) {
@@ -68,7 +75,9 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ setUser, profile, setProfile, logOut }}>
+    <UserContext.Provider
+      value={{ setUser, profile, setProfile, logOut, login }}
+    >
       {children}
     </UserContext.Provider>
   );

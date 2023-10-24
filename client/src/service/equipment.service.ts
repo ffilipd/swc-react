@@ -16,7 +16,7 @@ interface EquipmentSearchParams {
     swc_number?: string;
 }
 
-const base_URL: string = process.env.REACT_APP_API_URL2 || '';
+const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPONTS = {
     EQUIPMENT: '/equipment',
     FILTERS: '/equipment/filters'

@@ -266,7 +266,7 @@ const BookingTable = (props: BookingsProps) => {
                           {row.time_to}
                         </StyledTableCell>
                         <StyledTableCell align="left">
-                          {row.user_id}
+                          {row.user_name}
                         </StyledTableCell>
                       </StyledTableRow>
                     </React.Fragment>

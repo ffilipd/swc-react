@@ -16,19 +16,13 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import i18next from "i18next";
 import "./booking.css";
 import { useEffect, useState } from "react";
-import {
-  getEquipment,
-  getEquipmentFilters,
-} from "../../service/equipment.service";
+import { getEquipmentFilters } from "../../service/equipment.service";
 import { addBooking, getBookings } from "../../service/booking.service";
-import { Label, SettingsInputComponent } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs";
 import {
   DatePicker,
   MobileTimePicker,
-  TimePicker,
-  renderDigitalClockTimeView,
   renderTimeViewClock,
 } from "@mui/x-date-pickers";
 import { SwcButton2 } from "../../utils/buttons";
@@ -79,7 +73,6 @@ const BookingComponent = () => {
     numbers: [],
   });
 
-  const [timeToPickerOpen, setTimeToPickerOpen] = useState<boolean>(false);
   const [bookings, setBookings] = useState<Booking[] | null>([]);
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
@@ -167,6 +160,7 @@ const BookingComponent = () => {
       time_from: fromTime?.format("HH:mm").toString(),
       time_to: toTime?.format("HH:mm").toString(),
       user_id: profile?.id,
+      user_name: profile?.name,
     };
     try {
       await addBooking(newBooking);
@@ -188,11 +182,6 @@ const BookingComponent = () => {
     )
       return true;
     return false;
-  };
-
-  const openTimeToPicker = () => {
-    if (timeToPickerOpen) return setTimeToPickerOpen(false);
-    setTimeToPickerOpen(true);
   };
 
   useEffect(() => {
