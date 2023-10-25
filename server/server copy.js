@@ -3,14 +3,24 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
 const { v4 } = require('uuid');
+require("dotenv/config");
+const { OAuth2Client } = require("google-auth-library");
+const jwt = require("jsonwebtoken");
+const db = require("./app/models")
 
 const app = express();
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors({
     origin: '*', // Replace with your allowed origin
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: 'GET,PUT,POST,DELETE,OPTIONS',
     credentials: true // Enable credentials (cookies, authorization headers, etc.)
 }));
+
+
+db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+});
 
 
 // const data = require('./data')
@@ -23,6 +33,21 @@ try {
     data = JSON.parse(fs.readFileSync(dataFilePath));
 } catch (error) {
     console.log('Error loading data:', error);
+}
+
+const GOOGLE_CLIENT_ID = "831888852855-cj7q4hnj4a2c7d2imre8aj5ju7ptqvrd.apps.googleusercontent.com"
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+async function verifyGoogleToken(token) {
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: GOOGLE_CLIENT_ID
+        });
+        return { payload: ticket.getPayload() };
+    } catch (error) {
+        return { error: "Invalid user detected. Please try again" }
+    }
 }
 
 
@@ -176,9 +201,25 @@ app.post('/report', (req, res) => {
     res.status(201).json(newReport);
 });
 
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     const user = req.body;
+    const credentials = user.credential;
 
+    try {
+        if (credentials) {
+            const verificationResponse = await verifyGoogleToken(credentials);
+
+            if (verificationResponse.error) {
+                return res.status(400).json({
+                    message: verificationResponse.error
+                })
+            }
+            const profile = verificationResponse?.payload;
+            console.log(profile)
+        }
+    } catch (err) {
+        console.log(err)
+    }
     // check if user exists
     const existsingUser = data.users.findIndex((existsingUser) => existsingUser.email === user.email)
 
@@ -203,9 +244,7 @@ app.post('/users', (req, res) => {
 });
 
 function generateUniqueId() {
-    // Logic to generate a unique ID, for example using a UUID library
-    // For demonstration purposes, let's use a simple timestamp-based ID
-    // return Date.now().toString();
+    // Generate uuid
     return v4();
 }
 
