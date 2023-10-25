@@ -8,10 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const LoginComponent = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const { login } = useUser();
-
   return (
     <Box id="login-root">
       <Box id="login-wrapper">

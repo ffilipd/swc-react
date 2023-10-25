@@ -26,7 +26,6 @@ export const getProfileInfo = async (user: any) => {
 
 export const createUser = async (googleProfile: Profile): Promise<FMProfile> => {
     const URL: string = base_URL + API_ENDPOINTS.USERS;
-
     try {
         const response = await axios.post(URL, googleProfile);
         return response.data as FMProfile;
