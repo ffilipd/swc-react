@@ -1,7 +1,7 @@
 const db = require("../models");
-const { v4 } = require('uuid');
 const User = db.users;
 const Op = db.Sequelize.Op;
+const jwt = require('jsonwebtoken')
 
 // Create and Save a new User
 exports.create = async (req, res) => {
@@ -9,51 +9,49 @@ exports.create = async (req, res) => {
     if (!email) {
         res.status(400).send({
             message: "Content cannot be empty!"
-        })
+        });
         return;
     }
 
-    const existingUser = await User.findOne({ where: { email: email } })
+    try {
+        let user = await User.findOne({ where: { email: email } });
 
-    // If not User exists, create new
-    if (existingUser == null) {
-        const user = {
-            id: generateUniqueId(),
-            email: email,
-            name: name,
-            language: language ?? 'en'
+        // If user does not exist, create a new user
+        if (user === null) {
+            user = await User.create({
+                email: email,
+                name: name
+            });
+        } else {
+            // Update last_login if the user already exists
+            await user.update({ last_login: new Date() });
         }
-        User.create(user)
-            .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "Error occured while creating user."
-                })
-            })
-    } else {
-        // Update last_login
-        req.body.last_login = new Date();
-        User.update(req.body, {
-            where: { email: email }
-        })
-            .then(num => {
-                if (num == 1) {
-                    res.send({
-                        message: "User successfully updated."
-                    });
-                } else {
-                    res.send({
-                        message: 'Cannot update user last_logn.'
-                    })
-                }
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: "Error updating User last_login"
-                })
-            })
+
+        // Generate JWT token
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.GOOGLE_CLIENT_SECRET, {
+            expiresIn: '1h' // Token expiration time, adjust as needed
+        });
+
+        // Return the token and user data
+        res.status(200).json({
+            token: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                last_login: user.last_login,
+                role: user.role,
+                active: user.active,
+                rejected: user.rejected,
+                language: user.language
+                // Add other user properties as needed
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            message: 'Error occurred while creating/updating user.'
+        });
     }
 };
 
