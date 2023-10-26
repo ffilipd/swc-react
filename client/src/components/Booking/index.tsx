@@ -184,9 +184,9 @@ const BookingComponent = () => {
     return false;
   };
 
-  useEffect(() => {
-    fetchBookings();
-  }, [selectedDate, selectedEquipment, selectedTime]);
+  // useEffect(() => {
+  //   fetchBookings();
+  // }, [selectedDate, selectedEquipment, selectedTime]);
 
   return (
     <Box id="booking-root">
@@ -355,13 +355,13 @@ const BookingComponent = () => {
             </SwcButton2>
           </Box>
         </Box>
-        <BookingTable
+        {/* <BookingTable
           bookings={bookings}
           setBookings={setBookings}
           isMobile={isMobile}
           labels={labels}
           availableTypes={availableEquipment.types}
-        />
+        /> */}
       </Box>
     </Box>
   );

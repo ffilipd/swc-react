@@ -39,7 +39,7 @@ export async function getEquipmentFilters(_params?: EquipmentSearchParams): Prom
     const params: URLSearchParams | undefined = _params && buildParams(_params);
 
     try {
-        const res = await axios.get(URL, { params, headers: authHeader() });
+        const res = await axios.get(URL, { params: params, headers: authHeader() });
         return res.data;
     } catch (error) {
         throw new Error('error getting equipment filters' + error);
