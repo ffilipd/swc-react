@@ -7,16 +7,28 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        type: {
-            type: Sequelize.STRING
-        },
-        equipment_name: {
-            type: Sequelize.STRING
-        },
         number: {
             type: Sequelize.STRING
         }
     });
 
-    return Equipment;
+    const Name = sequelize.define("equipment_name", {
+        name: {
+            type: Sequelize.STRING
+        }
+    })
+
+    const Type = sequelize.define("equipment_type", {
+        name: {
+            type: Sequelize.STRING
+        }
+    });
+
+    Equipment.belongsTo(Name);
+    Equipment.belongsTo(Type);
+
+    Name.hasMany(Equipment);
+    Type.hasMany(Equipment);
+
+    return { Equipment, Type, Name };
 };

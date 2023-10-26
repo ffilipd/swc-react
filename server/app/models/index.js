@@ -20,21 +20,14 @@ db.sequelize = sequelize;
 
 db.equipment = require("./equipment.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
-db.role = require("./role.model.js")(sequelize, Sequelize);
+db.booking = require("./booking.model.js")(sequelize, Sequelize);
+db.report = require("./report.model.js")(sequelize, Sequelize);
 
+db.booking.belongsTo(db.equipment.Equipment);
+db.booking.belongsTo(db.user.User);
+db.equipment.Equipment.hasMany(db.booking);
+db.user.User.hasMany(db.booking);
 
-db.role.belongsToMany(db.user, {
-    through: "user_roles",
-    foreignKey: "roleId",
-    otherKey: "userId"
-});
-db.user.belongsToMany(db.role, {
-    through: "user_roles",
-    foreignKey: "userId",
-    otherKey: "roleId"
-});
-
-
-db.ROLES = ["user", "admin", "moderator"];
+db.report.Report.belongsTo(db.booking)
 
 module.exports = db;

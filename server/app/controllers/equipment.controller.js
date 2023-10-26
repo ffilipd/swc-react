@@ -1,5 +1,5 @@
 const db = require("../models");
-const Equipment = db.equipment;
+const { Equipment } = db.equipment;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Equipment

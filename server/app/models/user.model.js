@@ -20,10 +20,6 @@ module.exports = (sequelize, Sequelize) => {
         last_login: {
             type: Sequelize.DATE
         },
-        role: {
-            type: Sequelize.STRING,
-            defaultValue: 'user'
-        },
         active: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
@@ -37,5 +33,18 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    return User;
+    const Role = sequelize.define("role", {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true
+        },
+        name: {
+            type: Sequelize.STRING
+        }
+    });
+
+    User.belongsTo(Role);
+    Role.hasMany(User);
+
+    return { User, Role };
 };
