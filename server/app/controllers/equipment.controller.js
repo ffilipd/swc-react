@@ -8,64 +8,44 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Equipment from the database.
-exports.findAll = (req, res) => {
-    Equipment.findAll()
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Error occuered while retrieving equipment."
-            })
-        })
+exports.findAll = async (req, res) => {
+    try {
+        const equipment = await Equipment.findAll();
+        res.json(equipment);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Error occurred while retrieving equipment.' });
+    }
 };
 
 // Retrieve Equipment filters.
-exports.findFilters = (req, res) => {
-    const { equipment_name, type } = req.query
-    if (Object.keys(req.query).length === 0) {
-        Type.findAll({
-            attributes: ['name']
-        })
-            .then(types => {
-                const typeArray = types.map(type => type.name)
-                res.json(typeArray)
-            })
-            .catch(err => {
-                res.status(500).send({ message: 'Error getting equipment types' })
-            })
-    }
-    if (type) {
+exports.findFilters = async (req, res) => {
+    try {
+        const { equipment_name, type } = req.query;
+
+        if (!type) {
+            const types = await Type.findAll({ attributes: ['name'] });
+            return res.json(types.map(type => type.name));
+        }
+
         if (!equipment_name) {
-            Name.findAll({
-                attributes: ['name']
-            })
-                .then(names => {
-                    const nameArray = names.map(name => name.name);
-                    res.json(nameArray)
-                })
-                .catch(err => {
-                    res.status(500).send({ message: 'Error getting equipment names' })
-                })
+            const names = await Name.findAll({ attributes: ['name'] });
+            return res.json(names.map(name => name.name));
         }
-        else {
-            Equipment.findAll({
-                include: [{
-                    model: Name,
-                    where: {
-                        name: equipment_name
-                    }
-                }],
-                attributes: ['number']
-            })
-                .then(equipment => {
-                    const numbersArray = equipment.map(equipment => equipment.number).sort()
-                    res.json(numbersArray)
-                })
-                .catch(err => {
-                    res.status(500).send({ message: 'Error getting equipment numbers' })
-                })
-        }
+
+        const equipment = await Equipment.findAll({
+            include: [{
+                model: Name,
+                where: { name: equipment_name }
+            }],
+            attributes: ['number']
+        });
+
+        const numbersArray = equipment.map(equipment => equipment.number).sort();
+        res.json(numbersArray);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send({ message: 'Internal Server Error' });
     }
 };
 
