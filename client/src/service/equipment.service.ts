@@ -1,4 +1,5 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 
 interface Equipment {
@@ -26,7 +27,7 @@ export async function getEquipment(_params?: EquipmentSearchParams): Promise<Equ
     const URL: string = base_URL + API_ENDPONTS.EQUIPMENT;
     const params: URLSearchParams | undefined = _params && buildParams(_params);
     try {
-        const res = await axios.get(URL, { params });
+        const res = await axios.get(URL, { headers: authHeader() });
         return res.data;
     } catch (error) {
         throw new Error('Error getting equipment' + error);
@@ -38,7 +39,7 @@ export async function getEquipmentFilters(_params?: EquipmentSearchParams): Prom
     const params: URLSearchParams | undefined = _params && buildParams(_params);
 
     try {
-        const res = await axios.get(URL, { params });
+        const res = await axios.get(URL, { params, headers: authHeader() });
         return res.data;
     } catch (error) {
         throw new Error('error getting equipment filters' + error);

@@ -40,7 +40,7 @@ import { addReport, getReports } from "../../service/report.service";
 import { useUser } from "../../UserContext";
 
 const ReportComponent = () => {
-  const { profile } = useUser();
+  const { user } = useUser();
   const { t } = useTranslation();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
@@ -56,7 +56,7 @@ const ReportComponent = () => {
   });
 
   const initialReportValues: Report = {
-    user_id: profile?.id || "",
+    user_id: user?.id || "",
     damage_type: "",
     booking_id: undefined,
     type: undefined,
@@ -101,7 +101,7 @@ const ReportComponent = () => {
 
   const fetchBookings = async () => {
     const bookingsData: Booking[] = await getBookings({
-      user_id: yourBooking === "yes" ? profile?.id : undefined,
+      user_id: yourBooking === "yes" ? user?.id : undefined,
       date: selectedDate?.format("DD-MM-YYYY"),
     });
     setBookings(bookingsData);

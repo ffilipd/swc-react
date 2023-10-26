@@ -6,9 +6,17 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { FMProfile } from "./interfaces";
-import { createUser } from "./service/user.service";
-import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import { FMProfile, LoginCredentials } from "./interfaces";
+import {
+  createUser,
+  loginWithCredentials,
+  loginWithGoogle,
+} from "./service/user.service";
+import {
+  CredentialResponse,
+  googleLogout,
+  useGoogleLogin,
+} from "@react-oauth/google";
 import i18next from "./i18next";
 
 type User = {
@@ -16,11 +24,11 @@ type User = {
 };
 
 type UserContextType = {
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  setProfile: React.Dispatch<React.SetStateAction<FMProfile | null>>;
+  setUser: React.Dispatch<React.SetStateAction<FMProfile | null>>;
   logOut: () => void;
-  login: () => void;
-  profile: FMProfile | null;
+  googleLogin: () => void;
+  credentialLogin: (credentials: LoginCredentials) => void;
+  user: FMProfile | null;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -30,53 +38,44 @@ type UserProviderProps = {
 };
 
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
+  const [user, setUser] = useState<FMProfile | null>(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const [profile, setProfile] = useState<FMProfile | null>(null);
   const logOut = () => {
     googleLogout();
     localStorage.removeItem("user");
     setUser(null);
-    setProfile(null);
   };
-  const login = useGoogleLogin({
-    onSuccess: (res) => {
-      setUser(res);
+
+  const credentialLogin = async (credentials: LoginCredentials) => {
+    const user = await loginWithCredentials(credentials);
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async ({ access_token }: any) => {
+      const user = await loginWithGoogle(access_token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
     },
     onError: (error) => console.log("Login Failed: " + error),
   });
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("user");
-    }
-    if (user) {
-      axios
-        .get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.access_token}`,
-              Accept: "application/json",
-            },
-          }
-        )
-        .then(async (res) => {
-          const profile = await createUser(res.data as FMProfile);
-          setProfile(profile);
-          i18next.changeLanguage(profile.language);
-        })
-        .catch((err) => console.log(err));
-    }
+    i18next.changeLanguage(user?.language);
   }, [user]);
 
   return (
     <UserContext.Provider
-      value={{ setUser, profile, setProfile, logOut, login }}
+      value={{
+        setUser,
+        logOut,
+        googleLogin,
+        credentialLogin,
+        user,
+      }}
     >
       {children}
     </UserContext.Provider>

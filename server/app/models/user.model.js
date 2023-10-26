@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         role: {
             type: Sequelize.STRING,
-            defaultValue: 'viewer'
+            defaultValue: 'user'
         },
         active: {
             type: Sequelize.BOOLEAN,
@@ -31,6 +31,9 @@ module.exports = (sequelize, Sequelize) => {
         rejected: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
+        },
+        password: {
+            type: Sequelize.STRING
         }
     });
 

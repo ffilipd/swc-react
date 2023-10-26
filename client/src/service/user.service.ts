@@ -1,34 +1,52 @@
 import axios, { AxiosRequestConfig } from "axios"
-import { FMProfile, Profile } from "../interfaces";
-import { useUser } from "../UserContext";
+import { FMProfile, LoginCredentials, NewUser, Profile } from "../interfaces";
+import authHeader from "./auth-header";
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPOINTS = {
     USERS: '/users',
+    SIGNUP: '/auth/signup',
+    SIGNIN: '/auth/signin',
+    GOOGLE_SIGNIN: '/auth/google',
     USERS_ID: (id: string) => `${API_ENDPOINTS.USERS}/${id}`
 }
 
-export const getProfileInfo = async (user: any) => {
-    axios.get(
-        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
-        {
-            headers: {
-                Authorization: `Bearer ${user.access_token}`,
-                Accept: "application/json",
-            },
-        }
-    )
-        .then(res => {
-            return res.data;
-        })
-        .catch((err) => { throw new Error('Error getting profile info: ' + err) })
+
+export const signUp = async (signupform: NewUser) => {
+    const URL: string = base_URL + API_ENDPOINTS.SIGNUP;
+    try {
+        const response = await axios.post(URL, signupform);
+        return response;
+    } catch (error) {
+        throw new Error('Error signing up: ' + error);
+    }
+}
+
+export const loginWithGoogle = async (code: any): Promise<any> => {
+    const URL: string = base_URL + API_ENDPOINTS.GOOGLE_SIGNIN;
+    try {
+        const response = await axios.post(URL, { code });
+        return response.data;
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) alert(error.response.data.message)
+    }
+}
+
+export const loginWithCredentials = async (credentials: LoginCredentials): Promise<FMProfile> => {
+    const URL = base_URL + API_ENDPOINTS.SIGNIN;
+    try {
+        const response = await axios.post(URL, credentials);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error signing in: ' + error);
+    }
 }
 
 export const createUser = async (googleProfile: Profile): Promise<FMProfile> => {
     const URL: string = base_URL + API_ENDPOINTS.USERS;
     try {
         const response = await axios.post(URL, googleProfile);
-        return response.data as FMProfile;
+        return response.data.user;
     } catch (error) {
         throw new Error('Error creating user: ' + error);
     }

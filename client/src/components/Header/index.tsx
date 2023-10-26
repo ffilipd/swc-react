@@ -30,7 +30,7 @@ function Header() {
   };
 
   const [language, setLanguage] = useState<string>("en");
-  const { profile, logOut, login } = useUser();
+  const { user, logOut, googleLogin } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
@@ -45,11 +45,11 @@ function Header() {
   // Update page when language changes
   useEffect(() => {
     i18next.changeLanguage(language);
-    if (profile?.language) {
-      i18next.changeLanguage(profile.language);
-      setLanguage(profile.language);
+    if (user?.language) {
+      i18next.changeLanguage(user.language);
+      setLanguage(user.language);
     }
-  }, [language, profile]);
+  }, [language, user]);
 
   const accountMenuOpen = Boolean(menuAnchorEl) || false;
 
@@ -99,7 +99,7 @@ function Header() {
     if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
-    if (clickedItem === "Login") login();
+    if (clickedItem === "Login") navigate("/login");
     if (clickedItem === "Logout") handleLogout();
   };
 
@@ -125,7 +125,7 @@ function Header() {
             languages={languages}
             updateLanguage={updateLanguage}
             handleMenuItemClick={handleMenuItemClick}
-            profile={profile}
+            user={user}
           />
         ) : (
           <ButtonGroup
@@ -150,7 +150,7 @@ function Header() {
               </SwcButton>
             </Box>
             <Box sx={{ display: "flex" }}>
-              {profile?.role === "admin" && (
+              {user?.role === "admin" && (
                 <SwcButton
                   onClick={handleAdministrationClick}
                   sx={{ textTransform: "none" }}
@@ -158,7 +158,7 @@ function Header() {
                   {t("Administration")}
                 </SwcButton>
               )}
-              {profile ? (
+              {user ? (
                 <>
                   <Button
                     id="login-header-btn"
@@ -167,7 +167,7 @@ function Header() {
                     aria-expanded={accountMenuOpen ? "true" : undefined}
                     onClick={handleAccountMenuClick}
                   >
-                    {profile.name}
+                    {user.name}
                     {accountMenuOpen ? (
                       <KeyboardControlKeyIcon />
                     ) : (
@@ -191,7 +191,9 @@ function Header() {
                   </Menu>
                 </>
               ) : (
-                <SwcButton onClick={() => login()}>{t("Login")}</SwcButton>
+                <SwcButton onClick={() => navigate("/login")}>
+                  {t("Login")}
+                </SwcButton>
               )}
               <Select
                 variant="outlined"

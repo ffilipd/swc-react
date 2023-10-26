@@ -6,14 +6,15 @@ import ReportComponent from "./components/Report";
 import { useUser } from "./UserContext";
 import LoginComponent from "./components/Login";
 import Body from "./components/Body";
+import SignupComponent from "./components/Signup";
 
 function App() {
-  const { profile } = useUser();
+  const { user } = useUser();
 
   return (
     <Routes>
       <Route path="/" element={<Body />}>
-        {profile ? (
+        {user ? (
           <>
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="/booking" element={<BookingComponent />} />
@@ -22,6 +23,7 @@ function App() {
         ) : (
           <>
             <Route path="/login" element={<LoginComponent />} />
+            <Route path="/signup" element={<SignupComponent />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         )}

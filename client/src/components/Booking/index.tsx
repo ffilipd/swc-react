@@ -39,7 +39,7 @@ const roundedTime = (time: Dayjs): Dayjs => {
 
 const BookingComponent = () => {
   const { t } = useTranslation();
-  const { profile } = useUser();
+  const { user } = useUser();
   // const equipmentTypes = getEquipmentTypes();
   const labels = {
     equipment: {
@@ -159,8 +159,8 @@ const BookingComponent = () => {
       date,
       time_from: fromTime?.format("HH:mm").toString(),
       time_to: toTime?.format("HH:mm").toString(),
-      user_id: profile?.id,
-      user_name: profile?.name,
+      user_id: user?.id,
+      user_name: user?.name,
     };
     try {
       await addBooking(newBooking);

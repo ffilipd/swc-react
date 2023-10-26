@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import "./login.css";
 import { SwcButton2 } from "../../utils/buttons";
 import { GoogleSvgIcon } from "../../utils/svg-components";
@@ -6,15 +6,52 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useUser } from "../../UserContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { LoginCredentials } from "../../interfaces";
 
 const LoginComponent = () => {
   const { t } = useTranslation();
-  const { login } = useUser();
+  const { credentialLogin, googleLogin } = useUser();
+
+  const [credentials, setCredentials] = useState<LoginCredentials>({
+    name: "test",
+    password: "12345",
+  });
+
+  const handleCredentialLoginClick = () => {
+    credentialLogin(credentials);
+  };
+
   return (
     <Box id="login-root">
       <Box id="login-wrapper">
         <Box id="login-container">
-          <SwcButton2 onClick={() => login()}>
+          <TextField
+            variant="outlined"
+            value={credentials.name}
+            label={t("*Eamil or username")}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setCredentials({ ...credentials, name: event.target.value });
+            }}
+          />
+          <TextField
+            variant="outlined"
+            type="password"
+            value={credentials.password}
+            label={t("*Password")}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setCredentials({ ...credentials, password: event.target.value });
+            }}
+          />
+          <SwcButton2
+            id="signup-button"
+            // disabled={!formFilled}
+            onClick={handleCredentialLoginClick}
+          >
+            {t("Sign in")}
+          </SwcButton2>
+          <Typography sx={{ textAlign: "center" }}>{t("OR")}</Typography>
+          <SwcButton2 onClick={() => googleLogin()}>
             <GoogleSvgIcon />
             <Box id="login-button-text">{t("Sign in with google")}</Box>
           </SwcButton2>

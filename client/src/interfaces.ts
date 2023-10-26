@@ -4,6 +4,18 @@ export interface Languages {
     fi: string;
 }
 
+
+export interface NewUser {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export interface LoginCredentials {
+    name: string;
+    password: string;
+}
+
 export interface Booking {
     id?: string;
     type: string

@@ -9,7 +9,7 @@ import {
 import { SwcButton } from "../../utils/buttons";
 import { useEffect, useState } from "react";
 import { ExpandMore, ExpandLess, Key, Language } from "@mui/icons-material";
-import { Languages } from "../../interfaces";
+import { FMProfile, Languages } from "../../interfaces";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +20,7 @@ interface MobileDrawerProps {
   updateLanguage: (newLanguage: string) => void;
   toggleDrawer: (open: boolean) => (event: any) => void;
   handleMenuItemClick: (event: any) => void;
-  profile: any;
+  user: FMProfile | null;
 }
 
 const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
@@ -31,7 +31,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
     isOpen,
     toggleDrawer,
     handleMenuItemClick,
-    profile,
+    user,
   } = props;
   const { t } = useTranslation();
 
@@ -59,7 +59,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
         onClose={toggleDrawer(false)}
       >
         <List>
-          {profile ? (
+          {user ? (
             <>
               <ListItem>
                 <ListItemButton onClick={() => handleMenuItemClick("Home")}>
