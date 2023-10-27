@@ -2,6 +2,7 @@ const db = require("./app/models");
 const { Role, User } = db.user;
 const Equipment = db.equipment;
 const { Damage_Type } = db.report;
+const Booking = db.booking
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
 

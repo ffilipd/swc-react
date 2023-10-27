@@ -36,13 +36,14 @@ exports.findFilters = async (req, res) => {
         const equipment = await Equipment.findAll({
             include: [{
                 model: Name,
-                where: { name: equipment_name }
+                where: { name: equipment_name },
+                attributes: []
             }],
-            attributes: ['number']
+            attributes: ['number', 'id'],
+            order: [['number', 'asc']]
         });
 
-        const numbersArray = equipment.map(equipment => equipment.number).sort();
-        res.json(numbersArray);
+        res.json(equipment);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send({ message: 'Internal Server Error' });
