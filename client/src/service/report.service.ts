@@ -30,7 +30,7 @@ export const addReport = async (newReport: Report): Promise<void> => {
 function buildParams(options: ReportSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof ReportSearchParams)[] = ['equipment_name', 'swc_number', 'type', 'date', 'booking_id', 'damage_type', 'user_id'];
+    const allowedParams: (keyof ReportSearchParams)[] = ['equipment_name', 'swc_number', 'type', 'date', 'bookingId', 'damage_type', 'user_id'];
 
     // Loop through parameters
     for (const key of allowedParams) {

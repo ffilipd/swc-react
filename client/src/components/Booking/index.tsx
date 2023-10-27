@@ -331,12 +331,12 @@ const BookingComponent = () => {
                     key={number.id}
                     value={number.id}
                     disabled={bookings?.some(
-                      (booking) => booking.equipment_number === number.number
+                      (booking) => booking.equipmentId === number.id
                     )}
                   >
                     {number.number}
                     {bookings?.some(
-                      (booking) => booking.equipment_number === number.number
+                      (booking) => booking.equipmentId === number.id
                     ) && <i> - {t("booked")}</i>}
                   </MenuItem>
                 ))}

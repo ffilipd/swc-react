@@ -40,7 +40,8 @@ exports.findAll = async (req, res) => {
                 date: { [Op.eq]: date },
                 [Op.or]: {
                     time_from: { [Op.between]: [time_from, time_to || "24:00"] },
-                    time_to: { [Op.between]: [time_from, time_to || "24:00"] }
+                    time_to: { [Op.between]: [time_from, time_to || "24:00"] },
+                    date
                 }
             },
             attributes: ['id', 'date', 'time_from', 'time_to'],
@@ -48,7 +49,7 @@ exports.findAll = async (req, res) => {
                 {
 
                     model: Equipment,
-                    attributes: ['number'],
+                    attributes: ['number', 'id'],
                     include: [
                         {
                             model: Name,
@@ -69,6 +70,7 @@ exports.findAll = async (req, res) => {
                 date: booking.date,
                 time_from: booking.time_from,
                 time_to: booking.time_to,
+                equipmentId: booking.equipment.id,
                 equipment_name: booking.equipment.equipment_name.name,
                 equipment_number: booking.equipment.number,
                 user_name: booking.user.name

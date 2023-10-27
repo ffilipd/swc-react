@@ -116,7 +116,7 @@ const ReportComponent = () => {
     setYourBooking((event.target as HTMLInputElement).value as "yes" | "no");
   };
   const handleSelectBooking = async (bookingId: string) => {
-    const reportExists = await getReports({ booking_id: bookingId });
+    const reportExists = await getReports({ bookingId: bookingId });
     console.log(reportExists);
     if (reportExists.length > 0 && bookingId !== "no-booking")
       setReportExistsNote(true);
@@ -251,14 +251,14 @@ const ReportComponent = () => {
                 handleSelectBooking(e.target.value);
               }}
             >
-              {bookings.map((booking: Booking, index: number) => (
+              {bookings.map((booking: Booking) => (
                 <MenuItem
                   id="report-booking-item"
                   key={booking.id}
                   value={booking.id}
                 >
                   <Box>
-                    {/* {`${booking.equipment_name} #${booking.swc_number}`} */}
+                    {`${booking.equipment_name} #${booking.equipment_number}`}
                   </Box>
                   <Box>{`${booking.time_from}—${booking.time_to}`}</Box>
                 </MenuItem>

@@ -23,6 +23,7 @@ export interface Booking {
     time_to: string | undefined;
     equipment_number: string;
     equipment_name: string;
+    equipmentId: string;
     user_name?: string;
 };
 
@@ -45,7 +46,7 @@ export interface BookingSearchParams {
 };
 
 export interface ReportSearchParams {
-    booking_id?: string;
+    bookingId?: string;
     type?: string;
     equipment_name?: string;
     swc_number?: string;
