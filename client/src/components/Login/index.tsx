@@ -14,8 +14,8 @@ const LoginComponent = () => {
   const { credentialLogin, googleLogin } = useUser();
 
   const [credentials, setCredentials] = useState<LoginCredentials>({
-    name: "test",
-    password: "12345",
+    name: "Admin",
+    password: "admin",
   });
 
   const handleCredentialLoginClick = () => {

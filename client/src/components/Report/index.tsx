@@ -48,7 +48,7 @@ const ReportComponent = () => {
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
     names: string[];
-    numbers: string[];
+    numbers: { id: string; number: string }[];
   }>({
     types: [],
     names: [],
@@ -101,7 +101,7 @@ const ReportComponent = () => {
 
   const fetchBookings = async () => {
     const bookingsData: Booking[] = await getBookings({
-      user_id: yourBooking === "yes" ? user?.id : undefined,
+      // user_id: yourBooking === "yes" ? user?.id : undefined,
       date: selectedDate?.format("DD-MM-YYYY"),
     });
     setBookings(bookingsData);
@@ -130,7 +130,7 @@ const ReportComponent = () => {
   };
 
   const setFilterTypes = async () => {
-    const types = await getFilters();
+    const types = (await getFilters()) as string[];
     setAvailableEquipment({ ...availableEquipment, types });
   };
 
@@ -141,7 +141,7 @@ const ReportComponent = () => {
       equipment_name: "",
       swc_number: "",
     });
-    const names = await getFilters({ type });
+    const names = (await getFilters({ type })) as string[];
     setAvailableEquipment({ ...availableEquipment, names });
   };
 
@@ -151,10 +151,13 @@ const ReportComponent = () => {
       equipment_name,
       swc_number: "",
     });
-    const numbers = await getFilters({
+    const numbers = (await getFilters({
       type: newReport.type,
       equipment_name: equipment_name,
-    });
+    })) as {
+      id: string;
+      number: string;
+    }[];
     setAvailableEquipment({ ...availableEquipment, numbers });
   };
 
@@ -255,7 +258,7 @@ const ReportComponent = () => {
                   value={booking.id}
                 >
                   <Box>
-                    {`${booking.equipment_name} #${booking.swc_number}`}
+                    {/* {`${booking.equipment_name} #${booking.swc_number}`} */}
                   </Box>
                   <Box>{`${booking.time_from}—${booking.time_to}`}</Box>
                 </MenuItem>
@@ -340,13 +343,11 @@ const ReportComponent = () => {
                     });
                   }}
                 >
-                  {availableEquipment.numbers.map(
-                    (name: string, index: number) => (
-                      <MenuItem key={`${name}-${index}`} value={name}>
-                        {name}
-                      </MenuItem>
-                    )
-                  )}
+                  {availableEquipment.numbers.map((number) => (
+                    <MenuItem key={number.id} value={number.id}>
+                      {number.number}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </React.Fragment>

@@ -27,7 +27,7 @@ import {
 } from "@mui/x-date-pickers";
 import { SwcButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
-import { Booking } from "../../interfaces";
+import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";
 
 dayjs.extend(customParseFormat);
@@ -66,7 +66,7 @@ const BookingComponent = () => {
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
     names: string[];
-    numbers: string[];
+    numbers: { id: string; number: string }[];
   }>({
     types: [],
     names: [],
@@ -100,7 +100,7 @@ const BookingComponent = () => {
   }, []);
 
   const setFilterTypes = async () => {
-    const types = await getFilters();
+    const types = (await getFilters()) as string[];
     setAvailableEquipment({ ...availableEquipment, types });
   };
 
@@ -111,24 +111,24 @@ const BookingComponent = () => {
       equipment_name: "",
       number: "",
     });
-    const names = await getFilters({ type });
+    const names = (await getFilters({ type })) as string[];
     setAvailableEquipment({ ...availableEquipment, names });
   };
 
   const handleSetName = async (equipment_name: string) => {
     setSelectedEquipment({ ...selectedEquipment, equipment_name, number: "" });
-    const numbers = await getFilters({
+    const equipment = (await getFilters({
       type: selectedEquipment.type,
       equipment_name: equipment_name,
-    });
-    setAvailableEquipment({ ...availableEquipment, numbers });
+    })) as { id: string; number: string }[];
+    setAvailableEquipment({ ...availableEquipment, numbers: equipment });
   };
 
   const fetchBookings = async () => {
     const bookingsData: Booking[] = await getBookings({
-      type: selectedEquipment.type,
       equipment_name: selectedEquipment.equipment_name,
-      swc_number: selectedEquipment.number,
+      equipment_type: selectedEquipment.type,
+      equipmentId: selectedEquipment.number,
       date: selectedDate?.format("DD-MM-YYYY") || "",
       time_from: selectedTime.fromTime?.format("HH:mm") || "",
       time_to: selectedTime.toTime?.format("HH:mm") || "",
@@ -152,18 +152,16 @@ const BookingComponent = () => {
     const { type, equipment_name, number } = selectedEquipment;
     const date = selectedDate?.format("DD-MM-YYYY").toString();
     const { fromTime, toTime } = selectedTime;
-    const newBooking: Booking = {
-      type,
-      equipment_name,
-      swc_number: number,
+    const newBooking: NewBooking = {
       date,
       time_from: fromTime?.format("HH:mm").toString(),
       time_to: toTime?.format("HH:mm").toString(),
-      user_id: user?.id,
-      user_name: user?.name,
+      userId: user?.id,
+      equipmentId: number,
     };
     try {
-      await addBooking(newBooking);
+      const res = await addBooking(newBooking);
+      alert(res);
       fetchBookings();
       setSelectedEquipment({ ...selectedEquipment, number: "" });
     } catch (error) {
@@ -184,9 +182,9 @@ const BookingComponent = () => {
     return false;
   };
 
-  // useEffect(() => {
-  //   fetchBookings();
-  // }, [selectedDate, selectedEquipment, selectedTime]);
+  useEffect(() => {
+    fetchBookings();
+  }, [selectedDate, selectedEquipment, selectedTime]);
 
   return (
     <Box id="booking-root">
@@ -328,22 +326,20 @@ const BookingComponent = () => {
                   });
                 }}
               >
-                {availableEquipment.numbers.map(
-                  (name: string, index: number) => (
-                    <MenuItem
-                      key={`${name}-${index}`}
-                      value={name}
-                      disabled={bookings?.some(
-                        (booking) => booking.swc_number === name
-                      )}
-                    >
-                      {name}
-                      {bookings?.some(
-                        (booking) => booking.swc_number === name
-                      ) && <i> - {t("booked")}</i>}
-                    </MenuItem>
-                  )
-                )}
+                {availableEquipment.numbers.map((number) => (
+                  <MenuItem
+                    key={number.id}
+                    value={number.id}
+                    // disabled={bookings?.some(
+                    //   (booking) => booking.swc_number === name
+                    // )}
+                  >
+                    {number.number}
+                    {/* {bookings?.some(
+                      (booking) => booking.swc_number === name
+                    ) && <i> - {t("booked")}</i>} */}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <SwcButton2
@@ -355,13 +351,13 @@ const BookingComponent = () => {
             </SwcButton2>
           </Box>
         </Box>
-        {/* <BookingTable
+        <BookingTable
           bookings={bookings}
           setBookings={setBookings}
           isMobile={isMobile}
           labels={labels}
           availableTypes={availableEquipment.types}
-        /> */}
+        />
       </Box>
     </Box>
   );

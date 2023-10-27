@@ -34,10 +34,9 @@ export async function getEquipment(_params?: EquipmentSearchParams): Promise<Equ
     }
 };
 
-export async function getEquipmentFilters(_params?: EquipmentSearchParams): Promise<string[]> {
+export async function getEquipmentFilters(_params?: EquipmentSearchParams): Promise<string[] | { id: string, number: string }[]> {
     const URL: string = base_URL + API_ENDPONTS.FILTERS;
     const params: URLSearchParams | undefined = _params && buildParams(_params);
-
     try {
         const res = await axios.get(URL, { params: params, headers: authHeader() });
         return res.data;

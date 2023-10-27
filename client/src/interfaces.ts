@@ -18,22 +18,27 @@ export interface LoginCredentials {
 
 export interface Booking {
     id?: string;
-    type: string
-    equipment_name: string;
-    swc_number: string;
     date: string | undefined;
     time_from: string | undefined;
     time_to: string | undefined;
-    equipment_id?: string;
-    user_id?: string;
+    equipment_number: string;
+    equipment_name: string;
     user_name?: string;
 };
 
+export interface NewBooking {
+    date: string | undefined;
+    time_from: string | undefined;
+    time_to: string | undefined;
+    userId: string | undefined;
+    equipmentId?: string;
+};
+
 export interface BookingSearchParams {
-    user_id?: string;
-    type?: string;
+    userId?: string;
+    equipment_type?: string;
     equipment_name?: string;
-    swc_number?: string;
+    equipmentId?: string;
     date?: string;
     time_from?: string;
     time_to?: string;

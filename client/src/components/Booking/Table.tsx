@@ -82,28 +82,28 @@ const BookingTable = (props: BookingsProps) => {
     numbers: [],
   });
 
-  // useEffect(() => {
-  //   // get bookings by filter
-  //   setBookings(
-  //     getBookingsByParams({
-  //       type: filters.type,
-  //       name: filters.name,
-  //       swc_number: filters.number,
-  //     })
-  //   );
-  // }, [filters]);
+  //   useEffect(() => {
+  //     // get bookings by filter
+  //     setBookings(
+  //       getBookingsByParams({
+  //         type: filters.type,
+  //         name: filters.name,
+  //         swc_number: filters.number,
+  //       })
+  //     );
+  //   }, [filters]);
 
-  // useEffect(() => {
-  //   const _names: string[] = getEquipmentNamesByType(filters.type);
-  //   setAvailableFilters({ ...availableFilters, names: _names });
-  // }, [filters.type]);
-  // useEffect(() => {
-  //   const _numbers: string[] = getNumbersByTypeAndName(
-  //     filters.type,
-  //     filters.name
-  //   );
-  //   setAvailableFilters({ ...availableFilters, numbers: _numbers });
-  // }, [filters.number]);
+  //   useEffect(() => {
+  //     const _names: string[] = getEquipmentNamesByType(filters.type);
+  //     setAvailableFilters({ ...availableFilters, names: _names });
+  //   }, [filters.type]);
+  //   useEffect(() => {
+  //     const _numbers: string[] = getNumbersByTypeAndName(
+  //       filters.type,
+  //       filters.name
+  //     );
+  //     setAvailableFilters({ ...availableFilters, numbers: _numbers });
+  //   }, [filters.number]);
 
   return (
     <React.Fragment>
@@ -144,13 +144,14 @@ const BookingTable = (props: BookingsProps) => {
                     {Array.from(
                       new Set(
                         bookings?.map(
-                          (row) => `${row.equipment_name}-${row.swc_number}`
+                          (row) =>
+                            `${row.equipment_name}-${row.equipment_number}`
                         )
                       )
                     ).map((uniqueKey, i) => {
                       const groupedRows = bookings?.filter(
                         (row) =>
-                          `${row.equipment_name}-${row.swc_number}` ===
+                          `${row.equipment_name}-${row.equipment_number}` ===
                           uniqueKey
                       );
                       const firstRow = groupedRows && groupedRows[0];
@@ -167,7 +168,7 @@ const BookingTable = (props: BookingsProps) => {
                               {firstRow?.equipment_name}
                             </StyledTableCell>
                             <StyledTableCell>
-                              {firstRow?.swc_number}
+                              {firstRow?.equipment_number}
                             </StyledTableCell>
                             <StyledTableCell align="center">
                               <IconButton
@@ -225,7 +226,7 @@ const BookingTable = (props: BookingsProps) => {
                                             {row.time_to}
                                           </StyledTableCell>
                                           <StyledTableCell align="left">
-                                            {row.user_id}
+                                            {row.user_name}
                                           </StyledTableCell>
                                         </StyledTableRow>
                                       ))}
@@ -254,7 +255,7 @@ const BookingTable = (props: BookingsProps) => {
                           {row.equipment_name}
                         </StyledTableCell>
                         <StyledTableCell align="left">
-                          {row.swc_number}
+                          {row.equipment_number}
                         </StyledTableCell>
                         <StyledTableCell align="left">
                           {row.date}
@@ -281,3 +282,4 @@ const BookingTable = (props: BookingsProps) => {
 };
 
 export default BookingTable;
+// export default {};

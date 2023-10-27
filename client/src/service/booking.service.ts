@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Booking, BookingSearchParams } from "../interfaces";
+import { Booking, BookingSearchParams, NewBooking } from "../interfaces";
+import authHeader from "./auth-header";
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPONTS = {
@@ -10,17 +11,18 @@ export const getBookings = async (_params?: BookingSearchParams): Promise<Bookin
     const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
     const params: URLSearchParams | undefined = _params && buildParams(_params);
     try {
-        const res = await axios.get(URL, { params });
+        const res = await axios.get(URL, { params: params, headers: authHeader() });
         return res.data;
     } catch (error) {
         throw new Error('error getting bookings' + error)
     }
 }
 
-export const addBooking = async (newBooking: Booking): Promise<void> => {
+export const addBooking = async (newBooking: NewBooking): Promise<void> => {
     const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
     try {
-        await axios.post(URL, { ...newBooking })
+        const res = await axios.post(URL, { ...newBooking }, { headers: authHeader() })
+        return res.data.message;
     } catch (error) {
         throw new Error('Error adding new booking: ' + error)
     }
@@ -30,7 +32,7 @@ export const addBooking = async (newBooking: Booking): Promise<void> => {
 function buildParams(options: BookingSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof BookingSearchParams)[] = ['equipment_name', 'swc_number', 'type', 'date', 'time_from', 'time_to', "user_id"];
+    const allowedParams: (keyof BookingSearchParams)[] = ['userId', 'equipment_type', 'equipment_name', 'equipmentId', 'date', 'time_from', 'time_to'];
 
     // Loop through parameters
     for (const key of allowedParams) {
