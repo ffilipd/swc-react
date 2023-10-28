@@ -32,7 +32,7 @@ export const addBooking = async (newBooking: NewBooking): Promise<void> => {
 function buildParams(options: BookingSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof BookingSearchParams)[] = ['userId', 'equipment_type', 'equipment_name', 'equipmentId', 'date', 'time_from', 'time_to'];
+    const allowedParams: (keyof BookingSearchParams)[] = ['userId', 'equipment_type', 'equipmentNameId', 'equipmentId', 'date', 'time_from', 'time_to'];
 
     // Loop through parameters
     for (const key of allowedParams) {

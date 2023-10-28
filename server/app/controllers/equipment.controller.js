@@ -21,22 +21,27 @@ exports.findAll = async (req, res) => {
 // Retrieve Equipment filters.
 exports.findFilters = async (req, res) => {
     try {
-        const { equipment_name, type } = req.query;
+        const { equipmentNameId, type } = req.query;
 
         if (!type) {
             const types = await Type.findAll({ attributes: ['name'] });
             return res.json(types.map(type => type.name));
         }
 
-        if (!equipment_name) {
+        if (!equipmentNameId) {
             const specificType = await Type.findOne({
                 where: { name: type },
                 include: {
                     model: Name,
-                    attributes: ['name'],
+                    attributes: ['name', 'id'],
                 }
             });
-            const names = specificType.equipment_names.map(data => data.name);
+            const names = specificType.equipment_names.map(data => {
+                return {
+                    name: data.name,
+                    id: data.id
+                }
+            });
             return res.json(names);
             // return res.json(names.map(name => name.name));
         }
@@ -44,7 +49,7 @@ exports.findFilters = async (req, res) => {
         const equipment = await Equipment.findAll({
             include: [{
                 model: Name,
-                where: { name: equipment_name },
+                where: { id: equipmentNameId },
                 attributes: []
             }],
             attributes: ['number', 'id'],

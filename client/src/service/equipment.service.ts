@@ -1,5 +1,6 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import { EquipmentFilterResponse } from "../interfaces";
 
 
 interface Equipment {
@@ -13,7 +14,7 @@ interface Equipment {
 
 interface EquipmentSearchParams {
     type?: string;
-    equipment_name?: string;
+    equipmentNameId?: string;
     swc_number?: string;
 }
 
@@ -34,7 +35,8 @@ export async function getEquipment(_params?: EquipmentSearchParams): Promise<Equ
     }
 };
 
-export async function getEquipmentFilters(_params?: EquipmentSearchParams): Promise<string[] | { id: string, number: string }[]> {
+
+export async function getEquipmentFilters(_params?: EquipmentSearchParams): Promise<EquipmentFilterResponse> {
     const URL: string = base_URL + API_ENDPONTS.FILTERS;
     const params: URLSearchParams | undefined = _params && buildParams(_params);
     try {
@@ -51,7 +53,7 @@ export async function getEquipmentFilters(_params?: EquipmentSearchParams): Prom
 function buildParams(options: EquipmentSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof EquipmentSearchParams)[] = ['equipment_name', 'swc_number', 'type'];
+    const allowedParams: (keyof EquipmentSearchParams)[] = ['equipmentNameId', 'swc_number', 'type'];
 
     // Loop through parameters
     for (const key of allowedParams) {

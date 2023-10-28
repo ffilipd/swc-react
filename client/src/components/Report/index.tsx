@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import "./report.css";
 import { useEffect, useState } from "react";
-import { Booking, Report } from "../../interfaces";
+import { Booking, NewReport, Report } from "../../interfaces";
 import { getBookings } from "../../service/booking.service";
 import { getEquipmentFilters } from "../../service/equipment.service";
 import { useTranslation } from "react-i18next";
@@ -36,7 +36,12 @@ import dayjs, { Dayjs } from "dayjs";
 import i18next from "i18next";
 import React from "react";
 import { SwcButton2 } from "../../utils/buttons";
-import { addReport, getReports } from "../../service/report.service";
+import {
+  addReport,
+  getDamageTypes,
+  getReportById,
+  getReports,
+} from "../../service/report.service";
 import { useUser } from "../../UserContext";
 
 const ReportComponent = () => {
@@ -55,21 +60,18 @@ const ReportComponent = () => {
     numbers: [],
   });
 
-  const initialReportValues: Report = {
-    user_id: user?.id || "",
-    damage_type: "",
-    booking_id: undefined,
-    type: undefined,
-    equipment_name: undefined,
-    swc_number: undefined,
-    date: selectedDate?.format("DD-MM-YYYY"),
-    notes: "",
+  const initialReportValues: NewReport = {
+    bookingId: "",
+    damageTypeId: "",
+    description: "",
   };
-  const [newReport, setNewReport] = useState<Report>(initialReportValues);
+  const [newReport, setNewReport] = useState<NewReport>(initialReportValues);
   const [reportExistsNote, setReportExistsNote] = useState<boolean>(false);
   const [submitDialogOpen, setSubmitDialogOpen] = useState<boolean>(false);
   const [yourBooking, setYourBooking] = useState<"yes" | "no">("yes");
-  const damageTypes = [t("No"), t("Minor"), t("Major"), t("Other")];
+  const [damageTypes, setDamagetypes] = useState<
+    { id: number; name: string }[]
+  >([]);
   const labels = {
     booking: i18next.t("Select the corresponding booking"),
     damageType: i18next.t("Any damages?"),
@@ -91,7 +93,7 @@ const ReportComponent = () => {
     try {
       const response = await getEquipmentFilters({
         type: params?.type,
-        equipment_name: params?.equipment_name,
+        equipmentNameId: params?.equipment_name,
       });
       return response;
     } catch (error) {
@@ -116,17 +118,17 @@ const ReportComponent = () => {
     setYourBooking((event.target as HTMLInputElement).value as "yes" | "no");
   };
   const handleSelectBooking = async (bookingId: string) => {
-    const reportExists = await getReports({ bookingId: bookingId });
+    const reportExists = await getReportById(bookingId);
     console.log(reportExists);
     if (reportExists.length > 0 && bookingId !== "no-booking")
       setReportExistsNote(true);
     else setReportExistsNote(false);
-    setNewReport({ ...newReport, booking_id: bookingId });
+    setNewReport({ ...newReport, bookingId: bookingId });
     setSelectedBookingId(bookingId);
   };
 
   const handleSelectDamageType = (type: string): void => {
-    setNewReport({ ...newReport, damage_type: type });
+    // setNewReport({ ...newReport, damageTypeId: typeId });
   };
 
   const setFilterTypes = async () => {
@@ -134,46 +136,46 @@ const ReportComponent = () => {
     setAvailableEquipment({ ...availableEquipment, types });
   };
 
-  const handleSetType = async (type: string) => {
+  const handleSetType = async (damageTypeId: string) => {
     setNewReport({
       ...newReport,
-      type,
-      equipment_name: "",
-      swc_number: "",
+      damageTypeId,
+      bookingId: "",
+      description: "",
     });
-    const names = (await getFilters({ type })) as string[];
-    setAvailableEquipment({ ...availableEquipment, names });
+    // const names = (await getFilters({ type })) as string[];
+    // setAvailableEquipment({ ...availableEquipment, names });
   };
 
   const handleSetName = async (equipment_name: string) => {
-    setNewReport({
-      ...newReport,
-      equipment_name,
-      swc_number: "",
-    });
-    const numbers = (await getFilters({
-      type: newReport.type,
-      equipment_name: equipment_name,
-    })) as {
-      id: string;
-      number: string;
-    }[];
-    setAvailableEquipment({ ...availableEquipment, numbers });
+    // setNewReport({
+    //   ...newReport,
+    //   equipment_name,
+    //   swc_number: "",
+    // });
+    // const numbers = (await getFilters({
+    //   type: newReport.type,
+    //   equipment_name: equipment_name,
+    // })) as {
+    //   id: string;
+    //   number: string;
+    // }[];
+    // setAvailableEquipment({ ...availableEquipment, numbers });
   };
 
   const reportFilledOut = (): boolean => {
-    const { damage_type, booking_id, type, equipment_name, swc_number } =
-      newReport;
-    if (booking_id !== "no-booking") {
-      if (damage_type === "No") return true;
-      if (damage_type !== "No" && newReport.notes) return true;
-    }
-    if (booking_id === "no-booking") {
-      if (type && equipment_name && swc_number) {
-        if (damage_type === "No") return true;
-        if (damage_type !== "No" && newReport.notes) return true;
-      }
-    }
+    // const { damage_type, booking_id, type, equipment_name, swc_number } =
+    //   newReport;
+    // if (booking_id !== "no-booking") {
+    //   if (damage_type === "No") return true;
+    //   if (damage_type !== "No" && newReport.notes) return true;
+    // }
+    // if (booking_id === "no-booking") {
+    //   if (type && equipment_name && swc_number) {
+    //     if (damage_type === "No") return true;
+    //     if (damage_type !== "No" && newReport.notes) return true;
+    //   }
+    // }
     return false;
   };
 
@@ -189,7 +191,7 @@ const ReportComponent = () => {
   };
 
   const addNotes = (event: any) => {
-    setNewReport({ ...newReport, notes: event.target.value });
+    // setNewReport({ ...newReport, notes: event.target.value });
     console.log(event.target.value);
   };
 
@@ -287,7 +289,7 @@ const ReportComponent = () => {
                   labelId="equipment-type-label"
                   id="equipment-type"
                   label={labels.type}
-                  value={newReport.type}
+                  // value={newReport.type}
                   onChange={(e: SelectChangeEvent) => {
                     handleSetType(e.target.value);
                   }}
@@ -308,10 +310,10 @@ const ReportComponent = () => {
                 <Select
                   className="booking-select-button"
                   labelId="equipment-name-label"
-                  disabled={newReport.type === ""}
+                  // disabled={newReport.type === ""}
                   id="equipment-name"
                   label={labels.name}
-                  value={newReport.equipment_name}
+                  // value={newReport.equipment_name}
                   onChange={(e: SelectChangeEvent) => {
                     handleSetName(e.target.value);
                   }}
@@ -332,14 +334,14 @@ const ReportComponent = () => {
                 <Select
                   className="booking-select-button"
                   labelId="equipment-swc-nbr-label"
-                  disabled={newReport.equipment_name === ""}
+                  // disabled={newReport.equipment_name === ""}
                   id="equipment-swc-nbr"
                   label={labels.number}
-                  value={newReport.swc_number}
+                  // value={newReport.swc_number}
                   onChange={(e: SelectChangeEvent) => {
                     setNewReport({
                       ...newReport,
-                      swc_number: e.target.value,
+                      // swc_number: e.target.value,
                     });
                   }}
                 >
@@ -359,25 +361,25 @@ const ReportComponent = () => {
               labelId="equipment-type-label"
               id="report-booking-input"
               label={labels.damageType}
-              value={newReport.damage_type}
+              // value={newReport.damage_type}
               onChange={(e: SelectChangeEvent) => {
                 handleSelectDamageType(e.target.value);
               }}
             >
-              {damageTypes.map((type: string, index: number) => (
-                <MenuItem key={type} value={type}>
-                  {type}
+              {damageTypes.map((type) => (
+                <MenuItem key={type.id} value={type.id}>
+                  {type.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-          {newReport.damage_type === "Other" ? (
+          {newReport.damageTypeId === "Other" ? (
             <Alert severity="info" className="report-select-item">
               {t("Please provide description!")}
             </Alert>
           ) : (
-            (newReport.damage_type === "Major" ||
-              newReport.damage_type === "Minor") && (
+            (newReport.damageTypeId === "Major" ||
+              newReport.damageTypeId === "Minor") && (
               <Alert severity="warning" className="report-select-item">
                 {t("Description of the damage is mandatory!")}
               </Alert>
@@ -390,7 +392,7 @@ const ReportComponent = () => {
             multiline
             rows={4}
             variant="outlined"
-            value={newReport.notes}
+            // value={newReport.notes}
             onChange={addNotes}
           />
           <SwcButton2

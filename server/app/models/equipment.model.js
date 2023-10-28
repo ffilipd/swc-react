@@ -9,14 +9,26 @@ module.exports = (sequelize, Sequelize) => {
         },
         number: {
             type: Sequelize.STRING
-        },
+        }
+    });
+
+    const Name = sequelize.define("equipment_name", {
         name: {
             type: Sequelize.STRING
-        },
-        type: {
+        }
+    })
+
+    const Type = sequelize.define("equipment_type", {
+        name: {
             type: Sequelize.STRING
         }
     });
 
-    return Equipment;
+    Equipment.belongsTo(Name);
+    Name.belongsTo(Type);
+
+    Name.hasMany(Equipment);
+    Type.hasMany(Name);
+
+    return { Equipment, Type, Name };
 };

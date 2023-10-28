@@ -10,10 +10,9 @@ module.exports = (sequelize, Sequelize) => {
         description: {
             type: Sequelize.STRING
         },
-        damage_type: {
+        damageType: {
             type: Sequelize.ENUM('major', 'minor', 'none', 'other')
         }
-
     });
 
     return Report;

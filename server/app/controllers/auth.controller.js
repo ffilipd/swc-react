@@ -1,7 +1,6 @@
 const db = require("../models");
 const config = require("../config/auth.config");
-const { User } = db.user;
-const Role = db.role;
+const User = db.user;
 const axios = require('axios');
 
 const Op = db.Sequelize.Op;
@@ -10,9 +9,6 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 const salt = bcrypt.genSaltSync(10);
-
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client();
 require("dotenv/config");
 
 

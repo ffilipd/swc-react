@@ -23,9 +23,9 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
 
-db.booking.belongsTo(db.equipment);
+db.booking.belongsTo(db.equipment.Equipment);
 db.booking.belongsTo(db.user);
-db.equipment.hasMany(db.booking);
+db.equipment.Equipment.hasMany(db.booking);
 db.user.hasMany(db.booking);
 
 db.report.belongsTo(db.booking)

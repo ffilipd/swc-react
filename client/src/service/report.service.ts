@@ -1,28 +1,52 @@
 import axios from "axios";
-import { Report, ReportSearchParams } from "../interfaces";
+import { NewReport, Report, ReportSearchParams } from "../interfaces";
+import authHeader from "./auth-header";
+import { error } from "console";
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPONTS = {
     REPORTS: '/report',
+    DAMAGE_TYPES: '/report/damage-types',
 }
 
 export const getReports = async (_params?: ReportSearchParams): Promise<Report[]> => {
     const URL: string = base_URL + API_ENDPONTS.REPORTS;
     const params: URLSearchParams | undefined = _params && buildParams(_params);
     try {
-        const res = await axios.get(URL, { params });
+        const res = await axios.get(URL, { params: params, headers: authHeader() });
         return res.data;
     } catch (error) {
         throw new Error('error getting bookings' + error)
     }
 }
 
-export const addReport = async (newReport: Report): Promise<void> => {
+export const getReportById = async (id: string): Promise<Report[]> => {
     const URL: string = base_URL + API_ENDPONTS.REPORTS;
     try {
-        await axios.post(URL, { ...newReport })
+        const res = await axios.get(`${URL}/${id}`, { headers: authHeader() });
+        return res.data;
+    } catch (error) {
+        throw new Error('error getting bookings' + error)
+    }
+}
+
+
+
+export const addReport = async (newReport: NewReport): Promise<void> => {
+    const URL: string = base_URL + API_ENDPONTS.REPORTS;
+    try {
+        await axios.post(URL, { ...newReport }, { headers: authHeader() })
     } catch (error) {
         throw new Error('Error adding new booking: ' + error)
+    }
+}
+
+export const getDamageTypes = async (): Promise<any> => {
+    const URL: string = base_URL + API_ENDPONTS.DAMAGE_TYPES;
+    try {
+        return await axios.get(URL, { headers: authHeader() });
+    } catch (error) {
+        throw new Error("Error getting damage types: " + error)
     }
 }
 

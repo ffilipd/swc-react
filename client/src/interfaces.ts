@@ -38,7 +38,7 @@ export interface NewBooking {
 export interface BookingSearchParams {
     userId?: string;
     equipment_type?: string;
-    equipment_name?: string;
+    equipmentNameId?: string;
     equipmentId?: string;
     date?: string;
     time_from?: string;
@@ -55,6 +55,11 @@ export interface ReportSearchParams {
     damage_type?: string;
 };
 
+export interface NewReport {
+    bookingId: string;
+    damageTypeId: string;
+    description?: string;
+}
 export interface Report {
     booking_id?: string;
     type?: string;
@@ -67,6 +72,7 @@ export interface Report {
 }
 
 export type FilterTargetType = "type" | "name" | "number";
+export type EquipmentFilterResponse = string[] | { id: string, number: string }[] | { id: string, name: string }[]
 
 export type Profile = {
     id: string;

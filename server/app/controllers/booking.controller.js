@@ -33,10 +33,11 @@ exports.create = async (req, res) => {
 
 // Retrieve all Booking from the database.
 exports.findAll = async (req, res) => {
-    const { equipment_type, equipment_name, equipmentId, date, time_from, time_to } = req.query;
+    const { equipment_type, equipmentNameId, equipmentId, date, time_from, time_to } = req.query;
     const { Equipment, Name } = db.equipment;
-    const { User } = db.user;
+    const User = db.user;
 
+    const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
     try {
         const bookings = await Booking.findAll({
@@ -70,7 +71,7 @@ exports.findAll = async (req, res) => {
                 {
                     model: Equipment,
                     attributes: ['number', 'id'],
-                    where: { equipmentNameId: 1 },
+                    where: equipmentIdSearch,
                     include: [
                         {
                             model: Name,

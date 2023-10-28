@@ -59,13 +59,13 @@ const BookingComponent = () => {
 
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
-    equipment_name: string;
+    equipmentNameId: string;
     number: string;
-  }>({ type: "", equipment_name: "", number: "" });
+  }>({ type: "", equipmentNameId: "", number: "" });
 
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
-    names: string[];
+    names: { id: string; name: string }[];
     numbers: { id: string; number: string }[];
   }>({
     types: [],
@@ -82,12 +82,12 @@ const BookingComponent = () => {
 
   const getFilters = async (params?: {
     type?: string;
-    equipment_name?: string;
+    equipmentNameId?: string;
   }) => {
     try {
       const response = await getEquipmentFilters({
         type: params?.type,
-        equipment_name: params?.equipment_name,
+        equipmentNameId: params?.equipmentNameId,
       });
       return response;
     } catch (error) {
@@ -108,25 +108,28 @@ const BookingComponent = () => {
     setSelectedEquipment({
       ...selectedEquipment,
       type,
-      equipment_name: "",
+      equipmentNameId: "",
       number: "",
     });
-    const names = (await getFilters({ type })) as string[];
+    const names = (await getFilters({ type })) as {
+      id: string;
+      name: string;
+    }[];
     setAvailableEquipment({ ...availableEquipment, names });
   };
 
-  const handleSetName = async (equipment_name: string) => {
-    setSelectedEquipment({ ...selectedEquipment, equipment_name, number: "" });
+  const handleSetName = async (equipmentNameId: string) => {
+    setSelectedEquipment({ ...selectedEquipment, equipmentNameId, number: "" });
     const equipment = (await getFilters({
       type: selectedEquipment.type,
-      equipment_name: equipment_name,
+      equipmentNameId: equipmentNameId,
     })) as { id: string; number: string }[];
     setAvailableEquipment({ ...availableEquipment, numbers: equipment });
   };
 
   const fetchBookings = async () => {
     const bookingsData: Booking[] = await getBookings({
-      equipment_name: selectedEquipment.equipment_name,
+      equipmentNameId: selectedEquipment.equipmentNameId,
       equipment_type: selectedEquipment.type,
       equipmentId: selectedEquipment.number,
       date: selectedDate?.format("DD-MM-YYYY") || "",
@@ -137,7 +140,7 @@ const BookingComponent = () => {
   };
 
   const handleClearSelections = (): void => {
-    setSelectedEquipment({ equipment_name: "", type: "", number: "" });
+    setSelectedEquipment({ equipmentNameId: "", type: "", number: "" });
     setSelectedTime({ ...selectedTime, fromTime: null, toTime: null });
   };
 
@@ -149,7 +152,7 @@ const BookingComponent = () => {
   };
 
   const handleBookEquipmentClick = async () => {
-    const { type, equipment_name, number } = selectedEquipment;
+    const { type, equipmentNameId, number } = selectedEquipment;
     const date = selectedDate?.format("DD-MM-YYYY").toString();
     const { fromTime, toTime } = selectedTime;
     const newBooking: NewBooking = {
@@ -175,7 +178,7 @@ const BookingComponent = () => {
       selectedTime.fromTime &&
       selectedTime.toTime &&
       selectedEquipment.type &&
-      selectedEquipment.equipment_name &&
+      selectedEquipment.equipmentNameId &&
       selectedEquipment.number
     )
       return true;
@@ -294,14 +297,14 @@ const BookingComponent = () => {
                 disabled={selectedEquipment.type === ""}
                 id="equipment-name"
                 label={labels.equipment.name}
-                value={selectedEquipment.equipment_name}
+                value={selectedEquipment.equipmentNameId}
                 onChange={(e: SelectChangeEvent) => {
                   handleSetName(e.target.value);
                 }}
               >
-                {availableEquipment.names.map((name: string, index: number) => (
-                  <MenuItem key={`${name}-${index}`} value={name}>
-                    {name}
+                {availableEquipment.names.map((name) => (
+                  <MenuItem key={name.id} value={name.id}>
+                    {name.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -315,7 +318,7 @@ const BookingComponent = () => {
               <Select
                 className="booking-select-button"
                 labelId="equipment-swc-nbr-label"
-                disabled={selectedEquipment.equipment_name === ""}
+                disabled={selectedEquipment.equipmentNameId === ""}
                 id="equipment-swc-nbr"
                 label={labels.equipment.number}
                 value={selectedEquipment.number}

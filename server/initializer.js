@@ -24,35 +24,74 @@ const initalizeDB = async () => {
                         // create default admin user
                         User.create({
                             name: 'admin',
-                            email: 'admin.fleetmad@dahlskog.fi',
+                            email: 'admin@fleetmad.com',
                             password: bcrypt.hashSync('admin', salt),
                             active: true,
-                            role: 'admin'
+                            roleId: 3
                         })
                     }
                 })
         })
         .then(() => {
-            Equipment.count()
+            Equipment.Type.count()
+                .then((count) => {
+                    if (count < 1) {
+                        // create default equipment types
+                        Equipment.Type.create({
+                            name: 'Sailboat'
+                        })
+                        Equipment.Type.create({
+                            name: 'Motorboat'
+                        })
+                        Equipment.Type.create({
+                            name: 'Windsurfing board'
+                        })
+                        Equipment.Type.create({
+                            name: 'Windsurfing sail'
+                        })
+                    }
+                })
+        })
+        .then(() => {
+            Equipment.Name.count()
                 .then(count => {
                     if (count < 1) {
-                        Equipment.create({
+                        Equipment.Name.create({
+                            name: "Elliott 6M",
+                            equipmentTypeId: 1
+                        })
+                        Equipment.Name.create({
+                            name: "RS Toura",
+                            equipmentTypeId: 1
+                        })
+                        Equipment.Name.create({
                             name: "J/70",
-                            type: "Sailboat",
+                            equipmentTypeId: 1
+                        })
+                    }
+                })
+        })
+        .then(() => {
+            Equipment.Equipment.count()
+                .then(count => {
+                    if (count < 1) {
+                        Equipment.Equipment.create({
                             number: '1',
+                            equipmentNameId: 3,
+                            equipmentTypeId: 1
                         })
                         for (let i = 1; i < 7; i++) {
-                            Equipment.create({
-                                name: "Elliott 6M",
-                                type: "Sailboat",
+                            Equipment.Equipment.create({
                                 number: i,
+                                equipmentNameId: 2,
+                                equipmentTypeId: 1
                             })
                         }
                         for (let i = 1; i < 7; i++) {
-                            Equipment.create({
-                                name: "RS Toura",
-                                type: "Sailboat",
+                            Equipment.Equipment.create({
                                 number: i,
+                                equipmentNameId: 1,
+                                equipmentTypeId: 1
                             })
                         }
                     }
