@@ -36,9 +36,8 @@ exports.findAll = async (req, res) => {
     const { equipment_type, equipment_name, equipmentId, date, time_from, time_to } = req.query;
     const { Equipment, Name } = db.equipment;
     const { User } = db.user;
-    console.error(currentHHMM)
-    console.error('time_from: ' + time_from)
-    console.error('time_to: ' + time_to)
+
+
     try {
         const bookings = await Booking.findAll({
             where: {
@@ -69,13 +68,13 @@ exports.findAll = async (req, res) => {
             attributes: ['id', 'date', 'time_from', 'time_to'],
             include: [
                 {
-
                     model: Equipment,
                     attributes: ['number', 'id'],
+                    where: { equipmentNameId: 1 },
                     include: [
                         {
                             model: Name,
-                            attributes: ['name']
+                            attributes: ['name'],
                         }
                     ]
                 },

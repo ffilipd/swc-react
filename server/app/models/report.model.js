@@ -9,17 +9,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         description: {
             type: Sequelize.STRING
+        },
+        damage_type: {
+            type: Sequelize.ENUM('major', 'minor', 'none', 'other')
         }
+
     });
 
-    const Damage_Type = sequelize.define("damage_type", {
-        name: {
-            type: Sequelize.STRING
-        }
-    })
-
-    Report.belongsTo(Damage_Type);
-    Damage_Type.hasMany(Report);
-
-    return { Report, Damage_Type };
+    return Report;
 };

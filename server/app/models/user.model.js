@@ -30,21 +30,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         password: {
             type: Sequelize.STRING
-        }
-    });
-
-    const Role = sequelize.define("role", {
-        id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true
         },
-        name: {
-            type: Sequelize.STRING
+        role: {
+            type: Sequelize.ENUM('admin', 'moderator', 'user'),
+            defaultValue: 'user'
         }
     });
 
-    User.belongsTo(Role);
-    Role.hasMany(User);
-
-    return { User, Role };
+    return User;
 };
