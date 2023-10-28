@@ -1,8 +1,12 @@
 const db = require("../models");
-const Booking = db.booking;
 const Op = db.Sequelize.Op;
-const now = new Date();
-const currentHHMM = `${now.getHours()}:${now.getMinutes()}`;
+const Booking = db.booking;
+const User = db.user;
+const { Equipment, Name } = db.equipment;
+const dayjs = require('dayjs')
+const customParseFormat = require('dayjs')
+
+dayjs.extend(customParseFormat);
 
 // Create and Save a new Booking
 exports.create = async (req, res) => {
@@ -34,9 +38,10 @@ exports.create = async (req, res) => {
 // Retrieve all Booking from the database.
 exports.findAll = async (req, res) => {
     const { equipment_type, equipmentNameId, equipmentId, date, time_from, time_to } = req.query;
-    const { Equipment, Name } = db.equipment;
-    const User = db.user;
 
+    const today = dayjs().format('DD-MM-YYYY');
+    const now = dayjs().format('HH:mm');
+    const currentHHMM = date == today ? now : '00:00';
     const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
     try {
