@@ -16,11 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 
 const initalizeDB = require('./initializer');
 
-// DEV
-// db.sequelize.sync({ force: true })
-//     .then(() => {
-//         console.log("Drop and re-sync db.");
-//     });
 
 initalizeDB()
     .then(() => {
@@ -28,6 +23,7 @@ initalizeDB()
         require('./app/routes/user.routes')(app);
         require('./app/routes/equipment.routes')(app);
         require('./app/routes/booking.routes')(app);
+        require('./app/routes/report.routes')(app);
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);

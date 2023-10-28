@@ -6,7 +6,16 @@ const Booking = db.booking
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
 
+
+
+
 const initalizeDB = async () => {
+    // DEV
+    // db.sequelize.sync({ force: true })
+    //     .then(() => {
+    //         console.log("Drop and re-sync db.");
+    //     });
+
     db.sequelize.sync()
         .then(() => {
             Role.count()
@@ -70,13 +79,16 @@ const initalizeDB = async () => {
                 .then(count => {
                     if (count < 1) {
                         Equipment.Name.create({
-                            name: "Elliott 6M"
+                            name: "Elliott 6M",
+                            equipmentTypeId: 1
                         })
                         Equipment.Name.create({
-                            name: "RS Toura"
+                            name: "RS Toura",
+                            equipmentTypeId: 1
                         })
                         Equipment.Name.create({
-                            name: "J/70"
+                            name: "J/70",
+                            equipmentTypeId: 1
                         })
                     }
                 })
@@ -87,7 +99,7 @@ const initalizeDB = async () => {
                     if (count < 1) {
                         Equipment.Equipment.create({
                             number: '1',
-                            equipmentNameId: 1,
+                            equipmentNameId: 3,
                             equipmentTypeId: 1
                         })
                         for (let i = 1; i < 7; i++) {
@@ -100,7 +112,7 @@ const initalizeDB = async () => {
                         for (let i = 1; i < 7; i++) {
                             Equipment.Equipment.create({
                                 number: i,
-                                equipmentNameId: 3,
+                                equipmentNameId: 1,
                                 equipmentTypeId: 1
                             })
                         }

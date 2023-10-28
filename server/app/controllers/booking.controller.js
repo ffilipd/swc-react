@@ -1,6 +1,8 @@
 const db = require("../models");
 const Booking = db.booking;
 const Op = db.Sequelize.Op;
+const now = new Date();
+const currentHHMM = `${now.getHours()}:${now.getMinutes()}`;
 
 // Create and Save a new Booking
 exports.create = async (req, res) => {
@@ -13,12 +15,12 @@ exports.create = async (req, res) => {
     }
 
     try {
-        const booking = await Booking.create({
-            date,
-            time_from,
-            time_to,
-            equipmentId,
-            userId
+        await Booking.create({
+            date: date,
+            time_from: time_from,
+            time_to: time_to,
+            equipmentId: equipmentId,
+            userId: userId
         })
         res.status(200).send({ message: 'Booking added!' })
     } catch (error) {
@@ -34,14 +36,34 @@ exports.findAll = async (req, res) => {
     const { equipment_type, equipment_name, equipmentId, date, time_from, time_to } = req.query;
     const { Equipment, Name } = db.equipment;
     const { User } = db.user;
+    console.error(currentHHMM)
+    console.error('time_from: ' + time_from)
+    console.error('time_to: ' + time_to)
     try {
         const bookings = await Booking.findAll({
             where: {
-                date: { [Op.eq]: date },
-                [Op.or]: {
-                    time_from: { [Op.between]: [time_from, time_to || "24:00"] },
-                    time_to: { [Op.between]: [time_from, time_to || "24:00"] },
-                    date
+                [Op.and]: {
+                    date: { [Op.eq]: date },
+                    [Op.or]: {
+                        time_from: {
+                            [Op.or]: {
+                                [Op.gte]: currentHHMM,
+                                [Op.and]: {
+                                    [Op.gte]: time_from,
+                                    [Op.lt]: time_to
+                                }
+                            }
+                        },
+                        time_to: {
+                            [Op.or]: {
+                                [Op.gt]: time_from || currentHHMM,
+                                [Op.and]: {
+                                    [Op.gt]: time_from,
+                                    [Op.lt]: time_to
+                                },
+                            }
+                        }
+                    }
                 }
             },
             attributes: ['id', 'date', 'time_from', 'time_to'],

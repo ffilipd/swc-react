@@ -29,8 +29,16 @@ exports.findFilters = async (req, res) => {
         }
 
         if (!equipment_name) {
-            const names = await Name.findAll({ attributes: ['name'] });
-            return res.json(names.map(name => name.name));
+            const specificType = await Type.findOne({
+                where: { name: type },
+                include: {
+                    model: Name,
+                    attributes: ['name'],
+                }
+            });
+            const names = specificType.equipment_names.map(data => data.name);
+            return res.json(names);
+            // return res.json(names.map(name => name.name));
         }
 
         const equipment = await Equipment.findAll({

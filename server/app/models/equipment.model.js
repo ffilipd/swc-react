@@ -26,9 +26,11 @@ module.exports = (sequelize, Sequelize) => {
 
     Equipment.belongsTo(Name);
     Equipment.belongsTo(Type);
+    Name.belongsTo(Type);
 
     Name.hasMany(Equipment);
     Type.hasMany(Equipment);
+    Type.hasMany(Name);
 
     return { Equipment, Type, Name };
 };
