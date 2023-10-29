@@ -43,6 +43,7 @@ export interface BookingSearchParams {
     date?: string;
     time_from?: string;
     time_to?: string;
+    usage?: 'booking' | 'report';
 };
 
 export interface ReportSearchParams {
@@ -56,10 +57,11 @@ export interface ReportSearchParams {
 };
 
 export interface NewReport {
-    bookingId: string;
-    damageTypeId: string;
+    bookingId: string | null;
+    damageType: string;
     description?: string;
 }
+
 export interface Report {
     booking_id?: string;
     type?: string;
@@ -81,7 +83,8 @@ export type Profile = {
 };
 
 export type Language = "en" | "sv" | "fi";
-export type UserRole = "admin" | "user" | "viewer"
+export type UserRole = "admin" | "user" | "viewer";
+export type DamageType = 'none' | 'major' | 'minor' | 'other';
 
 export interface FMProfile {
     id: string;

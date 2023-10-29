@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Report
 exports.create = async (req, res) => {
     const { bookingId, damageType, description } = req.body;
-    if (!bookingId) {
+    if (!damageType) {
         res.status(400).send({
             message: "Content cannot be empty!"
         });
@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     }
 
     try {
-        const report = await Report.create({
+        await Report.create({
             bookingId,
             damageType,
             description

@@ -39,63 +39,71 @@ exports.create = async (req, res) => {
 
 // Retrieve all Booking from the database.
 exports.findAll = async (req, res) => {
-    const { equipmentNameId, equipmentId, date, time_from, time_to, userId } = req.query;
+    const { equipmentNameId, equipmentId, date, time_from, time_to, userId, usage } = req.query;
 
     const currentHHMM = date == today ? now : '';
     const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
-
-    try {
-        const bookings = await Booking.findAll({
-            where: {
-                userId: userId || { [Op.gt]: '' },
-                [Op.and]: {
-                    date: { [Op.eq]: date },
+    let bookingsWhere = usage === 'booking' ? {
+        userId: userId ?? { [Op.gt]: '' },
+        [Op.and]: {
+            date: { [Op.eq]: date },
+            [Op.or]: {
+                time_from: {
                     [Op.or]: {
-                        time_from: {
-                            [Op.or]: {
-                                [Op.gte]: time_from ?? currentHHMM,
-                                [Op.and]: {
-                                    [Op.gte]: time_from,
-                                    [Op.lt]: time_to
-                                }
-                            }
-                        },
-                        time_to: {
-                            [Op.or]: {
-                                [Op.gt]: time_from ?? currentHHMM,
-                                [Op.and]: {
-                                    [Op.gt]: time_from,
-                                    [Op.lt]: time_to
-                                },
-                            }
+                        [Op.gte]: time_from ?? currentHHMM,
+                        [Op.and]: {
+                            [Op.gte]: time_from,
+                            [Op.lt]: time_to
                         }
                     }
-                }
-            },
-            order: [
-                ['time_from', 'ASC']
-            ],
-            attributes: ['id', 'date', 'time_from', 'time_to'],
-            include: [
-                {
-                    model: Equipment,
-                    attributes: ['number', 'id'],
-                    where: equipmentIdSearch,
-                    include: [
-                        {
-                            model: Name,
-                            attributes: ['name'],
-                        }
-                    ]
                 },
-                {
-                    model: User,
-                    attributes: ['name']
+                time_to: {
+                    [Op.or]: {
+                        [Op.gt]: time_from ?? currentHHMM,
+                        [Op.and]: {
+                            [Op.gt]: time_from,
+                            [Op.lt]: time_to
+                        },
+                    }
                 }
-            ]
-        });
+            }
+        }
+    } : usage === 'report' && {
+        userId: userId ?? { [Op.gt]: '' },
+        date: { [Op.eq]: date },
+    }
 
+
+
+    let bookingsQuery = {
+        where: bookingsWhere,
+        order: [
+            ['time_from', 'ASC']
+        ],
+        attributes: ['id', 'date', 'time_from', 'time_to'],
+        include: [
+            {
+                model: Equipment,
+                attributes: ['number', 'id'],
+                where: equipmentIdSearch,
+                include: [
+                    {
+                        model: Name,
+                        attributes: ['name'],
+                    }
+                ]
+            },
+            {
+                model: User,
+                attributes: ['name']
+            }
+        ]
+    }
+
+
+    try {
+        const bookings = await Booking.findAll(bookingsQuery);
         const formattedBookings = bookings.map(booking => {
             return {
                 id: booking.id,

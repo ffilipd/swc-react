@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -10,6 +11,7 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
+  FormGroup,
   FormLabel,
   InputLabel,
   MenuItem,
@@ -22,7 +24,13 @@ import {
 } from "@mui/material";
 import "./report.css";
 import { useEffect, useState } from "react";
-import { Booking, NewReport, Report } from "../../interfaces";
+import {
+  Booking,
+  DamageType,
+  EquipmentFilterResponse,
+  NewReport,
+  Report,
+} from "../../interfaces";
 import { getBookings } from "../../service/booking.service";
 import { getEquipmentFilters } from "../../service/equipment.service";
 import { useTranslation } from "react-i18next";
@@ -43,16 +51,19 @@ import {
   getReports,
 } from "../../service/report.service";
 import { useUser } from "../../UserContext";
+import { CheckBox } from "@mui/icons-material";
 
 const ReportComponent = () => {
   const { user } = useUser();
   const { t } = useTranslation();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
-  const [selectedBookingId, setSelectedBookingId] = useState<string>("");
+  const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
+    null
+  );
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
-    names: string[];
+    names: { id: string; name: string }[];
     numbers: { id: string; number: string }[];
   }>({
     types: [],
@@ -62,18 +73,30 @@ const ReportComponent = () => {
 
   const initialReportValues: NewReport = {
     bookingId: "",
-    damageTypeId: "",
+    damageType: "",
     description: "",
   };
+  const damageTypes: DamageType[] = ["major", "minor", "none", "other"];
   const [newReport, setNewReport] = useState<NewReport>(initialReportValues);
+  const [newReportWithoutBooking, setNewReportWithoutBooking] = useState<{
+    equipmentType: string;
+    equipmentNameId: string;
+    equipmentNumber: string;
+  }>({
+    equipmentType: "",
+    equipmentNameId: "",
+    equipmentNumber: "",
+  });
   const [reportExistsNote, setReportExistsNote] = useState<boolean>(false);
   const [submitDialogOpen, setSubmitDialogOpen] = useState<boolean>(false);
-  const [yourBooking, setYourBooking] = useState<"yes" | "no">("yes");
-  const [damageTypes, setDamagetypes] = useState<
-    { id: number; name: string }[]
-  >([]);
+  const [yourBooking, setYourBooking] = useState<boolean>(false);
+  const handleChangeYourBooking = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setYourBooking(event.target.checked);
+  };
   const labels = {
-    booking: i18next.t("Select the corresponding booking"),
+    booking: i18next.t("Select booking"),
     damageType: i18next.t("Any damages?"),
     type: "*" + i18next.t("Equipment type"),
     name: "*" + i18next.t("Class / Name"),
@@ -88,12 +111,12 @@ const ReportComponent = () => {
   };
   const getFilters = async (params?: {
     type?: string;
-    equipment_name?: string;
+    equipmentNameId?: string;
   }) => {
     try {
       const response = await getEquipmentFilters({
         type: params?.type,
-        equipmentNameId: params?.equipment_name,
+        equipmentNameId: params?.equipmentNameId,
       });
       return response;
     } catch (error) {
@@ -103,8 +126,9 @@ const ReportComponent = () => {
 
   const fetchBookings = async () => {
     const bookingsData: Booking[] = await getBookings({
-      // user_id: yourBooking === "yes" ? user?.id : undefined,
+      userId: yourBooking === true ? user?.id : undefined,
       date: selectedDate?.format("DD-MM-YYYY"),
+      usage: "report",
     });
     setBookings(bookingsData);
   };
@@ -114,21 +138,23 @@ const ReportComponent = () => {
     setSelectedDate(newDate);
   };
 
-  const handleSetYourBooking = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setYourBooking((event.target as HTMLInputElement).value as "yes" | "no");
-  };
   const handleSelectBooking = async (bookingId: string) => {
     const reportExists = await getReportById(bookingId);
-    console.log(reportExists);
-    if (reportExists.length > 0 && bookingId !== "no-booking")
-      setReportExistsNote(true);
-    else setReportExistsNote(false);
-    setNewReport({ ...newReport, bookingId: bookingId });
-    setSelectedBookingId(bookingId);
+    if (reportExists && bookingId !== "no-booking") {
+      return setReportExistsNote(true);
+    }
+    if (bookingId === "no-booking") {
+      setNewReport({ ...newReport, bookingId: null });
+      return setSelectedBookingId(bookingId);
+    } else {
+      setReportExistsNote(false);
+      setNewReport({ ...newReport, bookingId: bookingId });
+      setSelectedBookingId(bookingId);
+    }
   };
 
-  const handleSelectDamageType = (type: string): void => {
-    // setNewReport({ ...newReport, damageTypeId: typeId });
+  const handleSelectDamageType = (damageType: string): void => {
+    setNewReport({ ...newReport, damageType });
   };
 
   const setFilterTypes = async () => {
@@ -136,50 +162,63 @@ const ReportComponent = () => {
     setAvailableEquipment({ ...availableEquipment, types });
   };
 
-  const handleSetType = async (damageTypeId: string) => {
-    setNewReport({
-      ...newReport,
-      damageTypeId,
-      bookingId: "",
-      description: "",
+  const handleSetEquipmentType = async (equipmentType: string) => {
+    setNewReportWithoutBooking({
+      ...newReportWithoutBooking,
+      equipmentType,
+      equipmentNameId: "",
+      equipmentNumber: "",
     });
-    // const names = (await getFilters({ type })) as string[];
-    // setAvailableEquipment({ ...availableEquipment, names });
+    const names = (await getFilters({
+      type: equipmentType,
+    })) as { id: string; name: string }[];
+    setAvailableEquipment({ ...availableEquipment, names });
   };
 
-  const handleSetName = async (equipment_name: string) => {
-    // setNewReport({
-    //   ...newReport,
-    //   equipment_name,
-    //   swc_number: "",
-    // });
-    // const numbers = (await getFilters({
-    //   type: newReport.type,
-    //   equipment_name: equipment_name,
-    // })) as {
-    //   id: string;
-    //   number: string;
-    // }[];
-    // setAvailableEquipment({ ...availableEquipment, numbers });
+  const handleSetEquipmentName = async (equipmentNameId: string) => {
+    setNewReportWithoutBooking({
+      ...newReportWithoutBooking,
+      equipmentNameId,
+      equipmentNumber: "",
+    });
+    const numbers = (await getFilters({
+      type: newReportWithoutBooking.equipmentType,
+      equipmentNameId: equipmentNameId,
+    })) as {
+      id: string;
+      number: string;
+    }[];
+    setAvailableEquipment({ ...availableEquipment, numbers });
+  };
+
+  const handleSetEquipmentNumber = (equipmentId: string) => {
+    setNewReportWithoutBooking({
+      ...newReportWithoutBooking,
+      equipmentNumber: equipmentId,
+    });
   };
 
   const reportFilledOut = (): boolean => {
-    // const { damage_type, booking_id, type, equipment_name, swc_number } =
-    //   newReport;
-    // if (booking_id !== "no-booking") {
-    //   if (damage_type === "No") return true;
-    //   if (damage_type !== "No" && newReport.notes) return true;
-    // }
-    // if (booking_id === "no-booking") {
-    //   if (type && equipment_name && swc_number) {
-    //     if (damage_type === "No") return true;
-    //     if (damage_type !== "No" && newReport.notes) return true;
-    //   }
-    // }
+    const { bookingId, damageType, description } = newReport;
+    if (bookingId !== "no-booking") {
+      if (damageType === "none") return true;
+      if (damageType !== "none" && description) return true;
+    }
+    const { equipmentNameId, equipmentNumber, equipmentType } =
+      newReportWithoutBooking;
+    if (bookingId === "no-booking") {
+      if (equipmentNameId && equipmentNumber && equipmentType) {
+        if (damageType === "none") return true;
+        if (damageType !== "none" && description) return true;
+      }
+    }
     return false;
   };
 
   const handleSubmitReportClick = async () => {
+    if (selectedBookingId === "no-booking") {
+      newReport.description = `no-booking-equipment-id=${newReportWithoutBooking.equipmentNumber}+${newReport.description}`;
+    }
     try {
       await addReport(newReport);
       setNewReport(initialReportValues);
@@ -190,8 +229,8 @@ const ReportComponent = () => {
     }
   };
 
-  const addNotes = (event: any) => {
-    // setNewReport({ ...newReport, notes: event.target.value });
+  const addDescription = (event: any) => {
+    setNewReport({ ...newReport, description: event.target.value });
     console.log(event.target.value);
   };
 
@@ -208,29 +247,12 @@ const ReportComponent = () => {
       <Divider />
       <Box id="report-wrapper">
         <Box id="report-container">
-          <FormControl id="your-booking-select">
-            <FormLabel id="demo-radio-buttons-group-label">
-              {t("Did you book the equipment yourself?")}
-            </FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-radio-buttons-group-label"
-              name="radio-buttons-group"
-              value={yourBooking}
-              onChange={handleSetYourBooking}
-            >
-              <FormControlLabel
-                value={"yes"}
-                control={<Radio />}
-                label={t("Yes")}
-              />
-              <FormControlLabel
-                value={"no"}
-                control={<Radio />}
-                label={t("No, someone else booked")}
-              />
-            </RadioGroup>
-          </FormControl>
+          <FormGroup id="your-booking-select">
+            <FormControlLabel
+              control={<Checkbox onChange={handleChangeYourBooking} />}
+              label={t("I booked the equipment myself")}
+            />
+          </FormGroup>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               format="DD-MM-YYYY"
@@ -248,7 +270,7 @@ const ReportComponent = () => {
               labelId="equipment-type-label"
               id="report-booking-input"
               label={labels.booking}
-              value={selectedBookingId}
+              value={selectedBookingId ?? ""}
               onChange={(e: SelectChangeEvent) => {
                 handleSelectBooking(e.target.value);
               }}
@@ -266,11 +288,12 @@ const ReportComponent = () => {
                 </MenuItem>
               ))}
               <MenuItem
-                id="report-booking-item"
+                sx={{ justifyContent: "space-around" }}
+                id="report-booking-no-booking"
                 key={"no-booking"}
                 value={"no-booking"}
               >
-                {t("I cannot find the booking")}
+                {t("––– I cannot find the booking –––")}
               </MenuItem>
             </Select>
           </FormControl>
@@ -282,6 +305,9 @@ const ReportComponent = () => {
           {selectedBookingId === "no-booking" && (
             <React.Fragment>
               {/* TYPE */}
+              <Alert severity="info" className="report-select-item">
+                {t("Please select the equipment you used!")}
+              </Alert>
               <FormControl fullWidth className="report-select-item">
                 <InputLabel id="equipment-type">{labels.type}</InputLabel>
                 <Select
@@ -291,7 +317,7 @@ const ReportComponent = () => {
                   label={labels.type}
                   // value={newReport.type}
                   onChange={(e: SelectChangeEvent) => {
-                    handleSetType(e.target.value);
+                    handleSetEquipmentType(e.target.value);
                   }}
                 >
                   {availableEquipment.types?.map(
@@ -313,18 +339,16 @@ const ReportComponent = () => {
                   // disabled={newReport.type === ""}
                   id="equipment-name"
                   label={labels.name}
-                  // value={newReport.equipment_name}
+                  value={newReportWithoutBooking.equipmentNameId}
                   onChange={(e: SelectChangeEvent) => {
-                    handleSetName(e.target.value);
+                    handleSetEquipmentName(e.target.value);
                   }}
                 >
-                  {availableEquipment.names.map(
-                    (name: string, index: number) => (
-                      <MenuItem key={`${name}-${index}`} value={name}>
-                        {name}
-                      </MenuItem>
-                    )
-                  )}
+                  {availableEquipment.names.map((name) => (
+                    <MenuItem key={name.id} value={name.id}>
+                      {name.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
 
@@ -334,15 +358,12 @@ const ReportComponent = () => {
                 <Select
                   className="booking-select-button"
                   labelId="equipment-swc-nbr-label"
-                  // disabled={newReport.equipment_name === ""}
+                  disabled={newReportWithoutBooking.equipmentNameId === ""}
                   id="equipment-swc-nbr"
                   label={labels.number}
-                  // value={newReport.swc_number}
+                  value={newReportWithoutBooking.equipmentNumber}
                   onChange={(e: SelectChangeEvent) => {
-                    setNewReport({
-                      ...newReport,
-                      // swc_number: e.target.value,
-                    });
+                    handleSetEquipmentNumber(e.target.value);
                   }}
                 >
                   {availableEquipment.numbers.map((number) => (
@@ -361,25 +382,25 @@ const ReportComponent = () => {
               labelId="equipment-type-label"
               id="report-booking-input"
               label={labels.damageType}
-              // value={newReport.damage_type}
+              value={newReport.damageType}
               onChange={(e: SelectChangeEvent) => {
                 handleSelectDamageType(e.target.value);
               }}
             >
               {damageTypes.map((type) => (
-                <MenuItem key={type.id} value={type.id}>
-                  {type.name}
+                <MenuItem key={type} value={type}>
+                  {type[0].toUpperCase() + type.slice(1)}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-          {newReport.damageTypeId === "Other" ? (
+          {newReport.damageType === "other" ? (
             <Alert severity="info" className="report-select-item">
               {t("Please provide description!")}
             </Alert>
           ) : (
-            (newReport.damageTypeId === "Major" ||
-              newReport.damageTypeId === "Minor") && (
+            (newReport.damageType === "major" ||
+              newReport.damageType === "minor") && (
               <Alert severity="warning" className="report-select-item">
                 {t("Description of the damage is mandatory!")}
               </Alert>
@@ -392,8 +413,8 @@ const ReportComponent = () => {
             multiline
             rows={4}
             variant="outlined"
-            // value={newReport.notes}
-            onChange={addNotes}
+            value={newReport.description}
+            onChange={addDescription}
           />
           <SwcButton2
             id={
