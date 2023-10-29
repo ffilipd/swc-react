@@ -99,6 +99,7 @@ function Header() {
     if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
+    if (clickedItem === "My Page") navigate("/mypage");
     if (clickedItem === "Login") navigate("/login");
     if (clickedItem === "Logout") handleLogout();
   };
@@ -147,6 +148,9 @@ function Header() {
               </SwcButton>
               <SwcButton onClick={() => navigate("/booking")}>
                 {t("Book equipment")}
+              </SwcButton>
+              <SwcButton onClick={() => navigate("/mypage")}>
+                {t("My Page")}
               </SwcButton>
             </Box>
             <Box sx={{ display: "flex" }}>

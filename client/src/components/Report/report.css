@@ -78,5 +78,6 @@
     #report-container {
         width: 100vw;
         padding: 20px;
+        max-width: 320px;
     }
 }

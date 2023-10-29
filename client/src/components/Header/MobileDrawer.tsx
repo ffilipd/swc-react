@@ -79,6 +79,11 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
                 </ListItemButton>
               </ListItem>
               <ListItem>
+                <ListItemButton onClick={() => handleMenuItemClick("My Page")}>
+                  <ListItemText primary={t("My Page")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
                 <ListItemButton
                   onClick={() => handleMenuItemClick("Account details")}
                 >

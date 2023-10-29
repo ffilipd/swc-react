@@ -69,9 +69,11 @@ exports.findAll = async (req, res) => {
                 }
             }
         }
-    } : usage === 'report' && {
+    } : usage === 'report' ? {
         userId: userId ?? { [Op.gt]: '' },
         date: { [Op.eq]: date },
+    } : usage === 'edit' && {
+        userId: userId ?? { [Op.gt]: '' },
     }
 
 
@@ -79,7 +81,8 @@ exports.findAll = async (req, res) => {
     let bookingsQuery = {
         where: bookingsWhere,
         order: [
-            ['time_from', 'ASC']
+            ['date', 'DESC'],
+            ['time_from', 'ASC'],
         ],
         attributes: ['id', 'date', 'time_from', 'time_to'],
         include: [

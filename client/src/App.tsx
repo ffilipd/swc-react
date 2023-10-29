@@ -7,6 +7,7 @@ import { useUser } from "./UserContext";
 import LoginComponent from "./components/Login";
 import Body from "./components/Body";
 import SignupComponent from "./components/Signup";
+import MyPageComponent from "./components/MyPage";
 
 function App() {
   const { user } = useUser();
@@ -19,6 +20,7 @@ function App() {
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="/booking" element={<BookingComponent />} />
             <Route path="/report" element={<ReportComponent />} />
+            <Route path="/mypage" element={<MyPageComponent />} />
           </>
         ) : (
           <>

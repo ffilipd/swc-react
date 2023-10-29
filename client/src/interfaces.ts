@@ -43,7 +43,7 @@ export interface BookingSearchParams {
     date?: string;
     time_from?: string;
     time_to?: string;
-    usage?: 'booking' | 'report';
+    usage?: 'booking' | 'report' | 'edit';
 };
 
 export interface ReportSearchParams {
