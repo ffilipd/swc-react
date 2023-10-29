@@ -39,14 +39,16 @@ exports.create = async (req, res) => {
 
 // Retrieve all Booking from the database.
 exports.findAll = async (req, res) => {
-    const { equipment_type, equipmentNameId, equipmentId, date, time_from, time_to } = req.query;
+    const { equipmentNameId, equipmentId, date, time_from, time_to, userId } = req.query;
 
     const currentHHMM = date == today ? now : '';
     const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
+
     try {
         const bookings = await Booking.findAll({
             where: {
+                userId: userId || { [Op.gt]: '' },
                 [Op.and]: {
                     date: { [Op.eq]: date },
                     [Op.or]: {

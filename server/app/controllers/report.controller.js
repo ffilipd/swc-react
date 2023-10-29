@@ -1,11 +1,11 @@
 const db = require("../models");
-const { Report, Damage_Type } = db.report;
+const Report = db.report;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Report
 exports.create = async (req, res) => {
-    const { date, time_from, time_to, equipmentId, userId } = req.body;
-    if (!equipmentId) {
+    const { bookingId, damageType, description } = req.body;
+    if (!bookingId) {
         res.status(400).send({
             message: "Content cannot be empty!"
         });
@@ -14,11 +14,9 @@ exports.create = async (req, res) => {
 
     try {
         const report = await Report.create({
-            date,
-            time_from,
-            time_to,
-            equipmentId,
-            userId
+            bookingId,
+            damageType,
+            description
         })
         res.status(200).send({ message: 'Report added!' })
     } catch (error) {
@@ -85,13 +83,15 @@ exports.findFilters = async (req, res) => {
 // Find a single Report with an id
 exports.findOne = async (req, res) => {
     try {
-        const reports = await Report.findAll({
+        const report = await Report.findOne({
             where: {
-                id: req.params.id
+                bookingId: req.params.id
             },
         });
-
-        res.json(reports);
+        if (report) {
+            return res.json(report);
+        }
+        res.status(200).send();
     }
     catch (error) {
         console.error('Error:', error);
