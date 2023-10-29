@@ -3,10 +3,12 @@ const Op = db.Sequelize.Op;
 const Booking = db.booking;
 const User = db.user;
 const { Equipment, Name } = db.equipment;
+
 const dayjs = require('dayjs')
 const customParseFormat = require('dayjs')
-
 dayjs.extend(customParseFormat);
+const today = dayjs().format('DD-MM-YYYY');
+const now = dayjs().format('HH:mm');
 
 // Create and Save a new Booking
 exports.create = async (req, res) => {
@@ -39,9 +41,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
     const { equipment_type, equipmentNameId, equipmentId, date, time_from, time_to } = req.query;
 
-    const today = dayjs().format('DD-MM-YYYY');
-    const now = dayjs().format('HH:mm');
-    const currentHHMM = date == today ? now : '00:00';
+    const currentHHMM = date == today ? now : '';
     const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
     try {
@@ -52,7 +52,7 @@ exports.findAll = async (req, res) => {
                     [Op.or]: {
                         time_from: {
                             [Op.or]: {
-                                [Op.gte]: currentHHMM,
+                                [Op.gte]: time_from ?? currentHHMM,
                                 [Op.and]: {
                                     [Op.gte]: time_from,
                                     [Op.lt]: time_to
@@ -61,7 +61,7 @@ exports.findAll = async (req, res) => {
                         },
                         time_to: {
                             [Op.or]: {
-                                [Op.gt]: time_from || currentHHMM,
+                                [Op.gt]: time_from ?? currentHHMM,
                                 [Op.and]: {
                                     [Op.gt]: time_from,
                                     [Op.lt]: time_to
@@ -71,6 +71,9 @@ exports.findAll = async (req, res) => {
                     }
                 }
             },
+            order: [
+                ['time_from', 'ASC']
+            ],
             attributes: ['id', 'date', 'time_from', 'time_to'],
             include: [
                 {

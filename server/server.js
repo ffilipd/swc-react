@@ -16,6 +16,15 @@ app.use(express.urlencoded({ extended: true }));
 
 const { initalizeDB, resetDB } = require('./initializer');
 
+// const dayjs = require('dayjs')
+// const customParseFormat = require('dayjs')
+// dayjs.extend(customParseFormat);
+// const d = '30-10-2023'
+// const a = d.split('-').reverse().join('-')
+// console.log(a)
+
+
+
 
 initalizeDB()
     // resetDB()
