@@ -22,7 +22,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Booking } from "../../interfaces";
 import { useTranslation } from "react-i18next";
-import "./table.css";
+import "./bookingTable.css";
 
 interface BookingsProps {
   bookings: Booking[] | null;
@@ -111,171 +111,156 @@ const BookingTable = (props: BookingsProps) => {
         <Typography className="label">
           {t("Bookings for selected date, time and equipment")}
         </Typography>
-        <Box id="table-content">
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <StyledTableRow>
-                  <StyledTableCell align="left">
-                    {t("Class / Name")}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">{t("Number")}</StyledTableCell>
-                  {isMobile === false ? (
-                    <>
-                      <StyledTableCell align="left">
-                        {t("Date")}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        {t("From")}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">{t("To")}</StyledTableCell>
-                      <StyledTableCell align="left">
-                        {t("User")}
-                      </StyledTableCell>
-                    </>
-                  ) : (
-                    <StyledTableCell></StyledTableCell>
-                  )}
-                </StyledTableRow>
-              </TableHead>
-              <TableBody>
-                {isMobile && (
+        <TableContainer id="table-content">
+          <Table>
+            <TableHead>
+              <StyledTableRow>
+                <StyledTableCell align="left">
+                  {t("Class / Name")}
+                </StyledTableCell>
+                <StyledTableCell align="left">{t("Number")}</StyledTableCell>
+                {isMobile === false ? (
                   <>
-                    {Array.from(
-                      new Set(
-                        bookings?.map(
-                          (row) =>
-                            `${row.equipment_name}-${row.equipment_number}`
-                        )
+                    <StyledTableCell align="left">{t("Date")}</StyledTableCell>
+                    <StyledTableCell align="left">{t("From")}</StyledTableCell>
+                    <StyledTableCell align="left">{t("To")}</StyledTableCell>
+                    <StyledTableCell align="left">{t("User")}</StyledTableCell>
+                  </>
+                ) : (
+                  <StyledTableCell></StyledTableCell>
+                )}
+              </StyledTableRow>
+            </TableHead>
+            <TableBody>
+              {isMobile && (
+                <>
+                  {Array.from(
+                    new Set(
+                      bookings?.map(
+                        (row) => `${row.equipment_name}-${row.equipment_number}`
                       )
-                    ).map((uniqueKey, i) => {
-                      const groupedRows = bookings?.filter(
-                        (row) =>
-                          `${row.equipment_name}-${row.equipment_number}` ===
-                          uniqueKey
-                      );
-                      const firstRow = groupedRows && groupedRows[0];
-                      const isRowSelected = selectedRow === i;
+                    )
+                  ).map((uniqueKey, i) => {
+                    const groupedRows = bookings?.filter(
+                      (row) =>
+                        `${row.equipment_name}-${row.equipment_number}` ===
+                        uniqueKey
+                    );
+                    const firstRow = groupedRows && groupedRows[0];
+                    const isRowSelected = selectedRow === i;
 
-                      return (
-                        <React.Fragment key={uniqueKey}>
-                          <StyledTableRow
-                            sx={{
-                              "& > *": { borderBottom: "unset" },
-                            }}
-                          >
-                            <StyledTableCell align="left">
-                              {firstRow?.equipment_name}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {firstRow?.equipment_number}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              <IconButton
-                                aria-label="expand row"
-                                size="small"
-                                onClick={() =>
-                                  setSelectedRow(isRowSelected ? null : i)
-                                }
-                              >
-                                {isRowSelected ? (
-                                  <KeyboardArrowUpIcon />
-                                ) : (
-                                  <KeyboardArrowDownIcon />
-                                )}
-                              </IconButton>
-                            </StyledTableCell>
-                          </StyledTableRow>
-                          <TableRow sx={{ padding: 0 }}>
-                            <StyledTableCell
+                    return (
+                      <React.Fragment key={uniqueKey}>
+                        <StyledTableRow
+                          sx={{
+                            "& > *": { borderBottom: "unset" },
+                          }}
+                        >
+                          <StyledTableCell align="left">
+                            {firstRow?.equipment_name}
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {firstRow?.equipment_number}
+                          </StyledTableCell>
+                          <StyledTableCell align="center">
+                            <IconButton
+                              aria-label="expand row"
                               size="small"
-                              sx={{ padding: 0 }}
-                              colSpan={3}
+                              onClick={() =>
+                                setSelectedRow(isRowSelected ? null : i)
+                              }
                             >
-                              <Collapse
-                                in={isRowSelected}
-                                timeout="auto"
-                                unmountOnExit
-                              >
-                                <Box padding={"0 0 10px 0"}>
-                                  <Table size="small">
-                                    <TableHead>
-                                      <TableRow
-                                        sx={{ backgroundColor: "#89a" }}
+                              {isRowSelected ? (
+                                <KeyboardArrowUpIcon />
+                              ) : (
+                                <KeyboardArrowDownIcon />
+                              )}
+                            </IconButton>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <TableRow sx={{ padding: 0 }}>
+                          <StyledTableCell
+                            size="small"
+                            sx={{ padding: 0 }}
+                            colSpan={3}
+                          >
+                            <Collapse
+                              in={isRowSelected}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              <Box padding={"0 0 10px 0"}>
+                                <Table size="small">
+                                  <TableHead>
+                                    <TableRow sx={{ backgroundColor: "#89a" }}>
+                                      <StyledTableCell align="left">
+                                        {t("From")}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="left">
+                                        {t("To")}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="left">
+                                        {t("User")}
+                                      </StyledTableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {groupedRows?.map((row, index) => (
+                                      <StyledTableRow
+                                        key={`${row.id}-${row.equipment_name}-${index}`}
                                       >
                                         <StyledTableCell align="left">
-                                          {t("From")}
+                                          {row.time_from}
                                         </StyledTableCell>
                                         <StyledTableCell align="left">
-                                          {t("To")}
+                                          {row.time_to}
                                         </StyledTableCell>
                                         <StyledTableCell align="left">
-                                          {t("User")}
+                                          {row.user_name}
                                         </StyledTableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {groupedRows?.map((row, index) => (
-                                        <StyledTableRow
-                                          key={`${row.id}-${row.equipment_name}-${index}`}
-                                        >
-                                          <StyledTableCell align="left">
-                                            {row.time_from}
-                                          </StyledTableCell>
-                                          <StyledTableCell align="left">
-                                            {row.time_to}
-                                          </StyledTableCell>
-                                          <StyledTableCell align="left">
-                                            {row.user_name}
-                                          </StyledTableCell>
-                                        </StyledTableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </Box>
-                              </Collapse>
-                            </StyledTableCell>
-                          </TableRow>
-                        </React.Fragment>
-                      );
-                    })}
-                  </>
-                )}
-                {!isMobile &&
-                  bookings?.map((row, i) => (
-                    <React.Fragment
-                      key={`${row.id}-${row.equipment_name}-${i}`}
+                                      </StyledTableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </Box>
+                            </Collapse>
+                          </StyledTableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    );
+                  })}
+                </>
+              )}
+              {!isMobile &&
+                bookings?.map((row, i) => (
+                  <React.Fragment key={`${row.id}-${row.equipment_name}-${i}`}>
+                    <StyledTableRow
+                      sx={{
+                        "& > *": { borderBottom: "unset" },
+                      }}
                     >
-                      <StyledTableRow
-                        sx={{
-                          "& > *": { borderBottom: "unset" },
-                        }}
-                      >
-                        <StyledTableCell align="left">
-                          {row.equipment_name}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {row.equipment_number}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {row.date}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {row.time_from}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {row.time_to}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {row.user_name}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    </React.Fragment>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+                      <StyledTableCell align="left">
+                        {row.equipment_name}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        {row.equipment_number}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">{row.date}</StyledTableCell>
+                      <StyledTableCell align="left">
+                        {row.time_from}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        {row.time_to}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        {row.user_name}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  </React.Fragment>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </React.Fragment>
   );

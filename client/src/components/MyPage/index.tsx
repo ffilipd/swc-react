@@ -79,7 +79,7 @@ const MyPageComponent = () => {
     numbers: [],
   });
 
-  const [bookings, setBookings] = useState<Booking[] | null>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
   window.addEventListener("resize", () => {

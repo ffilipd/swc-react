@@ -3,6 +3,7 @@ import Header from "../Header";
 import { Outlet } from "react-router-dom";
 import Wrapper from "./Wrapper";
 import Inner from "./Inner";
+import Footer from "./footer";
 
 function Body() {
   return (
@@ -12,6 +13,7 @@ function Body() {
         <Inner>
           <Outlet />
         </Inner>
+        <Footer />
       </Wrapper>
     </Suspense>
   );

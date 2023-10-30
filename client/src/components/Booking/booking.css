@@ -19,6 +19,8 @@
     flex-wrap: wrap;
     justify-content: center;
     margin: 20px 0 0 0;
+    max-height: max-content;
+    overflow-y: auto;
 }
 
 #booking-container {
@@ -42,7 +44,7 @@
 }
 
 /* DATE PICKER FOR MOBILE */
-#calendar-box .MuiFormControl-root{
+#calendar-box .MuiFormControl-root {
     width: 100%;
     border: 1px solid var(--color-white);
     border-radius: 8px;
@@ -61,7 +63,7 @@
     border-radius: 8px;
 }
 
-#select-box .booking-select-item{
+#select-box .booking-select-item {
     margin: 0 0 16px 0;
 }
 
@@ -70,12 +72,13 @@
     width: 100%;
 }
 
-#disabled-button{
+#disabled-button {
     border: 1px solid var(--color-disabled-border);
     background-color: var(--color-disabled);
     margin: 20px 0;
     width: 100%;
 }
+
 #clear-selections-button {
     margin: 20px 0;
     border: 1px solid var(--color-disabled-border);
@@ -89,26 +92,30 @@
     flex-direction: row;
 }
 
-#time-picker .MuiInputBase-root{
+#time-picker .MuiInputBase-root {
     box-shadow: 1px 1px var(--color-white);
     border-radius: 8px;
 }
 
 @media only screen and (max-width:600px) {
-    #booking-root{
-        margin:0;
+    #booking-root {
+        margin: 0;
     }
+
     #booking-wrapper {
         flex-direction: column;
         align-items: center;
     }
-    #select-box{
+
+    #select-box {
         margin: 20px 0;
     }
-    #calendar-box{
+
+    #calendar-box {
         width: 100%;
     }
-    #booking-container{
+
+    #booking-container {
         width: 100vw;
         padding: 20px;
         max-width: 320px;

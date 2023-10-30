@@ -5,6 +5,9 @@
     background-color: var(--color-dark-blue);
     width: 100%;
     align-items: flex-start;
+    position: fixed;
+    z-index: 10;
+    border-bottom: 2px solid #fff;
 }
 
 #header-and-buttongroup {
