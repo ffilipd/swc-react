@@ -5,19 +5,15 @@
     min-width: 510px;
     flex-grow: 1;
     overflow: hidden;
+    margin-bottom:50px ;
     /* min-height: calc(100vh - 290px); */
     border-radius: 8px;
+    border: 1px solid var(--color-white);
+    box-shadow: 1px 1px var(--color-white);
 }
 
 #my-table-header {
     font-weight: 600;
-}
-
-#my-table-container {
-    border: 1px solid var(--color-white);
-    box-shadow: 1px 1px var(--color-white);
-    border-radius: 8px;
-    margin: 0 0 50px 0;
 }
 
 #my-table-body {
@@ -36,10 +32,10 @@
     opacity: 50%;
 }
 
-#my-table-pagination .MuiTableCell-root{
-    width: 100%;
-    float: right;
+#my-table-pagination{
+    border-top: 2px solid var(--color-white);
 }
+
 @media only screen and (max-width:600px) {
     #table-wrapper {
         max-width: 320px;
@@ -48,5 +44,6 @@
         padding:20px;
         margin: 0;
         justify-content: center;
+        overflow-y: visible;
     }
 }

@@ -224,12 +224,17 @@ const MyPageComponent = () => {
     setDescriptionDialogOpen(true);
   };
 
+  const handleCreateReportNow = (bookingId: string) => {
+    console.log(bookingId);
+  };
+
   return (
     <Box id="booking-root">
       <Box id="booking-header">{t("My bookings and reports")}</Box>
       {/* <Divider /> */}
       <Box id="booking-wrapper">
         <BookingTable
+          handleCreateReportNow={handleCreateReportNow}
           openDescriptionDialog={openDescriptionDialog}
           handleEditReport={handleEditReport}
           handleEditBooking={handleEditBooking}

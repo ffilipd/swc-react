@@ -32,6 +32,12 @@ import "./mytable.css";
 import { KeyboardArrowRight, KeyboardArrowLeft } from "@mui/icons-material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
+import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
+import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
+import dayjs, { Dayjs } from "dayjs";
+import customParseFormat from "dayjs";
 
 interface BookingsProps {
   bookings: Booking[];
@@ -39,7 +45,8 @@ interface BookingsProps {
   handleEditBooking: (e: any) => void;
   handleDeleteBooking: (e: any) => void;
   handleEditReport: (e: any) => void;
-  openDescriptionDialog: (e: any) => void;
+  handleCreateReportNow: (e: any) => void;
+  openDescriptionDialog: (description: string) => void;
   isMobile: boolean;
   labels: {
     equipment: {
@@ -161,9 +168,11 @@ const BookingTable = (props: BookingsProps) => {
     handleEditBooking,
     handleEditReport,
     handleDeleteBooking,
+    handleCreateReportNow,
     openDescriptionDialog,
   } = props;
 
+  dayjs.extend(customParseFormat);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -209,6 +218,13 @@ const BookingTable = (props: BookingsProps) => {
     numbers: [],
   });
 
+  const isInPast = (date: string) => {
+    const formattedDate = date.split("-").reverse().join("-");
+    if (formattedDate < dayjs().format("YYYY-MM-DD")) {
+      return true;
+    }
+    return false;
+  };
   return (
     <React.Fragment>
       <Box id="my-page-table-wrapper">
@@ -381,43 +397,83 @@ const BookingTable = (props: BookingsProps) => {
                         {row.time_to}
                       </StyledTableCell>
                       <StyledTableCell align="left">
-                        <EditOutlinedIcon
-                          onClick={() => handleEditBooking(row.id)}
-                          className="my-page-icon-button"
-                        />
+                        {!isInPast(row.date ?? "") && row.damage_type === "" ? (
+                          <EditOutlinedIcon
+                            onClick={() => handleEditBooking(row.id)}
+                            className="my-page-icon-button"
+                          />
+                        ) : null}
                       </StyledTableCell>
                       <StyledTableCell>
-                        <DeleteOutlineOutlinedIcon
-                          onClick={() => handleDeleteBooking(row.id)}
-                          className="my-page-icon-button"
-                        />
+                        {(isInPast(row.date ?? "") && row.damage_type === "") ||
+                        (!isInPast(row.date ?? "") &&
+                          row.damage_type === "") ? (
+                          <DeleteOutlineOutlinedIcon
+                            onClick={() => handleDeleteBooking(row.id)}
+                            className="my-page-icon-button"
+                          />
+                        ) : null}
                       </StyledTableCell>
                       <StyledTableCell
                         style={{ borderLeft: "3px solid gray" }}
-                      ></StyledTableCell>
-                      <StyledTableCell></StyledTableCell>
-                      <StyledTableCell
-                        onClick={() => openDescriptionDialog(row)}
-                        className="damage-description-cell"
+                        align="center"
                       >
-                        <u>Lorem ipsum dolor sit amet...</u>
+                        {row.damage_type ? (
+                          <CheckOutlinedIcon sx={{ color: "green" }} />
+                        ) : (
+                          row.damage_type === "" &&
+                          isInPast(row.date ?? "") && (
+                            <WarningAmberOutlinedIcon sx={{ color: "red" }} />
+                          )
+                        )}
                       </StyledTableCell>
                       <StyledTableCell>
-                        <EditOutlinedIcon
-                          onClick={() => handleEditReport(row.id)}
-                          className="my-page-icon-button"
-                        />
+                        {row.damage_type !== ""
+                          ? row.damage_type
+                          : isInPast(row.date ?? "") && t("Report missing!")}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        sx={{ minWidth: "180px" }}
+                        onClick={() =>
+                          isInPast(row.date ?? "") &&
+                          openDescriptionDialog(
+                            row.damage_description ? row.damage_description : ""
+                          )
+                        }
+                        className="damage-description-cell"
+                      >
+                        {row.damage_description &&
+                        row.damage_description.length > 20
+                          ? `${row.damage_description.slice(0, 20)}...`
+                          : row.damage_description}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        {row.damage_type !== "" ? (
+                          <EditOutlinedIcon
+                            onClick={() => handleEditReport(row.id)}
+                            className="my-page-icon-button"
+                          />
+                        ) : (
+                          isInPast(row.date ?? "") &&
+                          row.damage_type === "" && (
+                            <NoteAltOutlinedIcon
+                              onClick={() => handleCreateReportNow(row.id)}
+                            />
+                          )
+                        )}
                       </StyledTableCell>
                     </StyledTableRow>
                   </React.Fragment>
                 ))}
             </TableBody>
-            <TableFooter id="my-table-footer">
+            <TableFooter>
               <TableRow>
                 <TablePagination
+                  align="right"
                   id="my-table-pagination"
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={3}
+                  colSpan={11}
+                  width={"100%"}
                   count={bookings ? bookings.length : 0}
                   rowsPerPage={rowsPerPage}
                   page={page}

@@ -25,6 +25,8 @@ export interface Booking {
     equipment_name: string;
     equipmentId: string;
     user_name?: string;
+    damage_type?: string;
+    damage_description?: string;
 };
 
 export interface NewBooking {

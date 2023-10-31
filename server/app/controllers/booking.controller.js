@@ -1,6 +1,7 @@
 const db = require("../models");
 const Op = db.Sequelize.Op;
 const Booking = db.booking;
+const Report = db.report;
 const User = db.user;
 const { Equipment, Name } = db.equipment;
 
@@ -78,6 +79,7 @@ exports.findAll = async (req, res) => {
 
 
 
+
     let bookingsQuery = {
         where: bookingsWhere,
         order: [
@@ -100,6 +102,10 @@ exports.findAll = async (req, res) => {
             {
                 model: User,
                 attributes: ['name']
+            },
+            {
+                model: Report,
+                attributes: ['damageType', 'description'],
             }
         ]
     }
@@ -116,7 +122,10 @@ exports.findAll = async (req, res) => {
                 equipmentId: booking.equipment.id,
                 equipment_name: booking.equipment.equipment_name.name,
                 equipment_number: booking.equipment.number,
-                user_name: booking.user.name
+                user_name: booking.user.name,
+                damage_type: booking.report ? booking.report.damageType : '',
+                damage_description: booking.report ? booking.report.description : '',
+                reportId: booking.report ? booking.report.id : ''
             }
         })
         res.json(formattedBookings);

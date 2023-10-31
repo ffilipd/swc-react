@@ -24,10 +24,12 @@ db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
 
 db.booking.belongsTo(db.equipment.Equipment);
-db.booking.belongsTo(db.user);
 db.equipment.Equipment.hasMany(db.booking);
+
+db.booking.belongsTo(db.user);
 db.user.hasMany(db.booking);
 
-db.report.belongsTo(db.booking)
+db.report.belongsTo(db.booking);
+db.booking.hasOne(db.report);
 
 module.exports = db;
