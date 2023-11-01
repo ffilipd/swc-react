@@ -1,14 +1,8 @@
-#login-root {
-    display: flex;
-    flex-direction: column;
-    margin: 0 100px;
-}
-
 #login-header {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
-    color: var(--color-dark-blue);
+    color: var(--color-theme-dark);
     font-size: xx-large;
     font-weight: 600;
     padding-bottom: 10px;

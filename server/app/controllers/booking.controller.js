@@ -8,8 +8,12 @@ const { Equipment, Name } = db.equipment;
 const dayjs = require('dayjs')
 const customParseFormat = require('dayjs')
 dayjs.extend(customParseFormat);
-const today = dayjs().format('DD-MM-YYYY');
+const today = dayjs().format('YYYY-MM-DD');
 const now = dayjs().format('HH:mm');
+
+const formatDate = (date) => {
+    return date.split('-').reverse().join('-');
+}
 
 // Create and Save a new Booking
 exports.create = async (req, res) => {
@@ -23,7 +27,7 @@ exports.create = async (req, res) => {
 
     try {
         await Booking.create({
-            date: date,
+            date: formatDate(date),
             time_from: time_from,
             time_to: time_to,
             equipmentId: equipmentId,
@@ -42,7 +46,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
     const { equipmentNameId, equipmentId, date, time_from, time_to, userId, usage } = req.query;
 
-    const currentHHMM = date == today ? now : '';
+    const currentHHMM = formatDate(date) == today ? now : '';
     const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
     let bookingsWhere = usage === 'booking' ? {
@@ -116,7 +120,7 @@ exports.findAll = async (req, res) => {
         const formattedBookings = bookings.map(booking => {
             return {
                 id: booking.id,
-                date: booking.date,
+                date: formatDate(booking.date),
                 time_from: booking.time_from,
                 time_to: booking.time_to,
                 equipmentId: booking.equipment.id,

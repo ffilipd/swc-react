@@ -242,7 +242,7 @@ const ReportComponent = () => {
     fetchBookings();
   }, [selectedDate, yourBooking]);
   return (
-    <Box id="report-root">
+    <>
       <Box id="report-header">{t("Report Equipment Usage")}</Box>
       <Divider />
       <Box id="report-wrapper">
@@ -446,7 +446,7 @@ const ReportComponent = () => {
           <Button onClick={handleSubmitDialogClose}>{t("Close")}</Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 };
 

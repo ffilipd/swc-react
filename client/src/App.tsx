@@ -8,6 +8,7 @@ import LoginComponent from "./components/Login";
 import Body from "./components/Body";
 import SignupComponent from "./components/Signup";
 import MyPageComponent from "./components/MyPage";
+import AdminEquipmentComponent from "./components/Admin/equipment";
 
 function App() {
   const { user } = useUser();
@@ -21,6 +22,14 @@ function App() {
             <Route path="/booking" element={<BookingComponent />} />
             <Route path="/report" element={<ReportComponent />} />
             <Route path="/mypage" element={<MyPageComponent />} />
+            {user.role === "admin" && (
+              <>
+                <Route
+                  path="/admin/equipment"
+                  element={<AdminEquipmentComponent />}
+                />
+              </>
+            )}
           </>
         ) : (
           <>

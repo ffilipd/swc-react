@@ -8,10 +8,9 @@
 /******** COLORS *******/
 /* Body */
 --color-white: #EDEDED;
-/* header */
---color-dark-blue:#002855;
---color-dark-blue2:#002047;
---color-blue:#004f55;
+/* theme */
+--color-theme-dark:#002855;
+--color-theme-dark2:#002047;
 /* buttons */
 --color-disabled-border: #dddddd;
 --color-disabled-button: #469;
@@ -36,7 +35,7 @@ body {
 
 .MuiTypography-root.label {
   font-size: large;
-  color: var(--color-dark-blue);
+  color: var(--color-theme-dark);
   font-weight: 600;
 }
 

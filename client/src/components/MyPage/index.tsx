@@ -229,7 +229,7 @@ const MyPageComponent = () => {
   };
 
   return (
-    <Box id="booking-root">
+    <>
       <Box id="booking-header">{t("My bookings and reports")}</Box>
       {/* <Divider /> */}
       <Box id="booking-wrapper">
@@ -278,7 +278,7 @@ const MyPageComponent = () => {
           </DialogContentText>
         </DialogContent>
       </Dialog>
-    </Box>
+    </>
   );
 };
 

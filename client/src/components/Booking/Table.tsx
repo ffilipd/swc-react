@@ -40,7 +40,7 @@ interface BookingsProps {
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "var(--color-dark-blue)",
+    backgroundColor: "var(--color-theme-dark)",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {

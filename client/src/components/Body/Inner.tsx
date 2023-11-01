@@ -5,7 +5,11 @@ interface InnerProps {
 }
 
 const Inner: React.FC<InnerProps> = ({ children }) => {
-  return <Box id="body-inner">{children}</Box>;
+  return (
+    <Box id="body-inner">
+      <Box id="body-root">{children}</Box>
+    </Box>
+  );
 };
 
 export default Inner;

@@ -23,39 +23,37 @@ const LoginComponent = () => {
   };
 
   return (
-    <Box id="login-root">
-      <Box id="login-wrapper">
-        <Box id="login-container">
-          <TextField
-            variant="outlined"
-            value={credentials.name}
-            label={t("*Eamil or username")}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setCredentials({ ...credentials, name: event.target.value });
-            }}
-          />
-          <TextField
-            variant="outlined"
-            type="password"
-            value={credentials.password}
-            label={t("*Password")}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setCredentials({ ...credentials, password: event.target.value });
-            }}
-          />
-          <SwcButton2
-            id="signup-button"
-            // disabled={!formFilled}
-            onClick={handleCredentialLoginClick}
-          >
-            {t("Sign in")}
-          </SwcButton2>
-          <Typography sx={{ textAlign: "center" }}>{t("OR")}</Typography>
-          <SwcButton2 onClick={() => googleLogin()}>
-            <GoogleSvgIcon />
-            <Box id="login-button-text">{t("Sign in with google")}</Box>
-          </SwcButton2>
-        </Box>
+    <Box id="login-wrapper">
+      <Box id="login-container">
+        <TextField
+          variant="outlined"
+          value={credentials.name}
+          label={t("*Eamil or username")}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setCredentials({ ...credentials, name: event.target.value });
+          }}
+        />
+        <TextField
+          variant="outlined"
+          type="password"
+          value={credentials.password}
+          label={t("*Password")}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setCredentials({ ...credentials, password: event.target.value });
+          }}
+        />
+        <SwcButton2
+          id="signup-button"
+          // disabled={!formFilled}
+          onClick={handleCredentialLoginClick}
+        >
+          {t("Sign in")}
+        </SwcButton2>
+        <Typography sx={{ textAlign: "center" }}>{t("OR")}</Typography>
+        <SwcButton2 onClick={() => googleLogin()}>
+          <GoogleSvgIcon />
+          <Box id="login-button-text">{t("Sign in with google")}</Box>
+        </SwcButton2>
       </Box>
     </Box>
   );

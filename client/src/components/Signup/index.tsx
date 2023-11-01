@@ -41,56 +41,54 @@ const SignupComponent = () => {
     console.log(user);
   };
   return (
-    <Box id="signup-root">
-      <Box id="signup-wrapper">
-        <Box id="signup-container">
-          <TextField
-            variant="outlined"
-            value={newUser.name}
-            label={t("*Name")}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setNewUser({ ...newUser, name: event.target.value });
-            }}
-          />
-          <TextField
-            variant="outlined"
-            value={newUser.email}
-            label={t("*Eamil")}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setNewUser({ ...newUser, email: event.target.value });
-            }}
-          />
-          <TextField
-            variant="outlined"
-            type="password"
-            value={newUser.password}
-            label={t("*Password")}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setNewUser({ ...newUser, password: event.target.value });
-            }}
-          />
-          <TextField
-            variant="outlined"
-            type="password"
-            value={password2}
-            label={t("*Confirm Password")}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              checkForm(event.target.value);
-            }}
-          />
-          <SwcButton2
-            id="signup-button"
-            // disabled={!formFilled}
-            onClick={signup}
-          >
-            {t("Sign Up")}
-          </SwcButton2>
-          <Typography sx={{ textAlign: "center" }}>{t("or")}</Typography>
-          <SwcButton2 onClick={() => googleLogin()}>
-            <GoogleSvgIcon />
-            <Box id="login-button-text">{t("Sign up with google")}</Box>
-          </SwcButton2>
-        </Box>
+    <Box id="signup-wrapper">
+      <Box id="signup-container">
+        <TextField
+          variant="outlined"
+          value={newUser.name}
+          label={t("*Name")}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setNewUser({ ...newUser, name: event.target.value });
+          }}
+        />
+        <TextField
+          variant="outlined"
+          value={newUser.email}
+          label={t("*Eamil")}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setNewUser({ ...newUser, email: event.target.value });
+          }}
+        />
+        <TextField
+          variant="outlined"
+          type="password"
+          value={newUser.password}
+          label={t("*Password")}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setNewUser({ ...newUser, password: event.target.value });
+          }}
+        />
+        <TextField
+          variant="outlined"
+          type="password"
+          value={password2}
+          label={t("*Confirm Password")}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            checkForm(event.target.value);
+          }}
+        />
+        <SwcButton2
+          id="signup-button"
+          // disabled={!formFilled}
+          onClick={signup}
+        >
+          {t("Sign Up")}
+        </SwcButton2>
+        <Typography sx={{ textAlign: "center" }}>{t("or")}</Typography>
+        <SwcButton2 onClick={() => googleLogin()}>
+          <GoogleSvgIcon />
+          <Box id="login-button-text">{t("Sign up with google")}</Box>
+        </SwcButton2>
       </Box>
     </Box>
   );

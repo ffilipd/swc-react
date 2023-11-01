@@ -191,7 +191,7 @@ const BookingComponent = () => {
   }, [selectedDate, selectedEquipment, selectedTime]);
 
   return (
-    <Box id="booking-root">
+    <>
       <Box id="booking-header">{t("Book equipment")}</Box>
       <Divider />
       <Box id="booking-wrapper">
@@ -363,7 +363,7 @@ const BookingComponent = () => {
           availableTypes={availableEquipment.types}
         />
       </Box>
-    </Box>
+    </>
   );
 };
 

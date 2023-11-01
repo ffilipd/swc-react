@@ -33,9 +33,10 @@ function Header() {
   const { user, logOut, googleLogin } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [userMenuAnchorEl, setUserMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [adminMenuAnchorEl, setAdminMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
   window.addEventListener("resize", () => {
@@ -51,7 +52,8 @@ function Header() {
     }
   }, [language, user]);
 
-  const accountMenuOpen = Boolean(menuAnchorEl) || false;
+  const accountMenuOpen = Boolean(userMenuAnchorEl) || false;
+  const adminMenuOpen = Boolean(adminMenuAnchorEl) || false;
 
   const updateLanguage = (newLanguage: string) => {
     setLanguage(newLanguage);
@@ -61,8 +63,29 @@ function Header() {
     e.target.value === 0
       ? null // @TODO: Implement account details fn here!
       : null;
-    setMenuAnchorEl(null);
+    setUserMenuAnchorEl(null);
   }
+  function handleAdminMenuClose(e: any) {
+    setAdminMenuAnchorEl(null);
+  }
+
+  const handleAdminItemClick = (e: any) => {
+    const target = e.target.value;
+    setAdminMenuAnchorEl(null);
+
+    // Equipment
+    if (target === 1) {
+      navigate("/admin/equipment");
+    }
+    // Users
+    if (target === 2) {
+      navigate("/admin/users");
+    }
+    // Talkoo points
+    if (target === 3) {
+      navigate("/admin/talkoo");
+    }
+  };
 
   function handleUserManagement() {
     navigate("/users");
@@ -74,7 +97,10 @@ function Header() {
   }
 
   function handleAccountMenuClick(e: React.MouseEvent<HTMLButtonElement>) {
-    setMenuAnchorEl(e.currentTarget);
+    setUserMenuAnchorEl(e.currentTarget);
+  }
+  function handleAdminMenuClick(e: React.MouseEvent<HTMLButtonElement>) {
+    setAdminMenuAnchorEl(e.currentTarget);
   }
 
   const handleAccountDetailsClick = (event: any) => {
@@ -155,12 +181,40 @@ function Header() {
             </Box>
             <Box sx={{ display: "flex" }}>
               {user?.role === "admin" && (
-                <SwcButton
-                  onClick={handleAdministrationClick}
-                  sx={{ textTransform: "none" }}
-                >
-                  {t("Administration")}
-                </SwcButton>
+                <>
+                  <Button
+                    id="login-header-btn"
+                    aria-controls={adminMenuOpen ? "account-menu" : undefined}
+                    aria-haspopup="false"
+                    aria-expanded={adminMenuOpen ? "true" : undefined}
+                    onClick={handleAdminMenuClick}
+                  >
+                    {t("Administration")}
+                    {adminMenuOpen ? (
+                      <KeyboardControlKeyIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )}
+                  </Button>
+                  <Menu
+                    anchorEl={adminMenuAnchorEl}
+                    open={adminMenuOpen}
+                    onClose={handleAdminMenuClose}
+                    MenuListProps={{
+                      "aria-labelledby": "account-button",
+                    }}
+                  >
+                    <MenuItem value={1} onClick={handleAdminItemClick}>
+                      {t("Equipment")}
+                    </MenuItem>
+                    <MenuItem value={2} onClick={handleAdminItemClick}>
+                      {t("Users")}
+                    </MenuItem>
+                    <MenuItem value={3} onClick={handleAdminItemClick}>
+                      {t("Talkoo points")}
+                    </MenuItem>
+                  </Menu>
+                </>
               )}
               {user ? (
                 <>
@@ -179,7 +233,7 @@ function Header() {
                     )}
                   </Button>
                   <Menu
-                    anchorEl={menuAnchorEl}
+                    anchorEl={userMenuAnchorEl}
                     open={accountMenuOpen}
                     onClose={handleAccountMenuClose}
                     MenuListProps={{

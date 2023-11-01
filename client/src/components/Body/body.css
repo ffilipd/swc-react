@@ -14,9 +14,15 @@
     overflow: auto;
 }
 
+#body-root {
+    display: flex;
+    flex-direction: column;
+    margin: 0 100px;
+}
+
 #footer-wrapper {
     height: 40px;
-    background-color: var(--color-dark-blue);
+    background-color: var(--color-theme-dark);
     color: #fff;
     position: fixed;
     bottom: 0;
