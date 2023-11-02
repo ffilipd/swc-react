@@ -28,6 +28,18 @@ export const addBooking = async (newBooking: NewBooking): Promise<void> => {
     }
 }
 
+export const deleteBooking = async (bookingId: string): Promise<void> => {
+    const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
+    try {
+        const res = await axios.delete(`${URL}/${bookingId}`, { headers: authHeader() })
+        return res.data.message;
+    } catch (error) {
+        throw new Error('Error deleting booking: ' + error)
+    }
+}
+
+
+
 /******* BUILD PARAMETERS *******/
 function buildParams(options: BookingSearchParams): URLSearchParams {
     // add parameters to the url

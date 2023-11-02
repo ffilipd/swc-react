@@ -9,6 +9,7 @@ import Body from "./components/Body";
 import SignupComponent from "./components/Signup";
 import MyPageComponent from "./components/MyPage";
 import AdminEquipmentComponent from "./components/Admin/equipment";
+import AdminUsersComponent from "./components/Admin/users";
 
 function App() {
   const { user } = useUser();
@@ -28,6 +29,7 @@ function App() {
                   path="/admin/equipment"
                   element={<AdminEquipmentComponent />}
                 />
+                <Route path="/admin/users" element={<AdminUsersComponent />} />
               </>
             )}
           </>

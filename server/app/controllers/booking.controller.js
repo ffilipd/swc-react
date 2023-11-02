@@ -52,7 +52,7 @@ exports.findAll = async (req, res) => {
     let bookingsWhere = usage === 'booking' ? {
         userId: userId ?? { [Op.gt]: '' },
         [Op.and]: {
-            date: { [Op.eq]: date },
+            date: { [Op.eq]: formatDate(date) },
             [Op.or]: {
                 time_from: {
                     [Op.or]: {
@@ -76,7 +76,7 @@ exports.findAll = async (req, res) => {
         }
     } : usage === 'report' ? {
         userId: userId ?? { [Op.gt]: '' },
-        date: { [Op.eq]: date },
+        date: { [Op.eq]: formatDate(date) },
     } : usage === 'edit' && {
         userId: userId ?? { [Op.gt]: '' },
     }
@@ -182,6 +182,12 @@ exports.update = (req, res) => {
 };
 
 // Delete a Booking with the specified id in the request
-exports.delete = (req, res) => {
-
+exports.delete = async (req, res) => {
+    const bookingId = req.params.id
+    try {
+        await Booking.destroy({ where: { id: bookingId } })
+        res.status(200).send({ message: 'Booking deleted!' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error deleting booking: ' + error });
+    }
 };

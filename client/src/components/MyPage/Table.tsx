@@ -1,13 +1,7 @@
 import {
   Box,
   Collapse,
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -16,10 +10,8 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
   styled,
   tableCellClasses,
-  useTheme,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -29,15 +21,12 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Booking } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
-import { KeyboardArrowRight, KeyboardArrowLeft } from "@mui/icons-material";
-import FirstPageIcon from "@mui/icons-material/FirstPage";
-import LastPageIcon from "@mui/icons-material/LastPage";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs";
+import TablePaginationActions from "../Pagination";
 
 interface BookingsProps {
   bookings: Booking[];
@@ -78,87 +67,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-interface TablePaginationActionsProps {
-  count: number;
-  page: number;
-  rowsPerPage: number;
-  onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    newPage: number
-  ) => void;
-}
-
-function TablePaginationActions(props: TablePaginationActionsProps) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
-
-  const handleFirstPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, 0);
-  };
-
-  const handleBackButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, page - 1);
-  };
-
-  const handleNextButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === "rtl" ? (
-          <KeyboardArrowRight />
-        ) : (
-          <KeyboardArrowLeft />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === "rtl" ? (
-          <KeyboardArrowLeft />
-        ) : (
-          <KeyboardArrowRight />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </Box>
-  );
-}
-
-const BookingTable = (props: BookingsProps) => {
+const MyTable = (props: BookingsProps) => {
   const {
     isMobile,
     bookings,
@@ -254,7 +163,6 @@ const BookingTable = (props: BookingsProps) => {
                     <StyledTableCell align="left">{t("From")}</StyledTableCell>
                     <StyledTableCell align="left">{t("To")}</StyledTableCell>
                     <StyledTableCell />
-                    <StyledTableCell />
                     <StyledTableCell
                       style={{ borderLeft: "3px solid white" }}
                       align="left"
@@ -277,7 +185,13 @@ const BookingTable = (props: BookingsProps) => {
                 <>
                   {Array.from(
                     new Set(
-                      bookings?.map(
+                      (rowsPerPage > 0
+                        ? bookings?.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
+                        : bookings
+                      ).map(
                         (row) => `${row.equipment_name}-${row.equipment_number}`
                       )
                     )
@@ -396,14 +310,6 @@ const BookingTable = (props: BookingsProps) => {
                       <StyledTableCell align="left">
                         {row.time_to}
                       </StyledTableCell>
-                      <StyledTableCell align="left">
-                        {!isInPast(row.date ?? "") && row.damage_type === "" ? (
-                          <EditOutlinedIcon
-                            onClick={() => handleEditBooking(row.id)}
-                            className="my-page-icon-button"
-                          />
-                        ) : null}
-                      </StyledTableCell>
                       <StyledTableCell>
                         {(isInPast(row.date ?? "") && row.damage_type === "") ||
                         (!isInPast(row.date ?? "") &&
@@ -457,6 +363,7 @@ const BookingTable = (props: BookingsProps) => {
                           isInPast(row.date ?? "") &&
                           row.damage_type === "" && (
                             <NoteAltOutlinedIcon
+                              className="my-page-icon-button"
                               onClick={() => handleCreateReportNow(row.id)}
                             />
                           )
@@ -496,5 +403,4 @@ const BookingTable = (props: BookingsProps) => {
   );
 };
 
-export default BookingTable;
-// export default {};
+export default MyTable;

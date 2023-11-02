@@ -23,7 +23,11 @@ import i18next from "i18next";
 import "./mypage.css";
 import { useEffect, useState } from "react";
 import { getEquipmentFilters } from "../../service/equipment.service";
-import { addBooking, getBookings } from "../../service/booking.service";
+import {
+  addBooking,
+  deleteBooking,
+  getBookings,
+} from "../../service/booking.service";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs";
 import {
@@ -32,7 +36,7 @@ import {
   renderTimeViewClock,
 } from "@mui/x-date-pickers";
 import { SwcButton2 } from "../../utils/buttons";
-import BookingTable from "./Table";
+import MyTable from "./Table";
 import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";
 
@@ -206,11 +210,20 @@ const MyPageComponent = () => {
 
   const [deleteBookingDialogOpen, setDeleteBookingDialogOpen] =
     useState<boolean>(false);
-
+  const [bookingToDelete, setBookingToDelete] = useState<string | null>(null);
   const handleOpenDeleteDialog = (bookingId: string) => {
     setDeleteBookingDialogOpen(true);
+    if (bookingId) setBookingToDelete(bookingId);
   };
   const handleCloseDeleteDialog = () => setDeleteBookingDialogOpen(false);
+  const handleDeleteBooking = async () => {
+    if (bookingToDelete) {
+      const message = await deleteBooking(bookingToDelete);
+      alert(message);
+      fetchBookings();
+    }
+    setDeleteBookingDialogOpen(false);
+  };
 
   const [description, setDescription] = useState<string>("");
   const [descriptionDialogOpen, setDescriptionDialogOpen] =
@@ -230,10 +243,10 @@ const MyPageComponent = () => {
 
   return (
     <>
-      <Box id="booking-header">{t("My bookings and reports")}</Box>
+      <Box id="my-page-header">{t("My bookings and reports")}</Box>
       {/* <Divider /> */}
-      <Box id="booking-wrapper">
-        <BookingTable
+      <Box id="my-page-wrapper">
+        <MyTable
           handleCreateReportNow={handleCreateReportNow}
           openDescriptionDialog={openDescriptionDialog}
           handleEditReport={handleEditReport}
@@ -262,7 +275,7 @@ const MyPageComponent = () => {
           <Button onClick={handleCloseDeleteDialog} autoFocus>
             {t("Cancel")}
           </Button>
-          <Button onClick={handleCloseDeleteDialog}>{t("Delete")}</Button>
+          <Button onClick={handleDeleteBooking}>{t("Delete")}</Button>
         </DialogActions>
       </Dialog>
       <Dialog
