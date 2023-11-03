@@ -10,6 +10,7 @@ import SignupComponent from "./components/Signup";
 import MyPageComponent from "./components/MyPage";
 import AdminEquipmentComponent from "./components/Admin/equipment";
 import AdminUsersComponent from "./components/Admin/users";
+import AccountInfoComponent from "./components/Account";
 
 function App() {
   const { user } = useUser();
@@ -23,6 +24,7 @@ function App() {
             <Route path="/booking" element={<BookingComponent />} />
             <Route path="/report" element={<ReportComponent />} />
             <Route path="/mypage" element={<MyPageComponent />} />
+            <Route path="/accountinfo" element={<AccountInfoComponent />} />
             {user.role === "admin" && (
               <>
                 <Route

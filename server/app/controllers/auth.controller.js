@@ -89,7 +89,7 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
     User.findOne({
         where: {
-            name: req.body.name
+            email: req.body.name
         }
     })
         .then(user => {

@@ -14,7 +14,7 @@ const LoginComponent = () => {
   const { credentialLogin, googleLogin } = useUser();
 
   const [credentials, setCredentials] = useState<LoginCredentials>({
-    name: "Admin",
+    name: "admin@fleetmad.com",
     password: "admin",
   });
 
@@ -28,7 +28,7 @@ const LoginComponent = () => {
         <TextField
           variant="outlined"
           value={credentials.name}
-          label={t("*Eamil or username")}
+          label={"*" + t("Email")}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setCredentials({ ...credentials, name: event.target.value });
           }}

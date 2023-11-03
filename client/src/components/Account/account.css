@@ -1,0 +1,18 @@
+#account-info-header {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    color: var(--color-theme-dark);
+    font-size: xx-large;
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+
+#account-info-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0 0 0;
+    max-height: max-content;
+    overflow-y: auto;
+}

@@ -69,6 +69,18 @@ export const updateUserProfile = async (profile: FMProfile): Promise<FMProfile> 
     }
 }
 
+
+// GET USER BY ID (ADMIN)
+export const getUserById = async (userId: string): Promise<FMProfile> => {
+    const URL: string = base_URL + API_ENDPOINTS.USERS_ID(userId);
+    try {
+        const res = await axios.get(URL, { headers: authHeader() });
+        return res.data as FMProfile;
+    } catch (error) {
+        throw new Error('Error getting user by id');
+    }
+}
+
 async function buildRequestConfig(params: { id?: string, data?: FMProfile, method: string }): Promise<AxiosRequestConfig> {
     const { id, data, method } = params
     return {

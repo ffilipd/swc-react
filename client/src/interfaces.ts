@@ -4,13 +4,6 @@ export interface Languages {
     fi: string;
 }
 
-
-export interface NewUser {
-    name: string;
-    email: string;
-    password: string;
-}
-
 export interface LoginCredentials {
     name: string;
     password: string;
@@ -77,6 +70,18 @@ export interface Report {
 
 export type FilterTargetType = "type" | "name" | "number";
 export type EquipmentFilterResponse = string[] | { id: string, number: string }[] | { id: string, name: string }[]
+
+export interface NewEquipment {
+    type: string;
+    name: string;
+    number: string;
+}
+
+export interface NewUser {
+    name: string;
+    email: string;
+    password: string;
+}
 
 export type Profile = {
     id: string;

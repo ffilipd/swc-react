@@ -103,10 +103,9 @@ function Header() {
     setAdminMenuAnchorEl(e.currentTarget);
   }
 
-  const handleAccountDetailsClick = (event: any) => {
-    // open /accountinfo with current user account details
+  const handleAccountInfoClick = (event: any) => {
     handleAccountMenuClose(event);
-    console.log("navigate to account details");
+    navigate(`/accountinfo?id=${user?.id}`);
   };
 
   const toggleDrawer = (open: boolean) => (event: any) => {
@@ -126,6 +125,7 @@ function Header() {
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
     if (clickedItem === "My Page") navigate("/mypage");
+    if (clickedItem === "Accountinfo") navigate("/accountinfo");
     if (clickedItem === "Login") navigate("/login");
     if (clickedItem === "Logout") handleLogout();
   };
@@ -240,12 +240,10 @@ function Header() {
                       "aria-labelledby": "account-button",
                     }}
                   >
-                    <MenuItem onClick={handleAccountDetailsClick}>
-                      {t("Account details")}
+                    <MenuItem onClick={handleAccountInfoClick}>
+                      {t("Account info")}
                     </MenuItem>
-                    <MenuItem value={1} onClick={handleLogout}>
-                      {t("Logout")}
-                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>{t("Logout")}</MenuItem>
                   </Menu>
                 </>
               ) : (

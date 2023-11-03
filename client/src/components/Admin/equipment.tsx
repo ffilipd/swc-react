@@ -27,6 +27,7 @@ import { useState } from "react";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import i18next from "i18next";
+import { NewEquipment } from "../../interfaces";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -77,6 +78,15 @@ const AdminEquipmentComponent = () => {
       setNewNameInputVisible(true);
     }
   };
+
+  const [newEquipment, setNewEquipment] = useState<NewEquipment>({
+    type: "",
+    name: "",
+    number: "",
+  });
+
+  const handleAddEquipmentClick = async () => {};
+
   return (
     <React.Fragment>
       <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box>
@@ -121,7 +131,7 @@ const AdminEquipmentComponent = () => {
               color="inherit"
               onClick={handleAddEquipmentDialogClose}
             >
-              save
+              {/* save */}
             </Button>
           </Toolbar>
         </AppBar>
@@ -214,9 +224,9 @@ const AdminEquipmentComponent = () => {
             </FormControl>
 
             <SwcButton2
-            // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
-            // disabled={!bookingFilledOut()}
-            // onClick={handleBookEquipmentClick}
+              // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
+              // disabled={!bookingFilledOut()}
+              onClick={handleAddEquipmentClick}
             >
               {t("Add equipment")}
             </SwcButton2>
