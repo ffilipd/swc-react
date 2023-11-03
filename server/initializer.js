@@ -27,7 +27,8 @@ const initalizeDB = async () => {
                             email: 'admin@fleetmad.com',
                             password: bcrypt.hashSync('admin', salt),
                             active: true,
-                            roleId: 3
+                            role: 'admin',
+                            access: 'all'
                         })
                     }
                 })

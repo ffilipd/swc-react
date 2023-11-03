@@ -1,5 +1,5 @@
 const db = require("../models");
-const User = db.users;
+const User = db.user;
 const Op = db.Sequelize.Op;
 const jwt = require('jsonwebtoken')
 
@@ -78,7 +78,12 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    User.findByPk(id)
+    User.findOne({
+        where: { id },
+        attributes: {
+            exclude: ['password']
+        }
+    })
         .then(data => {
             if (data) res.send(data)
             else res.status(404).send({ message: "Error retrieving User with id=" + id })

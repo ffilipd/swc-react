@@ -34,6 +34,23 @@ module.exports = (sequelize, Sequelize) => {
         role: {
             type: Sequelize.ENUM('admin', 'moderator', 'user'),
             defaultValue: 'user'
+        },
+        talkoo_points: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
+        },
+        first_point_given: {
+            type: Sequelize.DATEONLY,
+            allowNull: false,
+            defaultValue: Sequelize.fn('NOW')
+        },
+        latest_point_given: {
+            type: Sequelize.DATEONLY,
+            allowNull: false,
+            defaultValue: Sequelize.fn('NOW')
+        },
+        access: {
+            type: Sequelize.STRING
         }
     });
 
