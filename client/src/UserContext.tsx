@@ -64,8 +64,9 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    i18next.changeLanguage(user?.language);
-  }, [user]);
+    // i18next.changeLanguage(user?.language);
+    if (!user) localStorage.removeItem("user");
+  }, []);
 
   return (
     <UserContext.Provider

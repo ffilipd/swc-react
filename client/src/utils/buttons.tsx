@@ -25,6 +25,7 @@ export const SwcButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#fff",
   padding: "16px",
   borderRadius: "8px",
+  height: "46px",
   "&.Mui-focused": {
     border: "none",
   },

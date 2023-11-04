@@ -1,5 +1,6 @@
 const db = require("../models");
 const { Equipment, Type, Name } = db.equipment;
+const User = db.user;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Equipment

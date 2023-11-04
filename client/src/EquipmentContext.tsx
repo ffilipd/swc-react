@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { getEquipmentTree } from "./service/equipment.service";
 import { Equipment, EquipmentTree } from "./interfaces";
+import { useUser } from "./UserContext";
 
 type EquipmentContextType = {
   equipment: EquipmentTree | null;
@@ -22,20 +23,23 @@ type EquipmentProviderProps = {
 };
 
 const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
+  const { user } = useUser();
   const [equipment, setEquipment] = useState<EquipmentTree | null>(() => {
     const storedEquipment = localStorage.getItem("equipment");
     return storedEquipment ? JSON.parse(storedEquipment) : null;
   });
 
   const populateEquipment = async () => {
-    const equipment = await getEquipmentTree();
-    localStorage.setItem("equipment", JSON.stringify(equipment));
-    setEquipment(equipment);
+    if (user) {
+      const equipment = await getEquipmentTree(user.id);
+      localStorage.setItem("equipment", JSON.stringify(equipment));
+      setEquipment(equipment);
+    }
   };
 
   useEffect(() => {
     populateEquipment();
-  }, []);
+  }, [user]);
 
   return (
     <EquipmentContext.Provider

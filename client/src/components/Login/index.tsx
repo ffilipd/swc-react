@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Divider, TextField, Typography } from "@mui/material";
 import "./login.css";
 import { SwcButton2 } from "../../utils/buttons";
 import { GoogleSvgIcon } from "../../utils/svg-components";
@@ -8,10 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { LoginCredentials } from "../../interfaces";
+import { SecondaryText } from "../../utils/custom-elements";
 
 const LoginComponent = () => {
   const { t } = useTranslation();
   const { credentialLogin, googleLogin } = useUser();
+  const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState<LoginCredentials>({
     name: "admin@fleetmad.com",
@@ -53,6 +55,13 @@ const LoginComponent = () => {
         <SwcButton2 onClick={() => googleLogin()}>
           <GoogleSvgIcon />
           <Box id="login-button-text">{t("Sign in with google")}</Box>
+        </SwcButton2>
+        <Divider sx={{ margin: "16px 0" }} />
+        <Box sx={{ alignSelf: "center" }}>
+          <SecondaryText text={t("Don't have an account yet?")} />
+        </Box>
+        <SwcButton2 onClick={() => navigate("/signup")}>
+          {t("Sign up")}
         </SwcButton2>
       </Box>
     </Box>

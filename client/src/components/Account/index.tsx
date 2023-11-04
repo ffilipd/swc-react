@@ -70,10 +70,6 @@ const AccountInfoComponent = () => {
     if (user) {
       setUserInfo(user);
     }
-    if (equipment) {
-      console.log(equipment);
-    }
-    // if (user && userId && user.role === "admin") fetchUserDetails(userId);
   }, []);
 
   const handleChangeInfo = (event: any) => {

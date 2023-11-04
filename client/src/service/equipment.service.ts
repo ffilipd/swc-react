@@ -29,10 +29,10 @@ export async function getEquipment(_params?: EquipmentSearchParams): Promise<Equ
     }
 };
 
-export async function getEquipmentTree(): Promise<EquipmentTree> {
+export async function getEquipmentTree(userId: string): Promise<EquipmentTree> {
     const URL: string = base_URL + API_ENDPONTS.EQUIPMENT_TREE;
     try {
-        const res = await axios.get(URL, { headers: authHeader() });
+        const res = await axios.get(URL, { params: { userId: userId }, headers: authHeader() });
         return res.data;
     } catch (error) {
         throw new Error('Error getting equipment tree' + error);

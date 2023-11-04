@@ -19,13 +19,29 @@ const formatDate = (date) => {
 exports.create = async (req, res) => {
     const { date, time_from, time_to, equipmentId, userId } = req.body;
     if (!equipmentId) {
-        res.status(400).send({
+        res.send({
             message: "Content cannot be empty!"
         });
         return;
     }
 
     try {
+        // Check that user are allowed to book this equipment
+        const user = await User.findByPk(userId);
+        // users has access to
+        const userAccess = user.access.split(',');
+        // get name of the equipment user tries to book
+        const equipment = await Equipment.findOne({
+            where: { id: equipmentId },
+            include: {
+                model: Name,
+                attributes: ['name']
+            }
+        });
+        if (!userAccess.includes('all') && !userAccess.includes(equipment.equipment_name.name)) {
+            return res.send({ message: 'Looks like you cannot book this equipment' });
+        }
+
         await Booking.create({
             date: formatDate(date),
             time_from: time_from,

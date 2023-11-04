@@ -6,39 +6,69 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useUser } from "../../UserContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewUser } from "../../interfaces";
 import { signUp } from "../../service/user.service";
+import PasswordValidator from "password-validator";
+import { SmallText } from "../../utils/custom-elements";
+
+const schema = new PasswordValidator();
+
+schema
+  .is()
+  .min(8)
+  .is()
+  .max(100)
+  .has()
+  .uppercase()
+  .has()
+  .lowercase()
+  .has()
+  .digits(1)
+  .has()
+  .not()
+  .spaces()
+  .is()
+  .not()
+  .oneOf(["Passw0rd", "Password123"]);
 
 const SignupComponent = () => {
   const { t } = useTranslation();
   const { googleLogin } = useUser();
 
   const [newUser, setNewUser] = useState<NewUser>({
-    name: "test",
-    email: "testuser@test.com",
-    password: "12345",
+    name: "",
+    email: "",
+    password: "",
   });
 
-  const [password2, setPassword2] = useState<string>("12345");
+  const [password2, setPassword2] = useState<string>("");
   const [formFilled, setFormFilled] = useState<boolean>(false);
 
-  const checkForm = (password: string) => {
-    setPassword2(password);
+  useEffect(() => {
+    checkForm();
+  }, [newUser, password2]);
+
+  const checkForm = () => {
     if (
-      password === newUser.password &&
+      password2 === newUser.password &&
       newUser.name !== "" &&
       newUser.email !== "" &&
-      newUser.password !== ""
+      newUser.password !== "" &&
+      schema.validate(password2)
     ) {
-      return setFormFilled(true);
+      setFormFilled(true);
+      return true;
     }
     setFormFilled(false);
+    return false;
   };
 
   const signup = async () => {
-    const user = await signUp(newUser);
-    console.log(user);
+    if (checkForm()) {
+      const res = await signUp(newUser);
+      alert(res.data.message);
+    }
   };
   return (
     <Box id="signup-wrapper">
@@ -54,7 +84,7 @@ const SignupComponent = () => {
         <TextField
           variant="outlined"
           value={newUser.email}
-          label={t("*Eamil")}
+          label={t("*Email")}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setNewUser({ ...newUser, email: event.target.value });
           }}
@@ -74,12 +104,20 @@ const SignupComponent = () => {
           value={password2}
           label={t("*Confirm Password")}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            checkForm(event.target.value);
+            setPassword2(event.target.value);
           }}
         />
+        <Box id="password-requirement" sx={{ maxWidth: "300px" }}>
+          <SmallText>{t("Password requirements:")}</SmallText>
+          <SmallText>{"- " + t("Min. 8 characters")}</SmallText>
+          <SmallText>
+            {"- " + t("Include lower and upper case letters")}
+          </SmallText>
+          <SmallText>{"- " + t("Include number")}</SmallText>
+        </Box>
         <SwcButton2
           id="signup-button"
-          // disabled={!formFilled}
+          className={formFilled ? "" : "signup-button-disabled"}
           onClick={signup}
         >
           {t("Sign Up")}

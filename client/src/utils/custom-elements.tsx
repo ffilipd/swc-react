@@ -32,3 +32,16 @@ export const SecondaryText = ({ text, wrap }: styledTypographyType) => {
     </Typography>
   );
 };
+
+export const SmallText: React.FC<any> = ({ children }) => {
+  return (
+    <Typography
+      sx={{
+        color: "var(--color-secondary-gray)",
+        fontSize: "var(--font-size-text-xs)",
+      }}
+    >
+      {children}
+    </Typography>
+  );
+};
