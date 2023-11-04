@@ -1,16 +1,9 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import { EquipmentFilterResponse } from "../interfaces";
+import { Equipment, EquipmentFilterResponse, EquipmentTree } from "../interfaces";
 
 
-interface Equipment {
-    [key: string]: {
-        type: string;
-        equipment_name: string;
-        swc_number: string;
-        size?: string; // Optional property for windsurfing boards and sails
-    };
-}
+
 
 interface EquipmentSearchParams {
     type?: string;
@@ -21,6 +14,7 @@ interface EquipmentSearchParams {
 const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPONTS = {
     EQUIPMENT: '/equipment',
+    EQUIPMENT_TREE: '/equipment/tree',
     FILTERS: '/equipment/filters'
 }
 
@@ -32,6 +26,16 @@ export async function getEquipment(_params?: EquipmentSearchParams): Promise<Equ
         return res.data;
     } catch (error) {
         throw new Error('Error getting equipment' + error);
+    }
+};
+
+export async function getEquipmentTree(): Promise<EquipmentTree> {
+    const URL: string = base_URL + API_ENDPONTS.EQUIPMENT_TREE;
+    try {
+        const res = await axios.get(URL, { headers: authHeader() });
+        return res.data;
+    } catch (error) {
+        throw new Error('Error getting equipment tree' + error);
     }
 };
 

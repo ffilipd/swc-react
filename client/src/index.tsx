@@ -9,6 +9,7 @@ import i18n from "./i18next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import config from "./oauth-config";
 import { UserProvider } from "./UserContext";
+import { EquipmentProvider } from "./EquipmentContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") ?? new Element()
@@ -17,13 +18,15 @@ const root = ReactDOM.createRoot(
 root.render(
   <GoogleOAuthProvider clientId={config.googleOAuthClientId}>
     <UserProvider>
-      <Router>
-        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </I18nextProvider>
-      </Router>
+      <EquipmentProvider>
+        <Router>
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </I18nextProvider>
+        </Router>
+      </EquipmentProvider>
     </UserProvider>
   </GoogleOAuthProvider>
 );

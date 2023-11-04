@@ -77,6 +77,23 @@ export interface NewEquipment {
     number: string;
 }
 
+export interface EquipmentTree {
+    typeName: string;
+    names: {
+        name: string;
+        numbers: string[];
+    }[]
+}
+
+export interface Equipment {
+    [key: string]: {
+        type: string;
+        equipment_name: string;
+        swc_number: string;
+        size?: string; // Optional property for windsurfing boards and sails
+    };
+}
+
 export interface NewUser {
     name: string;
     email: string;

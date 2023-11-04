@@ -85,7 +85,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
               </ListItem>
               <ListItem>
                 <ListItemButton
-                  onClick={() => handleMenuItemClick("Account details")}
+                  onClick={() => handleMenuItemClick("Accountinfo")}
                 >
                   <ListItemText primary={t("Account details")} />
                 </ListItemButton>
