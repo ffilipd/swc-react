@@ -22,6 +22,11 @@ module.exports = app => {
         [authJwt.verifyToken],
         equipment.findAll);
 
+    // Retrieve equipment tree
+    router.get("/tree",
+        [authJwt.verifyToken],
+        equipment.findEquipmentTree);
+
     // Retrieve equipment filters
     router.get("/filters",
         [authJwt.verifyToken],

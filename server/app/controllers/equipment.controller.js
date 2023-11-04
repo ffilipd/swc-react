@@ -18,6 +18,41 @@ exports.findAll = async (req, res) => {
     }
 };
 
+// Retrieve Equipment Tree from the database.
+exports.findEquipmentTree = async (req, res) => {
+    try {
+        const equipmentTree = await Type.findAll({
+            include: [
+                {
+                    model: Name,
+                    include: [
+                        {
+                            model: Equipment,
+                            attributes: ['number']
+                        }
+                    ],
+                    attributes: ['name']
+                }
+            ],
+            attributes: ['name']
+        });
+
+        const formattedEquipmentTree = equipmentTree.map(type => {
+            const typeName = type.name;
+            const names = type.equipment_names.map(name => {
+                const nameString = name.name;
+                const numbers = name.equipment.map(equipment => equipment.number).sort();
+                return { name: nameString, numbers };
+            });
+            return { typeName, names };
+        });
+
+        res.send(formattedEquipmentTree);
+    } catch (error) {
+        res.status(500).send({ message: 'Error fetching equipment tree' });
+    }
+};
+
 // Retrieve Equipment filters.
 exports.findFilters = async (req, res) => {
     try {
