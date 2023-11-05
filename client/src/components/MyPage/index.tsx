@@ -35,7 +35,7 @@ import {
   MobileTimePicker,
   renderTimeViewClock,
 } from "@mui/x-date-pickers";
-import { SwcButton2 } from "../../utils/buttons";
+import { FmButton2 } from "../../utils/buttons";
 import MyTable from "./Table";
 import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";

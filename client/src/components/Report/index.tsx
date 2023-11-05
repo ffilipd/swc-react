@@ -43,7 +43,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import i18next from "i18next";
 import React from "react";
-import { SwcButton2 } from "../../utils/buttons";
+import { FmButton2 } from "../../utils/buttons";
 import {
   addReport,
   getDamageTypes,
@@ -416,7 +416,7 @@ const ReportComponent = () => {
             value={newReport.description}
             onChange={addDescription}
           />
-          <SwcButton2
+          <FmButton2
             id={
               !reportFilledOut()
                 ? "submit-disabled-button"
@@ -426,7 +426,7 @@ const ReportComponent = () => {
             onClick={handleSubmitReportClick}
           >
             {t("Submit Report")}
-          </SwcButton2>
+          </FmButton2>
         </Box>
       </Box>
       <Dialog

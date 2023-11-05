@@ -25,7 +25,7 @@ import {
   MobileTimePicker,
   renderTimeViewClock,
 } from "@mui/x-date-pickers";
-import { SwcButton2 } from "../../utils/buttons";
+import { FmButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";
@@ -346,13 +346,13 @@ const BookingComponent = () => {
                 ))}
               </Select>
             </FormControl>
-            <SwcButton2
+            <FmButton2
               id={!bookingFilledOut() ? "disabled-button" : "book-button"}
               disabled={!bookingFilledOut()}
               onClick={handleBookEquipmentClick}
             >
               {t("Book")}
-            </SwcButton2>
+            </FmButton2>
           </Box>
         </Box>
         <BookingTable

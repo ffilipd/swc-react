@@ -1,6 +1,6 @@
 import { Box, Divider, TextField, Typography } from "@mui/material";
 import "./login.css";
-import { SwcButton2 } from "../../utils/buttons";
+import { FmButton2 } from "../../utils/buttons";
 import { GoogleSvgIcon } from "../../utils/svg-components";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useUser } from "../../UserContext";
@@ -44,25 +44,25 @@ const LoginComponent = () => {
             setCredentials({ ...credentials, password: event.target.value });
           }}
         />
-        <SwcButton2
+        <FmButton2
           id="signup-button"
           // disabled={!formFilled}
           onClick={handleCredentialLoginClick}
         >
           {t("Sign in")}
-        </SwcButton2>
+        </FmButton2>
         <Typography sx={{ textAlign: "center" }}>{t("OR")}</Typography>
-        <SwcButton2 onClick={() => googleLogin()}>
+        <FmButton2 onClick={() => googleLogin()}>
           <GoogleSvgIcon />
           <Box id="login-button-text">{t("Sign in with google")}</Box>
-        </SwcButton2>
+        </FmButton2>
         <Divider sx={{ margin: "16px 0" }} />
         <Box sx={{ alignSelf: "center" }}>
           <SecondaryText text={t("Don't have an account yet?")} />
         </Box>
-        <SwcButton2 onClick={() => navigate("/signup")}>
+        <FmButton2 onClick={() => navigate("/signup")}>
           {t("Sign up")}
-        </SwcButton2>
+        </FmButton2>
       </Box>
     </Box>
   );

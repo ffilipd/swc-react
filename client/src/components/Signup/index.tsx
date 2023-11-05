@@ -1,6 +1,6 @@
 import { Box, TextField, Typography } from "@mui/material";
 import "./signup.css";
-import { SwcButton2 } from "../../utils/buttons";
+import { FmButton2 } from "../../utils/buttons";
 import { GoogleSvgIcon } from "../../utils/svg-components";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useUser } from "../../UserContext";
@@ -115,18 +115,18 @@ const SignupComponent = () => {
           </SmallText>
           <SmallText>{"- " + t("Include number")}</SmallText>
         </Box>
-        <SwcButton2
+        <FmButton2
           id="signup-button"
           className={formFilled ? "" : "signup-button-disabled"}
           onClick={signup}
         >
           {t("Sign Up")}
-        </SwcButton2>
+        </FmButton2>
         <Typography sx={{ textAlign: "center" }}>{t("or")}</Typography>
-        <SwcButton2 onClick={() => googleLogin()}>
+        <FmButton2 onClick={() => googleLogin()}>
           <GoogleSvgIcon />
           <Box id="login-button-text">{t("Sign up with google")}</Box>
-        </SwcButton2>
+        </FmButton2>
       </Box>
     </Box>
   );

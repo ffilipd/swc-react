@@ -565,6 +565,80 @@ export const HssFleetLogo2 = (): any => {
     </svg>
   );
 };
+export const FleetControlLogoTextWhite = (): any => {
+  return (
+    <svg
+      viewBox="-254.7654 50.955 223.1299 336.8491"
+      height="100"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="https://boxy-svg.com"
+    >
+      <defs>
+        <style>
+          @import
+          url(https://fonts.googleapis.com/css2?family=Megrim%3Aital%2Cwght%400%2C400&amp;display=swap);
+        </style>
+      </defs>
+      <path
+        fill="#fff"
+        stroke="#fff"
+        d="M -140.328 50.955 C -141.969 51.805 -156.121 50.494 -159.745 52.547 C -171.915 59.443 -200.51 140.763 -254.497 337.019 C -260.287 343.045 -170.805 347.922 -140.513 337.334 L -140.328 50.955 Z"
+      />
+      <path
+        fill="#fff"
+        stroke="#fff"
+        d="M -134.773 108.578 L -31.797 348.627 C -44.056 351.627 -99.646 356.88 -133.773 336.061 L -134.773 108.578 Z"
+      />
+      <text
+        style={{
+          fontFamily: "Megrim",
+          fill: "#fff",
+          stroke: "#fff",
+          fontSize: "33px",
+        }}
+        x="-253.014"
+        y="380.804"
+      >
+        Fleet Control
+        <tspan x="-253.01400756835938" dy="1em"></tspan>
+      </text>
+    </svg>
+  );
+};
+
+export const FleetControlTextWhite = (): any => {
+  return (
+    <svg
+      viewBox="23.1175 -86.3753 429.3906 69.0025"
+      width="300"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="https://boxy-svg.com"
+    >
+      <defs>
+        <style>
+          @import
+          url(https://fonts.googleapis.com/css2?family=Megrim%3Aital%2Cwght%400%2C400&amp;display=swap);
+        </style>
+      </defs>
+      <text
+        style={{
+          fontFamily: "Megrim",
+          fill: "#fff",
+          stroke: "#fff",
+          fontSize: "63px",
+        }}
+        transform="matrix(1, 0, 0, 1, 276.1315002441406, -411.17724609375)"
+      >
+        <tspan x="-253.014" y="380.804">
+          Fleet Control
+        </tspan>
+        <tspan x="-253.014" dy="1em">
+          ​
+        </tspan>
+      </text>
+    </svg>
+  );
+};
 
 export const GoogleSvgIcon = (): any => {
   return (
@@ -598,6 +672,25 @@ export const GoogleSvgIcon = (): any => {
         />
         <path d="M48 48L17 24l-4-3 35-10z" clipPath="url(#B)" fill="#4285f4" />
       </g>
+    </svg>
+  );
+};
+
+export const FMLogoWhite = (): any => {
+  return (
+    <svg
+      viewBox="137.1446 69.534 222.9684 300.5466"
+      width="50"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill="#fff"
+        d="M 251.582 69.534 C 249.941 70.384 235.789 69.073 232.165 71.126 C 219.995 78.022 191.4 159.342 137.413 355.598 C 131.623 361.624 221.105 366.501 251.397 355.913 L 251.582 69.534 Z"
+      />
+      <path
+        fill="#fff"
+        d="M 257.137 127.157 L 360.113 367.206 C 347.854 370.206 292.264 375.459 258.137 354.64 L 257.137 127.157 Z"
+      />
     </svg>
   );
 };

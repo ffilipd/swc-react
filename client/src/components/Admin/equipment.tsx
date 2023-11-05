@@ -22,7 +22,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import "./equipment.css";
-import { SwcButton2 } from "../../utils/buttons";
+import { FmButton2 } from "../../utils/buttons";
 import { useState } from "react";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
@@ -92,15 +92,12 @@ const AdminEquipmentComponent = () => {
       <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box>
       <Divider />
       <Box id="admin-equipment-wrapper">
-        <SwcButton2
-          className="admin-equipment-button"
-          onClick={handleEditClick}
-        >
+        <FmButton2 className="admin-equipment-button" onClick={handleEditClick}>
           {t("Edit")}
-        </SwcButton2>
-        <SwcButton2 className="admin-equipment-button" onClick={handleAddClick}>
+        </FmButton2>
+        <FmButton2 className="admin-equipment-button" onClick={handleAddClick}>
           {t("Add new")}
-        </SwcButton2>
+        </FmButton2>
       </Box>
       <Dialog
         fullScreen
@@ -223,13 +220,13 @@ const AdminEquipmentComponent = () => {
               <Divider sx={{ margin: "16px 0 0 0" }} />
             </FormControl>
 
-            <SwcButton2
+            <FmButton2
               // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
               // disabled={!bookingFilledOut()}
               onClick={handleAddEquipmentClick}
             >
               {t("Add equipment")}
-            </SwcButton2>
+            </FmButton2>
           </Box>
         </Box>
       </Dialog>
@@ -355,13 +352,13 @@ const AdminEquipmentComponent = () => {
               <Divider sx={{ margin: "16px 0 0 0" }} />
             </FormControl>
 
-            <SwcButton2
+            <FmButton2
             // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
             // disabled={!bookingFilledOut()}
             // onClick={handleBookEquipmentClick}
             >
               {t("Edit")}
-            </SwcButton2>
+            </FmButton2>
           </Box>
         </Box>
       </Dialog>

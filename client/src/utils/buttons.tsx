@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Button, ButtonProps } from "@mui/material";
 
-export const SwcButton = styled(Button)<ButtonProps>(({ theme }) => ({
+export const FmButton = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
   border: "none",
   color: "#fff",
@@ -18,10 +18,10 @@ export const SwcButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
-export const SwcButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
+export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
   border: "none",
-  backgroundColor: "#002855",
+  backgroundColor: "#104462",
   color: "#fff",
   padding: "16px",
   borderRadius: "8px",

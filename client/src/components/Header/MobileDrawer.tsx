@@ -6,7 +6,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { SwcButton } from "../../utils/buttons";
+import { FmButton } from "../../utils/buttons";
 import { useEffect, useState } from "react";
 import { ExpandMore, ExpandLess, Key, Language } from "@mui/icons-material";
 import { FMProfile, Languages } from "../../interfaces";
@@ -50,7 +50,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = (props) => {
 
   return (
     <>
-      <SwcButton onClick={toggleDrawer(true)}>{t("Menu")}</SwcButton>
+      <FmButton onClick={toggleDrawer(true)}>{t("Menu")}</FmButton>
       <Drawer
         id="drawer"
         transitionDuration={500}

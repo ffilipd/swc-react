@@ -9,10 +9,15 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { HssFleetLogo2, HssLogo2 } from "../../utils/svg-components";
+import {
+  FMLogoWhite,
+  FleetControlLogoTextWhite,
+  FleetControlTextWhite,
+  HssFleetLogo2,
+} from "../../utils/svg-components";
 import "./header.css";
 import { useTranslation } from "react-i18next";
-import { SwcButton } from "../../utils/buttons";
+import { FmButton } from "../../utils/buttons";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardControlKeyIcon from "@mui/icons-material/KeyboardControlKey";
 // import LanguageSharpIcon from "@mui/icons-material/LanguageSharp";
@@ -136,13 +141,14 @@ function Header() {
 
   return (
     <Box id="header-wrapper">
-      <Box id={"hss-logo"}>
-        <HssLogo2 />
-      </Box>
+      {isMobile === false && (
+        <Box id={"fm-logo"}>
+          <FMLogoWhite />
+        </Box>
+      )}
       <Box id="header-and-buttongroup">
         <Box id="swc-header-text">
-          {/* <SwcTextLogo width={350} /> */}
-          <HssFleetLogo2 />
+          <FleetControlTextWhite />
         </Box>
         {isMobile ? (
           <MobileDrawer
@@ -168,16 +174,16 @@ function Header() {
             aria-label="header button group"
           >
             <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
-              <SwcButton onClick={() => navigate("/")}>{t("Home")}</SwcButton>
-              <SwcButton onClick={() => navigate("/report")}>
+              <FmButton onClick={() => navigate("/")}>{t("Home")}</FmButton>
+              <FmButton onClick={() => navigate("/report")}>
                 {t("Report")}
-              </SwcButton>
-              <SwcButton onClick={() => navigate("/booking")}>
+              </FmButton>
+              <FmButton onClick={() => navigate("/booking")}>
                 {t("Book equipment")}
-              </SwcButton>
-              <SwcButton onClick={() => navigate("/mypage")}>
+              </FmButton>
+              <FmButton onClick={() => navigate("/mypage")}>
                 {t("My Page")}
-              </SwcButton>
+              </FmButton>
             </Box>
             <Box sx={{ display: "flex" }}>
               {user?.role === "admin" && (
@@ -247,9 +253,9 @@ function Header() {
                   </Menu>
                 </>
               ) : (
-                <SwcButton onClick={() => navigate("/login")}>
+                <FmButton onClick={() => navigate("/login")}>
                   {t("Login")}
-                </SwcButton>
+                </FmButton>
               )}
               <Select
                 variant="outlined"
