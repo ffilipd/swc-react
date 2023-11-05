@@ -70,6 +70,14 @@ const AccountInfoComponent = () => {
     if (user) {
       setUserInfo(user);
     }
+    if (equipment) {
+      equipment.map((type) => {
+        // console.log(type.names);
+        type.names.map((name: any) => {
+          // console.log(name.name);
+        });
+      });
+    }
   }, []);
 
   const handleChangeInfo = (event: any) => {
@@ -79,7 +87,48 @@ const AccountInfoComponent = () => {
     if (name === "role") setUserInfo({ ...userInfo, role: value });
   };
 
-  const [sailboatsChecked, setSailboatsChecked] = useState<boolean>(false);
+  const [checkedType, setCheckedType] = useState<string[]>([""]);
+  const handleToggleType = (value: string) => () => {
+    const currentIndex = checkedType.indexOf(value);
+    const newChecked = [...checkedType];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setCheckedType(newChecked);
+  };
+
+  const [checkedName, setCheckedName] = useState<string[]>([""]);
+  const handleToggleName = (value: string) => () => {
+    const currentIndex = checkedName.indexOf(value);
+    const newChecked = [...checkedName];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setCheckedName(newChecked);
+  };
+
+  const [checkedAllNames, setCheckedAllNames] = useState<string[]>([""]);
+  const handleToggleAllNames = (value: string) => () => {
+    const currentIndex = checkedAllNames.indexOf(value);
+    const newChecked = [...checkedAllNames];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setCheckedAllNames(newChecked);
+  };
+
   return (
     <React.Fragment>
       <Box id="account-info-header">
@@ -141,33 +190,115 @@ const AccountInfoComponent = () => {
               <ListItemText>{t("Sailboats")}</ListItemText>
               <Switch
                 edge="start"
-                // value={sailboatsChecked}
-                onChange={(e) => {
-                  console.log(e.target.value);
-                }}
+                checked={checkedType.indexOf("Sailboat") !== -1}
+                onChange={handleToggleType("Sailboat")}
               />
             </ListItem>
-            {sailboatsChecked && (
-              <>
-                <ListItem disablePadding>
-                  <Checkbox value={"J70"} />
-                  <Typography>J/70</Typography>
-                </ListItem>
-                <ListItem disablePadding>
-                  <Checkbox />
-                  <Typography>Elliott 6M</Typography>
-                </ListItem>
-                <ListItem disablePadding>
-                  <Checkbox />
-                  <Typography>RS Toura</Typography>
-                </ListItem>
-              </>
+            {checkedType.indexOf("Sailboat") !== -1 && (
+              <Box className="access-checkbox-list">
+                <>
+                  <ListItemButton
+                    dense
+                    onClick={handleToggleAllNames("Sailboat")}
+                    key={"Sailboat"}
+                  >
+                    <ListItem disablePadding>
+                      <Checkbox
+                        edge="start"
+                        checked={checkedAllNames.indexOf("Sailboat") !== -1}
+                      />
+                      <Typography>{t("All")}</Typography>
+                    </ListItem>
+                  </ListItemButton>
+                  {equipment?.map((type) => {
+                    if (type.typeName === "Sailboat") {
+                      return type.names.map((name: any, i: number) => {
+                        return (
+                          <ListItem
+                            className="access-name-item"
+                            disablePadding
+                            key={name.name}
+                          >
+                            <ListItemButton
+                              dense
+                              onClick={handleToggleName(name.name)}
+                              disableRipple
+                            >
+                              <Checkbox
+                                tabIndex={-1}
+                                checked={
+                                  checkedName.indexOf(name.name) !== -1 ||
+                                  checkedAllNames.indexOf(type.typeName) !== -1
+                                }
+                              />
+                              <Typography>{name.name}</Typography>
+                            </ListItemButton>
+                          </ListItem>
+                        );
+                      });
+                    }
+                    return [];
+                  })}
+                </>
+              </Box>
             )}
             <ListItem disablePadding>
               <DirectionsBoatFilledIcon className="access-icon" />
               <ListItemText>{t("Motorboats")}</ListItemText>
-              <Switch edge="start" />
+              <Switch
+                edge="start"
+                checked={checkedType.indexOf("Motorboat") !== -1}
+                onChange={handleToggleType("Motorboat")}
+              />
             </ListItem>
+            {checkedType.includes("Motorboat") && (
+              <Box className="access-checkbox-list">
+                <>
+                  <ListItemButton
+                    dense
+                    role={undefined}
+                    onClick={handleToggleAllNames("Motorboat")}
+                    key={"Motorboat"}
+                  >
+                    <ListItem disablePadding>
+                      <Checkbox
+                        edge="start"
+                        checked={checkedAllNames.indexOf("Motorboat") !== -1}
+                      />
+                      <Typography>{t("All")}</Typography>
+                    </ListItem>
+                  </ListItemButton>
+                  {equipment?.map((type) => {
+                    if (type.typeName === "Motorboat") {
+                      return type.names.map((name: any, i: number) => {
+                        return (
+                          <ListItem
+                            className="access-name-item"
+                            disablePadding
+                            key={name.name}
+                          >
+                            <ListItemButton
+                              role={undefined}
+                              dense
+                              onClick={handleToggleName(name.name)}
+                            >
+                              <Checkbox
+                                checked={
+                                  checkedName.indexOf(name.name) !== -1 ||
+                                  checkedAllNames.indexOf(type.typeName) !== -1
+                                }
+                              />
+                              <Typography>{name.name}</Typography>
+                            </ListItemButton>
+                          </ListItem>
+                        );
+                      });
+                    }
+                    return [];
+                  })}
+                </>
+              </Box>
+            )}
             <ListItem disablePadding>
               <SurfingIcon className="access-icon" />
               <ListItemText>{t("Windsurfing")}</ListItemText>

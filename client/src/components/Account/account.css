@@ -38,9 +38,17 @@
     margin-top: 16px;
 }
 
-.access-icon{
+#account-info-wrapper .access-icon{
     padding: 0 16px 0 0 ;
     color: var(--color-theme-dark);
+}
+
+#account-info-wrapper .access-name-item{
+    /* margin: -10px 0 -10px 0; */
+}
+
+#account-info-wrapper .access-checkbox-list{
+    margin: 0 0 25px 0;
 }
 
 @media only screen and (max-width:600px) {

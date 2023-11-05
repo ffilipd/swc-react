@@ -78,6 +78,7 @@ export interface NewEquipment {
 }
 
 export interface EquipmentTree {
+    map(arg0: (type: any) => void): unknown;
     typeName: string;
     names: {
         name: string;
