@@ -78,6 +78,7 @@ export interface NewEquipment {
 }
 
 export interface EquipmentTree {
+    find(arg0: (equipment: any) => boolean): unknown;
     map(arg0: (type: any) => void): unknown;
     typeName: string;
     names: {
@@ -124,4 +125,5 @@ export interface FMProfile {
     last_login: string;
     language: Language;
     role: UserRole;
+    access: string;
 }

@@ -51,11 +51,14 @@ function Header() {
   // Update page when language changes
   useEffect(() => {
     i18next.changeLanguage(language);
+  }, [language]);
+
+  useEffect(() => {
     if (user?.language) {
       i18next.changeLanguage(user.language);
       setLanguage(user.language);
     }
-  }, [language, user]);
+  }, [user]);
 
   const accountMenuOpen = Boolean(userMenuAnchorEl) || false;
   const adminMenuOpen = Boolean(adminMenuAnchorEl) || false;
@@ -185,11 +188,11 @@ function Header() {
                 {t("My Page")}
               </FmButton>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex" }} id="right-button-group">
               {user?.role === "admin" && (
                 <>
                   <Button
-                    id="login-header-btn"
+                    className="login-header-btn"
                     aria-controls={adminMenuOpen ? "account-menu" : undefined}
                     aria-haspopup="false"
                     aria-expanded={adminMenuOpen ? "true" : undefined}
@@ -225,7 +228,7 @@ function Header() {
               {user ? (
                 <>
                   <Button
-                    id="login-header-btn"
+                    className="login-header-btn"
                     aria-controls={accountMenuOpen ? "account-menu" : undefined}
                     aria-haspopup="false"
                     aria-expanded={accountMenuOpen ? "true" : undefined}
@@ -253,11 +256,12 @@ function Header() {
                   </Menu>
                 </>
               ) : (
-                <FmButton onClick={() => navigate("/login")}>
+                <FmButton id="login-button" onClick={() => navigate("/login")}>
                   {t("Login")}
                 </FmButton>
               )}
               <Select
+                id="language-button"
                 variant="outlined"
                 className="swc-select"
                 sx={{

@@ -11,6 +11,8 @@ import { useUser } from "./UserContext";
 
 type EquipmentContextType = {
   equipment: EquipmentTree | null;
+  sailboatNames: string[];
+  motorboatNames: string[];
   populateEquipment: () => void;
 };
 
@@ -28,12 +30,23 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
     const storedEquipment = localStorage.getItem("equipment");
     return storedEquipment ? JSON.parse(storedEquipment) : null;
   });
+  const [sailboatNames, setSailboatNames] = useState<string[]>([]);
+  const [motorboatNames, setMotorboatNames] = useState<string[]>([]);
 
   const populateEquipment = async () => {
     if (user) {
       const equipment = await getEquipmentTree(user.id);
       localStorage.setItem("equipment", JSON.stringify(equipment));
       setEquipment(equipment);
+
+      const sailboats: any = equipment.find(
+        (type) => type.typeName === "Sailboat"
+      );
+      setSailboatNames(sailboats.names.map((nameObj: any) => nameObj.name));
+      const motorboats: any = equipment.find(
+        (type) => type.typeName === "Motorboat"
+      );
+      setMotorboatNames(motorboats.names.map((nameObj: any) => nameObj.name));
     }
   };
 
@@ -45,6 +58,8 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
     <EquipmentContext.Provider
       value={{
         equipment,
+        sailboatNames,
+        motorboatNames,
         populateEquipment,
       }}
     >

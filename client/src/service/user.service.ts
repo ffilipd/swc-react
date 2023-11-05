@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios"
 import { FMProfile, LoginCredentials, NewUser, Profile } from "../interfaces";
 import authHeader from "./auth-header";
+import { useUser } from "../UserContext";
+
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPOINTS = {
@@ -53,7 +55,7 @@ export const createUser = async (googleProfile: Profile): Promise<FMProfile> => 
 };
 
 // UPDATE USER PROFILE
-export const updateUserProfile = async (profile: FMProfile): Promise<FMProfile> => {
+export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<any> => {
     const prefillParams: (keyof FMProfile)[] = ['language', 'role'];
     for (const key of prefillParams) {
         if (!profile[key] && key === 'language') profile[key] = 'en';
@@ -81,16 +83,12 @@ export const getUserById = async (userId: string): Promise<FMProfile> => {
     }
 }
 
-async function buildRequestConfig(params: { id?: string, data?: FMProfile, method: string }): Promise<AxiosRequestConfig> {
+async function buildRequestConfig(params: { id?: string, data?: Partial<FMProfile>, method: string }): Promise<AxiosRequestConfig> {
     const { id, data, method } = params
     return {
         method: method,
         url: base_URL + (id ? API_ENDPOINTS.USERS_ID(id) : API_ENDPOINTS.USERS),
-        // headers: {
-        //     Authorization: await requestToken(),
-        //     setContentType: 'application/json',
-        //     Accept: 'application/json'
-        // },
+        headers: authHeader(),
         data: data || undefined,
         // params: filterParams !== undefined ? buildParams(filterParams) : undefined
     }

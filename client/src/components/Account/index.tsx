@@ -14,12 +14,13 @@ import {
   Switch,
   Typography,
   ListItemButton,
+  Collapse,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useUser } from "../../UserContext";
 import { FMProfile, UserRole } from "../../interfaces";
-import { getUserById } from "../../service/user.service";
+import { getUserById, updateUserProfile } from "../../service/user.service";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import "./account.css";
@@ -29,13 +30,15 @@ import SailingIcon from "@mui/icons-material/Sailing";
 import DirectionsBoatFilledIcon from "@mui/icons-material/DirectionsBoatFilled";
 import SurfingIcon from "@mui/icons-material/Surfing";
 import { useEquipment } from "../../EquipmentContext";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { FmButton, FmButton2 } from "../../utils/buttons";
 
 const AccountInfoComponent = () => {
   const [searchParams] = useSearchParams();
-  const userId: string | null = searchParams.get("id");
+  const searchId: string | null = searchParams.get("id");
   const { t } = useTranslation();
-  const { user } = useUser();
-  const { equipment } = useEquipment();
+  const { user, setUser } = useUser();
+  const { equipment, sailboatNames, motorboatNames } = useEquipment();
 
   const labels = {
     selectRole: i18next.t("Role"),
@@ -55,52 +58,35 @@ const AccountInfoComponent = () => {
     last_login: "",
     language: "en",
     role: "viewer",
+    access: "",
   });
 
-  const fetchUserDetails = async (id: string) => {
+  // If admin is accessing other than own account info
+  const fetchUserDetails = async (userId: string) => {
     try {
-      const res = await getUserById(id);
+      const res = await getUserById(userId);
       setUserInfo(res);
     } catch (err) {
       alert("Error fetching user data: " + err);
     }
   };
 
+  // When page is loaded, check if admin is browsing other user than self
   useEffect(() => {
-    if (user) {
-      setUserInfo(user);
-    }
-    if (equipment) {
-      equipment.map((type) => {
-        // console.log(type.names);
-        type.names.map((name: any) => {
-          // console.log(name.name);
-        });
-      });
-    }
+    if (user && searchId && user.role === "admin" && searchId !== user.id) {
+      fetchUserDetails(searchId);
+    } else if (user) setUserInfo(user);
   }, []);
 
-  const handleChangeInfo = (event: any) => {
-    const { name, value } = event.target;
-    if (name === "language") setUserInfo({ ...userInfo, language: value });
-    if (name === "name") setUserInfo({ ...userInfo, name: value });
-    if (name === "role") setUserInfo({ ...userInfo, role: value });
-  };
-
-  const [checkedType, setCheckedType] = useState<string[]>([""]);
-  const handleToggleType = (value: string) => () => {
-    const currentIndex = checkedType.indexOf(value);
-    const newChecked = [...checkedType];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+  useEffect(() => {
+    if (userInfo.id !== "") {
+      // Set existing access
+      const accessList = userInfo.access?.split(",");
+      setCheckedName(accessList);
     }
+  }, [userInfo]);
 
-    setCheckedType(newChecked);
-  };
-
+  // Handle checkboxes for equipment access
   const [checkedName, setCheckedName] = useState<string[]>([""]);
   const handleToggleName = (value: string) => () => {
     const currentIndex = checkedName.indexOf(value);
@@ -113,20 +99,51 @@ const AccountInfoComponent = () => {
     }
 
     setCheckedName(newChecked);
+    handleChangeAccess(newChecked);
   };
 
-  const [checkedAllNames, setCheckedAllNames] = useState<string[]>([""]);
-  const handleToggleAllNames = (value: string) => () => {
-    const currentIndex = checkedAllNames.indexOf(value);
-    const newChecked = [...checkedAllNames];
+  // Handle list collapse
+  const [sailboatsOpen, setSailboatsOpen] = useState<boolean>(false);
+  const [motorboatsOpen, setMotorboatsOpen] = useState<boolean>(false);
+  const [windsurfingOpen, setWindsurfingOpen] = useState<boolean>(false);
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+  const handleCollapseClick = (target: string) => {
+    if (target === "sailboats") {
+      if (sailboatsOpen) return setSailboatsOpen(false);
+      setSailboatsOpen(true);
     }
+    if (target === "motorboats") {
+      if (motorboatsOpen) return setMotorboatsOpen(false);
+      setMotorboatsOpen(true);
+    }
+    if (target === "windsurfing") {
+      if (windsurfingOpen) return setWindsurfingOpen(false);
+      setWindsurfingOpen(true);
+    }
+  };
 
-    setCheckedAllNames(newChecked);
+  const handleChangeInfo = (event: any) => {
+    const { name, value } = event.target;
+    if (name === "language") setUserInfo({ ...userInfo, language: value });
+    if (name === "name") setUserInfo({ ...userInfo, name: value });
+    if (name === "role") setUserInfo({ ...userInfo, role: value });
+  };
+
+  const handleChangeAccess = async (accessList: string[]) => {
+    setUserInfo({ ...userInfo, access: accessList.join(",") });
+  };
+
+  const handleClickSave = async () => {
+    const { id, name, language, role, access } = userInfo;
+    const newUserData: Partial<FMProfile> = {
+      id,
+      name,
+      language,
+      role,
+      access,
+    };
+    const { message } = await updateUserProfile(newUserData);
+    alert(message);
   };
 
   return (
@@ -185,31 +202,16 @@ const AccountInfoComponent = () => {
           <Box className="account-info-input">
             <DarkThemeHeader text={t("Access control")} />
             <Divider />
-            <ListItem disablePadding>
-              <SailingIcon className="access-icon" />
-              <ListItemText>{t("Sailboats")}</ListItemText>
-              <Switch
-                edge="start"
-                checked={checkedType.indexOf("Sailboat") !== -1}
-                onChange={handleToggleType("Sailboat")}
-              />
-            </ListItem>
-            {checkedType.indexOf("Sailboat") !== -1 && (
+            <ListItemButton onClick={() => handleCollapseClick("sailboats")}>
+              <ListItem disablePadding>
+                <SailingIcon className="access-icon" />
+                <ListItemText>{t("Sailboats")}</ListItemText>
+                {sailboatsOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+            </ListItemButton>
+            <Collapse in={sailboatsOpen}>
               <Box className="access-checkbox-list">
                 <>
-                  <ListItemButton
-                    dense
-                    onClick={handleToggleAllNames("Sailboat")}
-                    key={"Sailboat"}
-                  >
-                    <ListItem disablePadding>
-                      <Checkbox
-                        edge="start"
-                        checked={checkedAllNames.indexOf("Sailboat") !== -1}
-                      />
-                      <Typography>{t("All")}</Typography>
-                    </ListItem>
-                  </ListItemButton>
                   {equipment?.map((type) => {
                     if (type.typeName === "Sailboat") {
                       return type.names.map((name: any, i: number) => {
@@ -226,10 +228,7 @@ const AccountInfoComponent = () => {
                             >
                               <Checkbox
                                 tabIndex={-1}
-                                checked={
-                                  checkedName.indexOf(name.name) !== -1 ||
-                                  checkedAllNames.indexOf(type.typeName) !== -1
-                                }
+                                checked={checkedName.indexOf(name.name) !== -1}
                               />
                               <Typography>{name.name}</Typography>
                             </ListItemButton>
@@ -241,33 +240,17 @@ const AccountInfoComponent = () => {
                   })}
                 </>
               </Box>
-            )}
-            <ListItem disablePadding>
-              <DirectionsBoatFilledIcon className="access-icon" />
-              <ListItemText>{t("Motorboats")}</ListItemText>
-              <Switch
-                edge="start"
-                checked={checkedType.indexOf("Motorboat") !== -1}
-                onChange={handleToggleType("Motorboat")}
-              />
-            </ListItem>
-            {checkedType.includes("Motorboat") && (
+            </Collapse>
+            <ListItemButton onClick={() => handleCollapseClick("motorboats")}>
+              <ListItem disablePadding>
+                <DirectionsBoatFilledIcon className="access-icon" />
+                <ListItemText>{t("Motorboats")}</ListItemText>
+                {motorboatsOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+            </ListItemButton>
+            <Collapse in={motorboatsOpen}>
               <Box className="access-checkbox-list">
                 <>
-                  <ListItemButton
-                    dense
-                    role={undefined}
-                    onClick={handleToggleAllNames("Motorboat")}
-                    key={"Motorboat"}
-                  >
-                    <ListItem disablePadding>
-                      <Checkbox
-                        edge="start"
-                        checked={checkedAllNames.indexOf("Motorboat") !== -1}
-                      />
-                      <Typography>{t("All")}</Typography>
-                    </ListItem>
-                  </ListItemButton>
                   {equipment?.map((type) => {
                     if (type.typeName === "Motorboat") {
                       return type.names.map((name: any, i: number) => {
@@ -283,10 +266,7 @@ const AccountInfoComponent = () => {
                               onClick={handleToggleName(name.name)}
                             >
                               <Checkbox
-                                checked={
-                                  checkedName.indexOf(name.name) !== -1 ||
-                                  checkedAllNames.indexOf(type.typeName) !== -1
-                                }
+                                checked={checkedName.indexOf(name.name) !== -1}
                               />
                               <Typography>{name.name}</Typography>
                             </ListItemButton>
@@ -298,13 +278,49 @@ const AccountInfoComponent = () => {
                   })}
                 </>
               </Box>
-            )}
-            <ListItem disablePadding>
-              <SurfingIcon className="access-icon" />
-              <ListItemText>{t("Windsurfing")}</ListItemText>
-              <Switch edge="start" />
-            </ListItem>
+            </Collapse>
+            <ListItemButton onClick={() => handleCollapseClick("windsurfing")}>
+              <ListItem disablePadding>
+                <SurfingIcon className="access-icon" />
+                <ListItemText>{t("Windsurfing")}</ListItemText>
+                {windsurfingOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+            </ListItemButton>
+            <Collapse in={windsurfingOpen}>
+              <Box className="access-checkbox-list">
+                <>
+                  {equipment?.map((type) => {
+                    if (type.typeName === "Windsurfing") {
+                      return type.names.map((name: any, i: number) => {
+                        return (
+                          <ListItem
+                            className="access-name-item"
+                            disablePadding
+                            key={name.name}
+                          >
+                            <ListItemButton
+                              role={undefined}
+                              dense
+                              onClick={handleToggleName(name.name)}
+                            >
+                              <Checkbox
+                                checked={checkedName.indexOf(name.name) !== -1}
+                              />
+                              <Typography>{name.name}</Typography>
+                            </ListItemButton>
+                          </ListItem>
+                        );
+                      });
+                    }
+                    return [];
+                  })}
+                </>
+              </Box>
+            </Collapse>
           </Box>
+          <FmButton2 id="account-save-button" onClick={handleClickSave}>
+            {t("save")}
+          </FmButton2>
         </Box>
       </Box>
     </React.Fragment>

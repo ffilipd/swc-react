@@ -5,7 +5,7 @@ export const FmButton = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
   border: "none",
   color: "#fff",
-  padding: "16px",
+  padding: "8px",
   borderRadius: "0",
   "&.Mui-focused": {
     border: "none",
@@ -23,7 +23,7 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   border: "none",
   backgroundColor: "#104462",
   color: "#fff",
-  padding: "16px",
+  padding: "8px",
   borderRadius: "8px",
   height: "46px",
   "&.Mui-focused": {

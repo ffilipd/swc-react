@@ -43,7 +43,8 @@ exports.create = async (req, res) => {
                 role: user.role,
                 active: user.active,
                 rejected: user.rejected,
-                language: user.language
+                language: user.language,
+                access: user.access
                 // Add other user properties as needed
             }
         });
@@ -103,9 +104,9 @@ exports.update = (req, res) => {
         where: { id: id }
     })
         .then(num => {
-            if (num === 1) {
+            if (num[0] === 1) {
                 res.send({
-                    message: "User successfully updated."
+                    message: "User successfully updated. You might need to log in again for the changes to take effect"
                 });
             } else {
                 res.send({

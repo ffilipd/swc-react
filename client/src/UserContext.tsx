@@ -17,11 +17,7 @@ import {
   googleLogout,
   useGoogleLogin,
 } from "@react-oauth/google";
-import i18next from "./i18next";
-
-type User = {
-  access_token: string;
-};
+import i18next from "i18next";
 
 type UserContextType = {
   setUser: React.Dispatch<React.SetStateAction<FMProfile | null>>;
@@ -64,9 +60,8 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    // i18next.changeLanguage(user?.language);
-    if (!user) localStorage.removeItem("user");
-  }, []);
+    i18next.changeLanguage(user?.language);
+  }, [user]);
 
   return (
     <UserContext.Provider

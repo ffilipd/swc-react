@@ -8,6 +8,7 @@
     position: fixed;
     z-index: 10;
     border-bottom: 2px solid #fff;
+    padding: 10px 0 0 10px;
 }
 
 #fm-logo{
@@ -21,12 +22,19 @@
     align-content: space-between;
 }
 
-#login-header-btn, #login-header-btn:hover {
+#header-and-buttongroup .login-header-btn, #header-and-buttongroup .login-header-btn:hover {
     display: flex;
     border: none;
     color: #fff;
+    font: inherit;
+    padding: 8px;
     text-transform: none;
     flex-wrap: nowrap;
+}
+
+#language-button{
+    padding: 8px 32px 8px 0px ;
+    margin-left: -16px;
 }
 
 #drawer .MuiDrawer-paperAnchorTop {
@@ -38,6 +46,9 @@
     background-color: var(--color-theme-dark2);
 }
 
+#right-button-group{
+    margin-right: 10px;
+}
 
 @media screen and (max-width: 1200px) {
 }
