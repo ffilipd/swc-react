@@ -43,10 +43,11 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
         (type) => type.typeName === "Sailboat"
       );
       setSailboatNames(sailboats.names.map((nameObj: any) => nameObj.name));
-      const motorboats: any = equipment.find(
-        (type) => type.typeName === "Motorboat"
-      );
-      setMotorboatNames(motorboats.names.map((nameObj: any) => nameObj.name));
+
+      // const motorboats: any = equipment.find(
+      //   (type) => type.typeName === "Motorboat"
+      // );
+      // setMotorboatNames(motorboats.names.map((nameObj: any) => nameObj.name));
     }
   };
 

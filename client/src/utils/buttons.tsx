@@ -37,3 +37,24 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
     fill: "#fff",
   },
 }));
+
+export const FmButtonCube = styled(Button)<ButtonProps>(({ theme }) => ({
+  variant: "outlined",
+  border: "none",
+  backgroundColor: "#104462",
+  color: "#fff",
+  padding: "8px",
+  borderRadius: "8px",
+  aspectRatio: 1 / 1,
+  fontSize: "large",
+  "&.Mui-focused": {
+    border: "none",
+  },
+  "&:hover": {
+    backgroundColor: "#003865",
+    border: "none",
+  },
+  ".MuiSvgIcon-root ": {
+    fill: "#fff",
+  },
+}));

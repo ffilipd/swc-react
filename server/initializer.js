@@ -42,18 +42,18 @@ const initalizeDB = async () => {
                             name: 'Sailboat',
                             id: 1
                         })
-                        Equipment.Type.create({
-                            name: 'Motorboat',
-                            id: 2
-                        })
-                        Equipment.Type.create({
-                            name: 'Windsurfing board',
-                            id: 3,
-                        })
-                        Equipment.Type.create({
-                            name: 'Windsurfing sail',
-                            id: 4
-                        })
+                        // Equipment.Type.create({
+                        //     name: 'Motorboat',
+                        //     id: 2
+                        // })
+                        // Equipment.Type.create({
+                        //     name: 'Windsurfing board',
+                        //     id: 3,
+                        // })
+                        // Equipment.Type.create({
+                        //     name: 'Windsurfing sail',
+                        //     id: 4
+                        // })
                     }
                 })
         })
@@ -73,20 +73,20 @@ const initalizeDB = async () => {
                             name: "J/70",
                             equipmentTypeId: 1
                         })
-                        Equipment.Name.bulkCreate([
-                            {
-                                name: "VSR 5.4",
-                                equipmentTypeId: 2
-                            },
-                            {
-                                name: "VSR 5.9",
-                                equipmentTypeId: 2
-                            },
-                            {
-                                name: "Tornado 4.9",
-                                equipmentTypeId: 2
-                            },
-                        ])
+                        // Equipment.Name.bulkCreate([
+                        //     {
+                        //         name: "VSR 5.4",
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         name: "VSR 5.9",
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         name: "Tornado 4.9",
+                        //         equipmentTypeId: 2
+                        //     },
+                        // ])
                     }
                 })
         })
@@ -94,11 +94,13 @@ const initalizeDB = async () => {
             Equipment.Equipment.count()
                 .then(count => {
                     if (count < 1) {
-                        Equipment.Equipment.create({
-                            number: '1',
-                            equipmentNameId: 3,
-                            equipmentTypeId: 1
-                        })
+                        for (let i = 1; i < 7; i++) {
+                            Equipment.Equipment.create({
+                                number: i,
+                                equipmentNameId: 3,
+                                equipmentTypeId: 1
+                            })
+                        }
                         for (let i = 1; i < 7; i++) {
                             Equipment.Equipment.create({
                                 number: i,
@@ -113,38 +115,38 @@ const initalizeDB = async () => {
                                 equipmentTypeId: 1
                             })
                         }
-                        Equipment.Equipment.bulkCreate([
-                            {
-                                number: 15,
-                                equipmentNameId: 4,
-                                equipmentTypeId: 2
-                            },
-                            {
-                                number: 16,
-                                equipmentNameId: 5,
-                                equipmentTypeId: 2
-                            },
-                            {
-                                number: 17,
-                                equipmentNameId: 5,
-                                equipmentTypeId: 2
-                            },
-                            {
-                                number: 18,
-                                equipmentNameId: 6,
-                                equipmentTypeId: 2
-                            },
-                            {
-                                number: 19,
-                                equipmentNameId: 5,
-                                equipmentTypeId: 2
-                            },
-                            {
-                                number: 20,
-                                equipmentNameId: 4,
-                                equipmentTypeId: 2
-                            },
-                        ])
+                        // Equipment.Equipment.bulkCreate([
+                        //     {
+                        //         number: 15,
+                        //         equipmentNameId: 4,
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         number: 16,
+                        //         equipmentNameId: 5,
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         number: 17,
+                        //         equipmentNameId: 5,
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         number: 18,
+                        //         equipmentNameId: 6,
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         number: 19,
+                        //         equipmentNameId: 5,
+                        //         equipmentTypeId: 2
+                        //     },
+                        //     {
+                        //         number: 20,
+                        //         equipmentNameId: 4,
+                        //         equipmentTypeId: 2
+                        //     },
+                        // ])
                     }
                 })
         })

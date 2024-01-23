@@ -11,6 +11,18 @@
     max-width: 1600px;
 }
 
+.home-button-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-button-row {
+    display: flex;
+    padding: 20px 0;
+    justify-content: space-around;
+    height: 10em;
+}
+
 @media only screen and (max-width: 600px) {
     #home-inner {
         padding: 10px;

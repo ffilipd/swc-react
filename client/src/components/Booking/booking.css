@@ -66,6 +66,10 @@
     width: 100%;
 }
 
+.detail-book-button {
+    margin: 0 0 10px 0;
+}
+
 #disabled-button {
     border: 1px solid var(--color-disabled-border);
     background-color: var(--color-disabled);

@@ -40,6 +40,7 @@ const roundedTime = (time: Dayjs): Dayjs => {
 const BookingComponent = () => {
   const { t } = useTranslation();
   const { user } = useUser();
+  const accessTypes = user?.access?.split(",") || [];
   // const equipmentTypes = getEquipmentTypes();
   const labels = {
     equipment: {
@@ -263,89 +264,111 @@ const BookingComponent = () => {
           {/* Select */}
           <Box id="select-box">
             {/* TYPE */}
-            <FormControl fullWidth className="booking-select-item">
-              <InputLabel id="equipment-type">
-                {labels.equipment.type}
-              </InputLabel>
-              <Select
-                className="booking-select-button"
-                labelId="equipment-type-label"
-                id="equipment-type"
-                label={labels.equipment.type}
-                value={selectedEquipment.type}
-                onChange={(e: SelectChangeEvent) => {
-                  handleSetType(e.target.value);
-                }}
-              >
-                {availableEquipment.types?.map(
-                  (type: string, index: number) => (
-                    <MenuItem key={`${type}-${index}`} value={type}>
-                      {type}
-                    </MenuItem>
+            {isMobile ? (
+              /* Show button for each type that user has access to */
+              accessTypes?.map(
+                (item, index) =>
+                  item.length > 0 && (
+                    <FmButton2
+                      key={`${item}-${index}`}
+                      className="detail-book-button"
+                    >
+                      {item}
+                    </FmButton2>
                   )
-                )}
-              </Select>
-            </FormControl>
+              )
+            ) : (
+              <FormControl fullWidth className="booking-select-item">
+                <InputLabel id="equipment-type">{accessTypes}</InputLabel>
+                <Select
+                  className="booking-select-button"
+                  labelId="equipment-type-label"
+                  id="equipment-type"
+                  label={labels.equipment.type}
+                  value={selectedEquipment.type}
+                  onChange={(e: SelectChangeEvent) => {
+                    handleSetType(e.target.value);
+                  }}
+                >
+                  {availableEquipment.types?.map(
+                    (type: string, index: number) => (
+                      <MenuItem key={`${type}-${index}`} value={type}>
+                        {type}
+                      </MenuItem>
+                    )
+                  )}
+                </Select>
+              </FormControl>
+            )}
 
             {/* CLASS/NAME */}
-            <FormControl fullWidth className="booking-select-item">
-              <InputLabel id="equipment-name">
-                {labels.equipment.name}
-              </InputLabel>
-              <Select
-                className="booking-select-button"
-                labelId="equipment-name-label"
-                disabled={selectedEquipment.type === ""}
-                id="equipment-name"
-                label={labels.equipment.name}
-                value={selectedEquipment.equipmentNameId}
-                onChange={(e: SelectChangeEvent) => {
-                  handleSetName(e.target.value);
-                }}
-              >
-                {availableEquipment.names.map((name) => (
-                  <MenuItem key={name.id} value={name.id}>
-                    {name.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {isMobile ? (
+              <></>
+            ) : (
+              <FormControl fullWidth className="booking-select-item">
+                <InputLabel id="equipment-name">
+                  {labels.equipment.name}
+                </InputLabel>
+                <Select
+                  className="booking-select-button"
+                  labelId="equipment-name-label"
+                  disabled={selectedEquipment.type === ""}
+                  id="equipment-name"
+                  label={labels.equipment.name}
+                  value={selectedEquipment.equipmentNameId}
+                  onChange={(e: SelectChangeEvent) => {
+                    handleSetName(e.target.value);
+                  }}
+                >
+                  {availableEquipment.names.map((name) => (
+                    <MenuItem key={name.id} value={name.id}>
+                      {name.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
 
             {/* SWC NUMBER */}
-            <FormControl fullWidth className="booking-select-item">
-              <InputLabel id="equipment-swc-nbr">
-                {labels.equipment.number}
-              </InputLabel>
-              <Select
-                className="booking-select-button"
-                labelId="equipment-swc-nbr-label"
-                disabled={selectedEquipment.equipmentNameId === ""}
-                id="equipment-swc-nbr"
-                label={labels.equipment.number}
-                value={selectedEquipment.number}
-                onChange={(e: SelectChangeEvent) => {
-                  setSelectedEquipment({
-                    ...selectedEquipment,
-                    number: e.target.value,
-                  });
-                }}
-              >
-                {availableEquipment.numbers.map((number) => (
-                  <MenuItem
-                    key={number.id}
-                    value={number.id}
-                    disabled={bookings?.some(
-                      (booking) => booking.equipmentId === number.id
-                    )}
-                  >
-                    {number.number}
-                    {bookings?.some(
-                      (booking) => booking.equipmentId === number.id
-                    ) && <i> - {t("booked")}</i>}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {isMobile ? (
+              <></>
+            ) : (
+              <FormControl fullWidth className="booking-select-item">
+                <InputLabel id="equipment-swc-nbr">
+                  {labels.equipment.number}
+                </InputLabel>
+                <Select
+                  className="booking-select-button"
+                  labelId="equipment-swc-nbr-label"
+                  disabled={selectedEquipment.equipmentNameId === ""}
+                  id="equipment-swc-nbr"
+                  label={labels.equipment.number}
+                  value={selectedEquipment.number}
+                  onChange={(e: SelectChangeEvent) => {
+                    setSelectedEquipment({
+                      ...selectedEquipment,
+                      number: e.target.value,
+                    });
+                  }}
+                >
+                  {availableEquipment.numbers.map((number) => (
+                    <MenuItem
+                      key={number.id}
+                      value={number.id}
+                      disabled={bookings?.some(
+                        (booking) => booking.equipmentId === number.id
+                      )}
+                    >
+                      {number.number}
+                      {bookings?.some(
+                        (booking) => booking.equipmentId === number.id
+                      ) && <i> - {t("booked")}</i>}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+
             <FmButton2
               id={!bookingFilledOut() ? "disabled-button" : "book-button"}
               disabled={!bookingFilledOut()}
