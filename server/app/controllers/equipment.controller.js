@@ -59,12 +59,13 @@ exports.findFilters = async (req, res) => {
     try {
         const { equipmentNameId, type } = req.query;
 
+        /** get all the equipment types available in db */
         if (!type && !equipmentNameId) {
             const types = await Type.findAll({ attributes: ['name'] });
             return res.json(types.map(type => type.name));
         }
 
-        /* find the type from provided name */
+        /** get equipment type name for provided equipment name */
         if (equipmentNameId && !type) {
             const type = await Name.findOne({
                 where: { id: equipmentNameId },
@@ -76,6 +77,7 @@ exports.findFilters = async (req, res) => {
             return res.json(type.equipment_type.name);
         }
 
+        /** get equipment names for provided equipment type */
         if (!equipmentNameId) {
             const specificType = await Type.findOne({
                 where: { name: type },
@@ -91,9 +93,9 @@ exports.findFilters = async (req, res) => {
                 }
             });
             return res.json(names);
-            // return res.json(names.map(name => name.name));
         }
 
+        /** get equipment numbers */
         const equipment = await Equipment.findAll({
             include: [{
                 model: Name,
@@ -103,8 +105,9 @@ exports.findFilters = async (req, res) => {
             attributes: ['number', 'id'],
             order: [['number', 'asc']]
         });
-
+        /** return equipment numbers */
         res.json(equipment);
+
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send({ message: 'Internal Server Error' });
