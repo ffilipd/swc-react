@@ -1,8 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import { FmButton, FmButton2, FmButtonSecondary } from "../../utils/buttons";
 import { useState } from "react";
+import { useEquipment } from "../../EquipmentContext";
 
 const MobileBooking = () => {
+  const { equipment } = useEquipment();
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
     equipmentNameId: string;
@@ -30,6 +32,8 @@ const MobileBooking = () => {
     handleExpand(index);
   };
 
+  if (equipment) console.log(equipment);
+
   return (
     <Box>
       {accessablEquipmentNames.map((item: string, index: number) => (
@@ -39,6 +43,7 @@ const MobileBooking = () => {
               width: "100%",
               marginBottom: "15px",
               display: "flex",
+              backgroundColor: expanded === index ? "#053654" : "",
             }}
             onClick={() => handleMobileSelectEquipmentName(item, index)}
           >
@@ -58,8 +63,6 @@ const MobileBooking = () => {
                   key={num}
                   sx={{
                     margin: "10px 10px 20px 10px",
-                    opacity: num === 3 ? "70%" : "",
-                    backgroundColor: num === 3 ? "gray" : "",
                   }}
                   onClick={() => handleMobileSelectEquipmentNumber(num, index)}
                 >
@@ -71,8 +74,10 @@ const MobileBooking = () => {
         </Box>
       ))}
       <Typography
-        className="label"
-        sx={{ backgroundColor: "#999", padding: "5px" }}
+        sx={{
+          padding: "4px 15px",
+          borderRadius: "50px",
+        }}
       >
         Selected: {selectedEquipmentString}
       </Typography>
