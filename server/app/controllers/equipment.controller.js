@@ -59,9 +59,21 @@ exports.findFilters = async (req, res) => {
     try {
         const { equipmentNameId, type } = req.query;
 
-        if (!type) {
+        if (!type && !equipmentNameId) {
             const types = await Type.findAll({ attributes: ['name'] });
             return res.json(types.map(type => type.name));
+        }
+
+        /* find the type from provided name */
+        if (equipmentNameId && !type) {
+            const type = await Name.findOne({
+                where: { id: equipmentNameId },
+                include: {
+                    model: Type,
+                    attributes: ["name"]
+                }
+            });
+            return res.json(type.equipment_type.name);
         }
 
         if (!equipmentNameId) {
