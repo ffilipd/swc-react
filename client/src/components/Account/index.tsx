@@ -174,150 +174,163 @@ const AccountInfoComponent = () => {
               label={labels.language}
               name="language"
               onChange={handleChangeInfo}
-              disabled={user?.role === "admin" ? false : true}
             >
               <MenuItem value={"en"}>{t("English")}</MenuItem>
               <MenuItem value={"sv"}>{t("Svenska")}</MenuItem>
               <MenuItem value={"fi"}>{t("Suomi")}</MenuItem>
             </Select>
           </FormControl>
-          <FormControl fullWidth className="account-info-input">
-            <InputLabel id="role-select-label">{labels.selectRole}</InputLabel>
-            <Select
-              name="role"
-              labelId="role-select-label"
-              id="role-select-input"
-              value={userInfo?.role}
-              label={labels.selectRole}
-              onChange={handleChangeInfo}
-              disabled={user?.role === "admin" ? false : true}
-            >
-              <MenuItem value={"admin"}>{t("Admin")}</MenuItem>
-              <MenuItem value={"viewer"}>{t("Viewer")}</MenuItem>
-              <MenuItem value={"user"}>{t("User")}</MenuItem>
-            </Select>
-          </FormControl>
+          {user?.role === "admin" && (
+            <FormControl fullWidth className="account-info-input">
+              <InputLabel id="role-select-label">
+                {labels.selectRole}
+              </InputLabel>
+              <Select
+                name="role"
+                labelId="role-select-label"
+                id="role-select-input"
+                value={userInfo?.role}
+                label={labels.selectRole}
+                onChange={handleChangeInfo}
+                disabled={user?.role === "admin" ? false : true}
+              >
+                <MenuItem value={"admin"}>{t("Admin")}</MenuItem>
+                <MenuItem value={"viewer"}>{t("Viewer")}</MenuItem>
+                <MenuItem value={"user"}>{t("User")}</MenuItem>
+              </Select>
+            </FormControl>
+          )}
         </Box>
         <Box id="account-info-box-2">
-          <Box className="account-info-input">
-            <DarkThemeHeader text={t("Access control")} />
-            <Divider />
-            <ListItemButton onClick={() => handleCollapseClick("sailboats")}>
-              <ListItem disablePadding>
-                <SailingIcon className="access-icon" />
-                <ListItemText>{t("Sailboats")}</ListItemText>
-                {sailboatsOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-            </ListItemButton>
-            <Collapse in={sailboatsOpen}>
-              <Box className="access-checkbox-list">
-                <>
-                  {equipment?.map((type) => {
-                    if (type.typeName === "Sailboat") {
-                      return type.names.map((name: any, i: number) => {
-                        return (
-                          <ListItem
-                            className="access-name-item"
-                            disablePadding
-                            key={name.name}
-                          >
-                            <ListItemButton
-                              dense
-                              onClick={handleToggleName(name.name)}
-                              disableRipple
+          {user?.role === "admin" && (
+            <Box className="account-info-input">
+              <DarkThemeHeader text={t("Access control")} />
+              <Divider />
+              <ListItemButton onClick={() => handleCollapseClick("sailboats")}>
+                <ListItem disablePadding>
+                  <SailingIcon className="access-icon" />
+                  <ListItemText>{t("Sailboats")}</ListItemText>
+                  {sailboatsOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+              </ListItemButton>
+              <Collapse in={sailboatsOpen}>
+                <Box className="access-checkbox-list">
+                  <>
+                    {equipment?.map((type) => {
+                      if (type.typeName === "Sailboat") {
+                        return type.names.map((name: any, i: number) => {
+                          return (
+                            <ListItem
+                              className="access-name-item"
+                              disablePadding
+                              key={name.name}
                             >
-                              <Checkbox
-                                tabIndex={-1}
-                                checked={checkedName.indexOf(name.name) !== -1}
-                              />
-                              <Typography>{name.name}</Typography>
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      });
-                    }
-                    return [];
-                  })}
-                </>
-              </Box>
-            </Collapse>
-            <ListItemButton onClick={() => handleCollapseClick("motorboats")}>
-              <ListItem disablePadding>
-                <DirectionsBoatFilledIcon className="access-icon" />
-                <ListItemText>{t("Motorboats")}</ListItemText>
-                {motorboatsOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-            </ListItemButton>
-            <Collapse in={motorboatsOpen}>
-              <Box className="access-checkbox-list">
-                <>
-                  {equipment?.map((type) => {
-                    if (type.typeName === "Motorboat") {
-                      return type.names.map((name: any, i: number) => {
-                        return (
-                          <ListItem
-                            className="access-name-item"
-                            disablePadding
-                            key={name.name}
-                          >
-                            <ListItemButton
-                              role={undefined}
-                              dense
-                              onClick={handleToggleName(name.name)}
+                              <ListItemButton
+                                dense
+                                onClick={handleToggleName(name.name)}
+                                disableRipple
+                              >
+                                <Checkbox
+                                  tabIndex={-1}
+                                  checked={
+                                    checkedName.indexOf(name.name) !== -1
+                                  }
+                                />
+                                <Typography>{name.name}</Typography>
+                              </ListItemButton>
+                            </ListItem>
+                          );
+                        });
+                      }
+                      return [];
+                    })}
+                  </>
+                </Box>
+              </Collapse>
+              <ListItemButton onClick={() => handleCollapseClick("motorboats")}>
+                <ListItem disablePadding>
+                  <DirectionsBoatFilledIcon className="access-icon" />
+                  <ListItemText>{t("Motorboats")}</ListItemText>
+                  {motorboatsOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+              </ListItemButton>
+              <Collapse in={motorboatsOpen}>
+                <Box className="access-checkbox-list">
+                  <>
+                    {equipment?.map((type) => {
+                      if (type.typeName === "Motorboat") {
+                        return type.names.map((name: any, i: number) => {
+                          return (
+                            <ListItem
+                              className="access-name-item"
+                              disablePadding
+                              key={name.name}
                             >
-                              <Checkbox
-                                checked={checkedName.indexOf(name.name) !== -1}
-                              />
-                              <Typography>{name.name}</Typography>
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      });
-                    }
-                    return [];
-                  })}
-                </>
-              </Box>
-            </Collapse>
-            <ListItemButton onClick={() => handleCollapseClick("windsurfing")}>
-              <ListItem disablePadding>
-                <SurfingIcon className="access-icon" />
-                <ListItemText>{t("Windsurfing")}</ListItemText>
-                {windsurfingOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-            </ListItemButton>
-            <Collapse in={windsurfingOpen}>
-              <Box className="access-checkbox-list">
-                <>
-                  {equipment?.map((type) => {
-                    if (type.typeName === "Windsurfing") {
-                      return type.names.map((name: any, i: number) => {
-                        return (
-                          <ListItem
-                            className="access-name-item"
-                            disablePadding
-                            key={name.name}
-                          >
-                            <ListItemButton
-                              role={undefined}
-                              dense
-                              onClick={handleToggleName(name.name)}
+                              <ListItemButton
+                                role={undefined}
+                                dense
+                                onClick={handleToggleName(name.name)}
+                              >
+                                <Checkbox
+                                  checked={
+                                    checkedName.indexOf(name.name) !== -1
+                                  }
+                                />
+                                <Typography>{name.name}</Typography>
+                              </ListItemButton>
+                            </ListItem>
+                          );
+                        });
+                      }
+                      return [];
+                    })}
+                  </>
+                </Box>
+              </Collapse>
+              <ListItemButton
+                onClick={() => handleCollapseClick("windsurfing")}
+              >
+                <ListItem disablePadding>
+                  <SurfingIcon className="access-icon" />
+                  <ListItemText>{t("Windsurfing")}</ListItemText>
+                  {windsurfingOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+              </ListItemButton>
+              <Collapse in={windsurfingOpen}>
+                <Box className="access-checkbox-list">
+                  <>
+                    {equipment?.map((type) => {
+                      if (type.typeName === "Windsurfing") {
+                        return type.names.map((name: any, i: number) => {
+                          return (
+                            <ListItem
+                              className="access-name-item"
+                              disablePadding
+                              key={name.name}
                             >
-                              <Checkbox
-                                checked={checkedName.indexOf(name.name) !== -1}
-                              />
-                              <Typography>{name.name}</Typography>
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      });
-                    }
-                    return [];
-                  })}
-                </>
-              </Box>
-            </Collapse>
-          </Box>
+                              <ListItemButton
+                                role={undefined}
+                                dense
+                                onClick={handleToggleName(name.name)}
+                              >
+                                <Checkbox
+                                  checked={
+                                    checkedName.indexOf(name.name) !== -1
+                                  }
+                                />
+                                <Typography>{name.name}</Typography>
+                              </ListItemButton>
+                            </ListItem>
+                          );
+                        });
+                      }
+                      return [];
+                    })}
+                  </>
+                </Box>
+              </Collapse>
+            </Box>
+          )}
           <FmButton2 id="account-save-button" onClick={handleClickSave}>
             {t("save")}
           </FmButton2>

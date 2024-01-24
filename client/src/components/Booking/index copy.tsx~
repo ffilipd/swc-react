@@ -29,7 +29,6 @@ import { FmButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
 import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";
-import MobileBooking from "./mobile";
 
 dayjs.extend(customParseFormat);
 const roundedTime = (time: Dayjs): Dayjs => {
@@ -113,6 +112,7 @@ const BookingComponent = () => {
       equipmentNameId: "",
       number: "",
     });
+    console.log(type);
     const names = (await getFilters({ type })) as {
       id: string;
       name: string;
@@ -220,15 +220,13 @@ const BookingComponent = () => {
               )}
             </LocalizationProvider>
           </Box>
-          {!isMobile && (
-            <Button
-              variant="outlined"
-              id="clear-selections-button"
-              onClick={handleClearSelections}
-            >
-              {t("Clear Selections")}
-            </Button>
-          )}
+          <Button
+            variant="outlined"
+            id="clear-selections-button"
+            onClick={handleClearSelections}
+          >
+            {t("Clear Selections")}
+          </Button>
           <Box id="time-picker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box>
@@ -264,11 +262,27 @@ const BookingComponent = () => {
             </LocalizationProvider>
           </Box>
 
-          {isMobile ? (
-            <MobileBooking />
-          ) : (
-            <Box id="select-box">
-              {/* TYPE */}
+          {/* Select */}
+          <Box id="select-box">
+            {/* TYPE */}
+            {isMobile ? (
+              /* Show button for each type that user has access to */
+              accessTypes?.map(
+                (item, index) =>
+                  item.length > 0 && (
+                    <FmButton2
+                      sx={{
+                        margin: "0 0 15px 0",
+                      }}
+                      key={`${item}-${index}`}
+                      className="detail-book-button"
+                      onClick={() => handleSetType(item)}
+                    >
+                      {item}
+                    </FmButton2>
+                  )
+              )
+            ) : (
               <FormControl fullWidth className="booking-select-item">
                 <InputLabel id="equipment-type">{accessTypes}</InputLabel>
                 <Select
@@ -290,8 +304,12 @@ const BookingComponent = () => {
                   )}
                 </Select>
               </FormControl>
+            )}
 
-              {/* CLASS/NAME */}
+            {/* CLASS/NAME */}
+            {isMobile ? (
+              <></>
+            ) : (
               <FormControl fullWidth className="booking-select-item">
                 <InputLabel id="equipment-name">
                   {labels.equipment.name}
@@ -314,9 +332,12 @@ const BookingComponent = () => {
                   ))}
                 </Select>
               </FormControl>
+            )}
 
-              {/* SWC NUMBER */}
-
+            {/* SWC NUMBER */}
+            {isMobile ? (
+              <></>
+            ) : (
               <FormControl fullWidth className="booking-select-item">
                 <InputLabel id="equipment-swc-nbr">
                   {labels.equipment.number}
@@ -351,16 +372,16 @@ const BookingComponent = () => {
                   ))}
                 </Select>
               </FormControl>
+            )}
 
-              <FmButton2
-                id={!bookingFilledOut() ? "disabled-button" : "book-button"}
-                disabled={!bookingFilledOut()}
-                onClick={handleBookEquipmentClick}
-              >
-                {t("Book")}
-              </FmButton2>
-            </Box>
-          )}
+            <FmButton2
+              id={!bookingFilledOut() ? "disabled-button" : "book-button"}
+              disabled={!bookingFilledOut()}
+              onClick={handleBookEquipmentClick}
+            >
+              {t("Book")}
+            </FmButton2>
+          </Box>
         </Box>
         <BookingTable
           bookings={bookings}

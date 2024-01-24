@@ -24,8 +24,31 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   backgroundColor: "#104462",
   color: "#fff",
   padding: "8px",
-  borderRadius: "8px",
+  borderRadius: "23px",
   height: "46px",
+  "&.Mui-focused": {
+    border: "none",
+  },
+  "&:hover": {
+    backgroundColor: "#003865",
+    border: "none",
+  },
+  ".MuiSvgIcon-root ": {
+    fill: "#fff",
+  },
+}));
+
+export const FmButtonSecondary = styled(Button)<ButtonProps>(({ theme }) => ({
+  variant: "outlined",
+  border: "none",
+  background:
+    "radial-gradient(circle, rgba(16,68,98,1) 0%, rgba(5,54,84,0.7455182756696428) 100%)",
+  color: "#fff",
+  padding: "8px",
+  borderRadius: "100%",
+  height: "66px",
+  aspectRatio: 1 / 1,
+  fontSize: "large",
   "&.Mui-focused": {
     border: "none",
   },
@@ -41,10 +64,11 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
 export const FmButtonCube = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
   border: "none",
-  backgroundColor: "#104462",
+  background:
+    "linear-gradient(166deg, rgba(16,68,98,0.5522409647452731) 0%, rgba(5,54,84,1) 100%)",
   color: "#fff",
   padding: "8px",
-  borderRadius: "8px",
+  borderRadius: "38px",
   aspectRatio: 1 / 1,
   fontSize: "large",
   "&.Mui-focused": {

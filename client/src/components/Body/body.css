@@ -6,7 +6,7 @@
 }
 
 #body-inner {
-    background-color: #fff;
+    background-color: var(--color-white);
     height: calc(100vh - 200px);
     margin: 0 auto;
     padding: 170px 0;
