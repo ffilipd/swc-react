@@ -1,16 +1,16 @@
 {
-    "folders": [
-        {
-            "path": "server"
-        },
-        {
-            "path": "client_2.0"
-        }
-    ],
-    "settings": {
-        "jest.disabledWorkspaceFolders": [
-            "server",
-            "client_2.0"
-        ]
+  "folders": [
+    {
+      "path": "server"
+    },
+    {
+      "path": "client_2.0"
+    },
+    {
+      "path": "client"
     }
+  ],
+  "settings": {
+    "jest.disabledWorkspaceFolders": ["server", "client_2.0"]
+  }
 }
