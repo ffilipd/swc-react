@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { FmButton, FmButton2, FmButtonSecondary } from "../../utils/buttons";
+import { FmButton, FmButton2, FmButtonCircle } from "../../utils/buttons";
 import { useState } from "react";
 import { useEquipment } from "../../EquipmentContext";
 
@@ -59,7 +59,7 @@ const MobileBooking = () => {
               }}
             >
               {[1, 2, 3, 4, 5, 6].map((num) => (
-                <FmButtonSecondary
+                <FmButtonCircle
                   key={num}
                   sx={{
                     margin: "10px 10px 20px 10px",
@@ -67,7 +67,7 @@ const MobileBooking = () => {
                   onClick={() => handleMobileSelectEquipmentNumber(num, index)}
                 >
                   {num}
-                </FmButtonSecondary>
+                </FmButtonCircle>
               ))}
             </Box>
           )}

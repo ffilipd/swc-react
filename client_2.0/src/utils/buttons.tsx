@@ -38,7 +38,7 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
-export const FmButtonSecondary = styled(Button)<ButtonProps>(({ theme }) => ({
+export const FmButtonCircle = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
   border: "none",
   background:
@@ -48,9 +48,10 @@ export const FmButtonSecondary = styled(Button)<ButtonProps>(({ theme }) => ({
   borderRadius: "100%",
   height: "66px",
   aspectRatio: 1 / 1,
-  fontSize: "large",
+  fontSize: "xx-large",
   "&.Mui-focused": {
     border: "none",
+    backgroundColor: "red",
   },
   "&:hover": {
     backgroundColor: "#003865",

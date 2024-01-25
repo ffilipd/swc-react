@@ -7,7 +7,7 @@ import LoginComponent from "./components/Login";
 import Body from "./components/Body";
 import SignupComponent from "./components/Signup";
 import MyPageComponent from "./components/MyPage";
-// import BookingComponent from "./components/Booking";
+import BookingComponent from "./components/Booking";
 import AdminEquipmentComponent from "./components/Admin/equipment";
 import AdminUsersComponent from "./components/Admin/users";
 // import AccountInfoComponent from "./components/Account";
@@ -21,11 +21,13 @@ function App() {
         {user ? (
           <>
             <Route path="/login" element={<Navigate to="/" replace />} />
-            {/* <Route path="/booking" element={<BookingComponent />} />
-            <Route path="/report" element={<ReportComponent />} />
+            {
+              <Route path="/booking" element={<BookingComponent />} />
+              /*<Route path="/report" element={<ReportComponent />} />
             <Route path="/mypage" element={<MyPageComponent />} />
-            <Route path="/accountinfo" element={<AccountInfoComponent />} /> */}
-            {user.role === "admin" && (
+            <Route path="/accountinfo" element={<AccountInfoComponent />} /> */
+            }
+            {/* {user.role === "admin" && (
               <>
                 <Route
                   path="/admin/equipment"
@@ -33,7 +35,7 @@ function App() {
                 />
                 <Route path="/admin/users" element={<AdminUsersComponent />} />
               </>
-            )}
+            )} */}
           </>
         ) : (
           <>
