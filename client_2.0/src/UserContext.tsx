@@ -36,7 +36,8 @@ type UserProviderProps = {
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FMProfile | null>(() => {
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    // return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser ? null : null;
   });
   const logOut = () => {
     googleLogout();

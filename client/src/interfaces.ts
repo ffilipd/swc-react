@@ -126,4 +126,6 @@ export interface FMProfile {
     language: Language;
     role: UserRole;
     access: string;
+    active: boolean;
+    rejected: boolean;
 }

@@ -83,6 +83,18 @@ export const getUserById = async (userId: string): Promise<FMProfile> => {
     }
 }
 
+export const getAllUsers = async (): Promise<FMProfile[]> => {
+    const URL: string = base_URL + API_ENDPOINTS.USERS;
+    try {
+        const res = await axios.get(URL, { headers: authHeader() });
+        return res.data as FMProfile[];
+    } catch (error) {
+        throw new Error('Error getting user by id');
+    }
+}
+
+
+
 async function buildRequestConfig(params: { id?: string, data?: Partial<FMProfile>, method: string }): Promise<AxiosRequestConfig> {
     const { id, data, method } = params
     return {

@@ -36,7 +36,9 @@ type UserProviderProps = {
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FMProfile | null>(() => {
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser && storedUser !== "undefined" // google auth started returning "undefined" if user is not activated
+      ? JSON.parse(storedUser)
+      : null;
   });
   const logOut = () => {
     googleLogout();

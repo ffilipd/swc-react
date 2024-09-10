@@ -60,8 +60,12 @@ exports.create = async (req, res) => {
 exports.findAll = (req, res) => {
     User.findAll({
         attributes: {
-            exclude: ['uuid'],
-            include: [[db.Sequelize.col('uuid'), 'id']]
+            exclude: ['id'],
+            include: [
+                [db.Sequelize.col('id'), 'id'],
+                [db.Sequelize.fn('DATE_FORMAT', db.Sequelize.col('createdAt'), '%Y-%m-%d'), 'created_date'],
+                [db.Sequelize.fn('DATE_FORMAT', db.Sequelize.col('last_login'), '%Y-%m-%d %H:%i:%s'), 'last_login']
+            ]
         }
     })
         .then(data => {

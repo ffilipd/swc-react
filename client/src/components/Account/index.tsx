@@ -54,11 +54,13 @@ const AccountInfoComponent = () => {
     family_name: "",
     picture: "",
     locale: "",
+    active: false,
     created_date: "",
     last_login: "",
     language: "en",
     role: "viewer",
     access: "",
+    rejected: true,
   });
 
   // If admin is accessing other than own account info

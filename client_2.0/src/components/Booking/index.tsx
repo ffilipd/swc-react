@@ -9,7 +9,8 @@ import { FmButton2, FmButtonCircle } from "../../utils/buttons";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { DatePicker } from "@mui/x-date-pickers";
+// import { DatePicker } from "@mui/x-date-pickers";
+import { Datepicker } from "flowbite-react";
 
 dayjs.extend(customParseFormat);
 
@@ -106,14 +107,19 @@ const BookingComponent = () => {
         {t("Select Date and Time")}
       </Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
+        {/* <DatePicker
           format="DD-MM-YYYY"
           value={selectedDate}
-          sx={{ borderRadius: "8px" }}
+          sx={{
+            width: "100%",
+          }}
           label={t("Select Date")}
           onChange={(newDate) => setSelectedDate(newDate)}
-        />
+        /> */}
       </LocalizationProvider>
+      <Box>
+        <Datepicker />
+      </Box>
     </Box>
   );
 };
