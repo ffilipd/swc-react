@@ -173,19 +173,7 @@ const AdminUsersComponent = () => {
       <Box id="my-page-header">{t("User Management")}</Box>
       {/* <Divider /> */}
       <Box id="my-page-wrapper">
-        <UsersTable
-          handleCreateReportNow={handleCreateReportNow}
-          openDescriptionDialog={openDescriptionDialog}
-          handleEditReport={handleEditReport}
-          handleEditBooking={handleEditBooking}
-          handleDeleteBooking={handleOpenDeleteDialog}
-          bookings={bookings}
-          users={users}
-          setBookings={setBookings}
-          isMobile={isMobile}
-          labels={labels}
-          availableTypes={availableEquipment.types}
-        />
+        <UsersTable users={users} isMobile={isMobile} />
       </Box>
       <Dialog
         open={deleteBookingDialogOpen}

@@ -11,36 +11,43 @@ import {
   TableRow,
   styled,
   tableCellClasses,
-  Tooltip,
+  Dialog,
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  Slide,
+  Input,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
 } from "@mui/material";
 import { RiDeleteBin2Line } from "react-icons/ri";
+import CloseIcon from "@mui/icons-material/Close";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Booking, FMProfile } from "../../interfaces";
+import { FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
-import dayjs, { Dayjs } from "dayjs";
-import customParseFormat from "dayjs";
 import TablePaginationActions from "../Pagination";
-import { hover } from "@testing-library/user-event/dist/hover";
+import { FmButton2 } from "../../utils/buttons";
+import { TransitionProps } from "@mui/material/transitions";
 
-interface BookingsProps {
-  bookings: Booking[];
-  setBookings: Dispatch<SetStateAction<Booking[]>>;
-  handleEditBooking: (e: any) => void;
-  handleDeleteBooking: (e: any) => void;
-  handleEditReport: (e: any) => void;
-  handleCreateReportNow: (e: any) => void;
-  openDescriptionDialog: (description: string) => void;
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+interface UsersProps {
   users: FMProfile[];
   isMobile: boolean;
-  labels: {
-    equipment: {
-      type: string;
-      name: string;
-      number: string;
-    };
-  };
-  availableTypes: string[];
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -67,12 +74,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const UsersTable = (props: BookingsProps) => {
-  const { isMobile, bookings, availableTypes, users } = props;
-
-  dayjs.extend(customParseFormat);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+const UsersTable = (props: UsersProps) => {
+  const { isMobile, users } = props;
+  const { t } = useTranslation();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<FMProfile>();
+  const userRoles: UserRole[] = ["admin", "user", "viewer"];
+  const userAccess: string[] | "" = ["J/70", "Elliott 6M", "RS Toura"];
+  const [userIsActive, setUserIsActive] = useState<boolean>(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -94,39 +105,19 @@ const UsersTable = (props: BookingsProps) => {
     setPage(0);
   };
 
-  const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { t } = useTranslation();
-
-  const [filters, setFilters] = useState<{
-    type: string;
-    name: string;
-    number: string;
-  }>({
-    type: "",
-    name: "",
-    number: "",
-  });
-  const [availableFilters, setAvailableFilters] = useState<{
-    types: string[];
-    names: string[];
-    numbers: string[];
-  }>({
-    types: availableTypes,
-    names: [],
-    numbers: [],
-  });
-
-  const isInPast = (date: string) => {
-    const formattedDate = date.split("-").reverse().join("-");
-    if (formattedDate < dayjs().format("YYYY-MM-DD")) {
-      return true;
-    }
-    return false;
-  };
-
   const handleClickUserRow = (user: FMProfile) => {
-    console.log(user);
+    setSelectedUser(user);
+    setShowUserDetails(true);
   };
+
+  const handleChangeUserRole = () => {
+    const currentRole = selectedUser?.role;
+  };
+  const handleChangeUserAccess = () => {
+    const currentRole = selectedUser?.role;
+  };
+
+  const handleCheckboxActive = () => {};
 
   return (
     <React.Fragment>
@@ -218,7 +209,7 @@ const UsersTable = (props: BookingsProps) => {
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                   colSpan={11}
                   width={"100%"}
-                  count={bookings ? bookings.length : 0}
+                  count={users ? users.length : 0}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
@@ -236,6 +227,91 @@ const UsersTable = (props: BookingsProps) => {
           </Table>
         </TableContainer>
       </Box>
+
+      {/* users dialog */}
+      <Dialog
+        fullScreen
+        open={showUserDetails}
+        // onClose={handleEditEquipmentDialogClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar
+          sx={{
+            position: "relative",
+            backgroundColor: "var(--color-theme-dark)",
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setShowUserDetails(false)}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              {t("Edit")}
+            </Typography>
+            <Button
+              autoFocus
+              color="inherit"
+              // onClick={handleAddEquipmentDialogClose}
+            >
+              {t("Save")}
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Box id="admin-equipment-select-wrapper">
+          {/* NAME */}
+          <FormControl variant="standard" className="show-user-dialog-input">
+            <InputLabel htmlFor="user-name">{t("Full Name")}</InputLabel>
+            <Input id="user-name" value={selectedUser?.name} />
+          </FormControl>
+          <FormControl variant="standard" className="show-user-dialog-input">
+            <InputLabel htmlFor="user-email">{t("Email")}</InputLabel>
+            <Input id="user-email" value={selectedUser?.email} />
+          </FormControl>
+          <FormControl variant="standard" className="show-user-dialog-input">
+            <InputLabel htmlFor="user-role">{t("Role")}</InputLabel>
+            <Select
+              labelId="user-role"
+              id="user-role-select"
+              value={selectedUser?.role}
+              onChange={handleChangeUserRole}
+            >
+              {userRoles.map((role) => (
+                <MenuItem key={role} value={role}>
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox color="success" />}
+              label={t("Active")}
+              checked={selectedUser?.active}
+            />
+            <FormControlLabel
+              control={<Checkbox color="error" />}
+              label={t("Rejected")}
+              checked={selectedUser?.rejected}
+            />
+          </FormGroup>
+          <FormGroup>
+            {userAccess.map((accessItem) => (
+              <FormControlLabel
+                key={accessItem}
+                control={<Checkbox color="secondary" />}
+                label={accessItem}
+              />
+            ))}
+          </FormGroup>
+
+          {/* <FmButton2>{t("Edit")}</FmButton2> */}
+        </Box>
+      </Dialog>
     </React.Fragment>
   );
 };

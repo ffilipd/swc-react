@@ -41,6 +41,17 @@
     /* Change to your desired color */
 }
 
+#admin-equipment-select-wrapper .show-user-dialog-input {
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 250px;
+}
+
+#admin-equipment-select-wrapper .show-user-dialog-input label {
+    padding: 5px 10px;
+}
+
+
 @media only screen and (max-width:600px) {
     #table-wrapper {
         max-width: 320px;

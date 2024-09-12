@@ -63,8 +63,8 @@ exports.findAll = (req, res) => {
             exclude: ['id'],
             include: [
                 [db.Sequelize.col('id'), 'id'],
-                [db.Sequelize.fn('DATE_FORMAT', db.Sequelize.col('createdAt'), '%Y-%m-%d'), 'created_date'],
-                [db.Sequelize.fn('DATE_FORMAT', db.Sequelize.col('last_login'), '%Y-%m-%d %H:%i:%s'), 'last_login']
+                [db.Sequelize.fn('DATE_FORMAT', db.Sequelize.col('createdAt'), '%d-%m-%Y'), 'created_date'],
+                [db.Sequelize.fn('DATE_FORMAT', db.Sequelize.col('last_login'), '%d-%m-%Y %H:%i:%s'), 'last_login']
             ]
         }
     })

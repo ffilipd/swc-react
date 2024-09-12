@@ -1,8 +1,12 @@
 module.exports = {
-    HOST: "dahlskog.fi",
-    USER: "fajfgder_hss",
-    PASSWORD: "R~b!mp]5L}_A",
-    DB: "fajfgder_fm",
+    // HOST: "dahlskog.fi",
+    HOST: "localhost",
+    // USER: "dahlskog_swc",
+    // PASSWORD: "JM(xK75C*%fQ",
+    // DB: "dahlskog_wp_3atnn",
+    USER: "swc",
+    PASSWORD: "swc",
+    DB: "swc_test",
     dialect: "mysql",
     pool: {
         max: 5,
