@@ -25,6 +25,8 @@ import {
   FormControlLabel,
   FormGroup,
   Checkbox,
+  TableCellProps,
+  Chip,
 } from "@mui/material";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import CloseIcon from "@mui/icons-material/Close";
@@ -33,8 +35,9 @@ import { FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
-import { FmButton2 } from "../../utils/buttons";
 import { TransitionProps } from "@mui/material/transitions";
+import { updateUserProfile } from "../../service/user.service";
+import { dummyUser } from "../../utils/dummy-data";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -48,17 +51,65 @@ const Transition = React.forwardRef(function Transition(
 interface UsersProps {
   users: FMProfile[];
   isMobile: boolean;
+  fetchUsers: () => Promise<void>;
 }
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "var(--color-theme-dark)",
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
+interface StyledTableCellProps extends TableCellProps {
+  status?: "active" | "inactive" | "rejected";
+}
+
+const StyledTableCell = styled(TableCell)<StyledTableCellProps>(
+  ({ theme, status }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: "var(--color-theme-dark)",
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.root}`]: {
+      backgroundColor:
+        status === "active"
+          ? "lightgreen"
+          : status === "inactive"
+          ? "orange"
+          : status === "rejected"
+          ? "red"
+          : "var(--color-theme-light",
+      color: theme.palette.common.white,
+      display: "flex",
+      alignItems: "center",
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  })
+);
+
+const StatusChip: React.FC<{
+  status: "Active" | "Inactive" | "Rejected" | "default";
+}> = ({ status }) => {
+  const getColor = (status: string) => {
+    switch (status) {
+      case "Active":
+        return "lightgreen";
+      case "Inactive":
+        return "orange";
+      case "Rejected":
+        return "red";
+      default:
+        return "var(--color-theme-light)";
+    }
+  };
+
+  return (
+    <Chip
+      label={status}
+      style={{
+        backgroundColor: getColor(status),
+        color: "white",
+        width: "100%",
+      }}
+    />
+  );
+};
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -75,15 +126,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const UsersTable = (props: UsersProps) => {
-  const { isMobile, users } = props;
+  const { isMobile, users, fetchUsers } = props;
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<FMProfile>();
+  const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
+  const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "viewer"];
   const userAccess: string[] | "" = ["J/70", "Elliott 6M", "RS Toura"];
-  const [userIsActive, setUserIsActive] = useState<boolean>(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -117,7 +168,40 @@ const UsersTable = (props: UsersProps) => {
     const currentRole = selectedUser?.role;
   };
 
-  const handleCheckboxActive = () => {};
+  const handleCheckboxActiveClick = async () => {
+    updateUser("active");
+  };
+
+  const handleCheckboxRejectedClick = async () => {
+    updateUser("rejected");
+  };
+
+  const updateUser = (action: keyof FMProfile) => {
+    if (!selectedUser || !selectedUser.id) return;
+    const newStatus = !selectedUser[action];
+    setUpdatedUser({ ...selectedUser, [action]: newStatus });
+  };
+
+  useEffect(() => {
+    if (
+      updatedUser &&
+      updatedUser.id === selectedUser.id &&
+      selectedUser.id !== "12345"
+    ) {
+      const sendUpdatedUserProfile = async () => {
+        const res = await updateUserProfile(updatedUser);
+        try {
+          setSelectedUser(updatedUser);
+          setUpdatedUser(dummyUser);
+          alert(res.message);
+        } catch (err) {
+          alert(res.message);
+        }
+      };
+
+      sendUpdatedUserProfile();
+    }
+  }, [updatedUser, selectedUser.id]);
 
   return (
     <React.Fragment>
@@ -184,11 +268,15 @@ const UsersTable = (props: UsersProps) => {
                         {row.email}
                       </StyledTableCell>
                       <StyledTableCell align="left">
-                        {row.rejected
-                          ? "Rejected"
-                          : row.active
-                          ? "Active"
-                          : "Inactive"}
+                        <StatusChip
+                          status={
+                            row.rejected
+                              ? "Rejected"
+                              : row.active
+                              ? "Active"
+                              : "Inactive"
+                          }
+                        />
                       </StyledTableCell>
                       <StyledTableCell align="left">{row.role}</StyledTableCell>
                       <StyledTableCell align="left">
@@ -250,16 +338,9 @@ const UsersTable = (props: UsersProps) => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {t("Edit")}
+            <Typography sx={{ ml: 4, flex: 1 }} variant="h6" component="div">
+              {t("Edit User")}
             </Typography>
-            <Button
-              autoFocus
-              color="inherit"
-              // onClick={handleAddEquipmentDialogClose}
-            >
-              {t("Save")}
-            </Button>
           </Toolbar>
         </AppBar>
         <Box id="admin-equipment-select-wrapper">
@@ -292,11 +373,13 @@ const UsersTable = (props: UsersProps) => {
               control={<Checkbox color="success" />}
               label={t("Active")}
               checked={selectedUser?.active}
+              onChange={handleCheckboxActiveClick}
             />
             <FormControlLabel
               control={<Checkbox color="error" />}
               label={t("Rejected")}
               checked={selectedUser?.rejected}
+              onChange={handleCheckboxRejectedClick}
             />
           </FormGroup>
           <FormGroup>

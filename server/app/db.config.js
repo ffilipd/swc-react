@@ -1,9 +1,9 @@
 module.exports = {
     // HOST: "dahlskog.fi",
+    // USER: "dahlskog_fm",
+    // PASSWORD: "NGi0BMK~QV)U",
+    // DB: "dahlskog_fm",
     HOST: "localhost",
-    // USER: "dahlskog_swc",
-    // PASSWORD: "JM(xK75C*%fQ",
-    // DB: "dahlskog_wp_3atnn",
     USER: "swc",
     PASSWORD: "swc",
     DB: "swc_test",
@@ -14,5 +14,6 @@ module.exports = {
         acquire: 30000,
         idle: 10000
     },
-    timezone: "Europe/Helsinki"
+    timezone: "Europe/Helsinki",
+    logging: console.log
 };

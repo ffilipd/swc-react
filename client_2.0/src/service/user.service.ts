@@ -54,7 +54,7 @@ export const createUser = async (googleProfile: Profile): Promise<FMProfile> => 
     }
 };
 
-// UPDATE USER PROFILE
+// UPDATE OWN USER PROFILE
 export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<any> => {
     const prefillParams: (keyof FMProfile)[] = ['language', 'role'];
     for (const key of prefillParams) {
@@ -65,7 +65,7 @@ export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<an
     const request = await buildRequestConfig({ method: 'PUT', data: profile, id: profile.id })
     try {
         const response = await axios(request);
-        return response.data as FMProfile;
+        return response.data;
     } catch (error) {
         throw new Error('Error creating user: ' + error);
     }

@@ -103,14 +103,15 @@ exports.findOne = (req, res) => {
 // Update a User by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
+    const { last_login, ...updateData } = req.body; // Exclude last_login since it's different format than sequelize expects and not really important for the action
 
-    User.update(req.body, {
+    User.update(updateData, {
         where: { id: id }
     })
         .then(num => {
             if (num[0] === 1) {
                 res.send({
-                    message: "User successfully updated. You might need to log in again for the changes to take effect"
+                    message: "User successfully updated!"
                 });
             } else {
                 res.send({
@@ -119,6 +120,7 @@ exports.update = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err);
             res.status(500).send({
                 message: "Error updating User with id=" + id
             })
