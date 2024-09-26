@@ -1,7 +1,6 @@
-import axios, { AxiosRequestConfig } from "axios"
+import axios, { AxiosError, AxiosRequestConfig } from "axios"
 import { FMProfile, LoginCredentials, NewUser, Profile } from "../interfaces";
 import authHeader from "./auth-header";
-import { useUser } from "../UserContext";
 
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
@@ -67,7 +66,13 @@ export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<an
         const response = await axios(request);
         return response.data as FMProfile;
     } catch (error) {
-        throw new Error('Error creating user: ' + error);
+        if (error instanceof AxiosError && error.response && error.response.status === 400) {
+            throw new Error(error.response.data.message);
+        } else if (error instanceof Error) {
+            throw new Error('Error updating user: ' + error.message);
+        } else {
+            throw new Error('An unknown error occurred');
+        }
     }
 }
 
@@ -93,6 +98,15 @@ export const getAllUsers = async (): Promise<FMProfile[]> => {
     }
 }
 
+export const deleteUser = async (userId: keyof FMProfile): Promise<any> => {
+    const URL: string = base_URL + API_ENDPOINTS.USERS;
+    try {
+        const res = await axios.delete(`${URL}/${userId}`, { headers: authHeader() })
+        return res.data.message;
+    } catch (error) {
+        throw new Error('Error deleting booking: ' + error)
+    }
+}
 
 
 async function buildRequestConfig(params: { id?: string, data?: Partial<FMProfile>, method: string }): Promise<AxiosRequestConfig> {

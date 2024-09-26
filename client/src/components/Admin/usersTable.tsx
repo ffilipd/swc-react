@@ -14,7 +14,6 @@ import {
   Dialog,
   AppBar,
   Toolbar,
-  Button,
   Typography,
   Slide,
   Input,
@@ -27,17 +26,23 @@ import {
   Checkbox,
   TableCellProps,
   Chip,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
 import { TransitionProps } from "@mui/material/transitions";
-import { updateUserProfile } from "../../service/user.service";
+import { updateUserProfile, deleteUser } from "../../service/user.service";
 import { dummyUser } from "../../utils/dummy-data";
+import { FmButton2 } from "../../utils/buttons";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -135,12 +140,13 @@ const UsersTable = (props: UsersProps) => {
   const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "viewer"];
   const userAccess: string[] | "" = ["J/70", "Elliott 6M", "RS Toura"];
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - (users ? users.length : 0))
-      : 0;
+  // const emptyRows =
+  //   page > 0
+  //     ? Math.max(0, (1 + page) * rowsPerPage - (users ? users.length : 0))
+  //     : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -161,12 +167,17 @@ const UsersTable = (props: UsersProps) => {
     setShowUserDetails(true);
   };
 
+  const closeUserDetailsDialog = () => {
+    setShowUserDetails(false);
+    fetchUsers();
+  };
+
   const handleChangeUserRole = () => {
-    const currentRole = selectedUser?.role;
+    // const currentRole = selectedUser?.role;
   };
-  const handleChangeUserAccess = () => {
-    const currentRole = selectedUser?.role;
-  };
+  // const handleChangeUserAccess = () => {
+  //   const currentRole = selectedUser?.role;
+  // };
 
   const handleCheckboxActiveClick = async () => {
     updateUser("active");
@@ -186,22 +197,41 @@ const UsersTable = (props: UsersProps) => {
     if (
       updatedUser &&
       updatedUser.id === selectedUser.id &&
-      selectedUser.id !== "12345"
+      selectedUser.id !== "12345" // dummy id, without this check it will try to update a non existing user
     ) {
       const sendUpdatedUserProfile = async () => {
-        const res = await updateUserProfile(updatedUser);
         try {
+          const res = await updateUserProfile(updatedUser);
           setSelectedUser(updatedUser);
           setUpdatedUser(dummyUser);
           alert(res.message);
         } catch (err) {
-          alert(res.message);
+          if (err instanceof Error) {
+            alert(err.message);
+          } else {
+            alert("An unknown error occurred");
+          }
         }
       };
 
       sendUpdatedUserProfile();
     }
   }, [updatedUser, selectedUser.id]);
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const deleteUserClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteUser = async () => {
+    const res = await deleteUser(selectedUser.id as keyof FMProfile);
+    setDeleteDialogOpen(false);
+    alert(res);
+    closeUserDetailsDialog();
+  };
 
   return (
     <React.Fragment>
@@ -333,7 +363,7 @@ const UsersTable = (props: UsersProps) => {
             <IconButton
               edge="start"
               color="inherit"
-              onClick={() => setShowUserDetails(false)}
+              onClick={() => closeUserDetailsDialog()}
               aria-label="close"
             >
               <CloseIcon />
@@ -392,8 +422,25 @@ const UsersTable = (props: UsersProps) => {
             ))}
           </FormGroup>
 
-          {/* <FmButton2>{t("Edit")}</FmButton2> */}
+          <FmButton2 className="delete-button" onClick={deleteUserClick}>
+            {t("Delete User")}
+          </FmButton2>
         </Box>
+      </Dialog>
+      <Dialog open={deleteDialogOpen} onClose={handleCloseDeleteDialog}>
+        <DialogTitle id="alert-dialog-title">{t("Delete user")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-delete">
+            {/* {description} */}
+            {t("Are you sure you want to delete user ")}"{selectedUser.name}"
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} autoFocus>
+            {t("Cancel")}
+          </Button>
+          <Button onClick={handleDeleteUser}>{t("Delete")}</Button>
+        </DialogActions>
       </Dialog>
     </React.Fragment>
   );

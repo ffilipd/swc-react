@@ -56,6 +56,8 @@ exports.create = async (req, res) => {
     }
 };
 
+
+
 // Retrieve all User from the database.
 exports.findAll = (req, res) => {
     User.findAll({
@@ -79,6 +81,7 @@ exports.findAll = (req, res) => {
 };
 
 
+
 // Find a single User with an id
 exports.findOne = (req, res) => {
     const { id } = req.params;
@@ -100,58 +103,108 @@ exports.findOne = (req, res) => {
         })
 };
 
+
+
 // Update a User by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
     const { last_login, ...updateData } = req.body; // Exclude last_login since it's different format than sequelize expects and not really important for the action
 
-    User.update(updateData, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num[0] === 1) {
-                res.send({
-                    message: "User successfully updated!"
+    try {
+        // Check if the user to be updated is an admin
+        const user = await User.findOne({ where: { id: id } });
+        if (!user) {
+            return res.status(404).send({
+                message: `Cannot update user with id=${id}. Maybe User was not found!`
+            });
+        }
+
+        // Count the number of admin users
+        const adminCount = await User.count({ where: { role: 'admin' } });
+        const isOnlyAdmin = adminCount === 1 && user.role === 'admin';
+
+        // If the user is the only admin, prevent changes to 'active' and 'rejected'
+        if (isOnlyAdmin) {
+            if ('active' in updateData || 'rejected' in updateData) {
+                return res.status(400).send({
+                    message: "Cannot change 'active' or 'rejected' properties for the only admin."
                 });
-            } else {
-                res.send({
-                    message: `Cannot update user with id=${id}. Maybe User was not found or req.body was empty!`
-                })
             }
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message: "Error updating User with id=" + id
-            })
-        })
+        }
+
+        // Prevent changing the role of the only admin
+        if (user.role === 'admin' && updateData.role && updateData.role !== 'admin') {
+            if (adminCount === 1) {
+                return res.status(400).send({
+                    message: "Cannot change the role of the only admin user."
+                });
+            }
+        }
+
+        // Proceed to update the user
+        const num = await User.update(updateData, { where: { id: id } });
+        if (num[0] === 1) {
+            res.send({
+                message: "User successfully updated!"
+            });
+        } else {
+            res.send({
+                message: `Cannot update user with id=${id}. Maybe User was not found or req.body was empty!`
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            message: "Error updating User with id=" + id
+        });
+    }
 };
+
+
+
 
 // Delete a User with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id;
 
-    User.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "User was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete User with id=${id}. Maybe User was not found!`
+    try {
+        // Check if the user to be deleted is an admin
+        const user = await User.findOne({ where: { id: id } });
+        if (!user) {
+            return res.status(404).send({
+                message: `Cannot delete User with id=${id}. Maybe User was not found!`
+            });
+        }
+
+        if (user.role === 'admin') {
+            // Count the number of admin users
+            const adminCount = await User.count({ where: { role: 'admin' } });
+            if (adminCount === 1) {
+                return res.status(400).send({
+                    message: "Cannot delete the only admin user."
                 });
             }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete User with id=" + id
-            });
-        });
+        }
 
+        // Proceed to delete the user
+        const num = await User.destroy({ where: { id: id } });
+        if (num === 1) {
+            res.send({
+                message: "User was deleted successfully!"
+            });
+        } else {
+            res.send({
+                message: `Cannot delete User with id=${id}. Maybe User was not found!`
+            });
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: "Could not delete User with id=" + id
+        });
+    }
 };
+
+
 
 function generateUniqueId() {
     // Generate uuid

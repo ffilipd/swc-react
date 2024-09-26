@@ -3,12 +3,12 @@ import { Booking, BookingSearchParams, NewBooking } from "../interfaces";
 import authHeader from "./auth-header";
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
-const API_ENDPONTS = {
+const API_ENDPOINTS = {
     BOOKINGS: '/bookings',
 }
 
 export const getBookings = async (_params?: BookingSearchParams): Promise<Booking[]> => {
-    const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
+    const URL: string = base_URL + API_ENDPOINTS.BOOKINGS;
     const params: URLSearchParams | undefined = _params && buildParams(_params);
     try {
         const res = await axios.get(URL, { params: params, headers: authHeader() });
@@ -19,7 +19,7 @@ export const getBookings = async (_params?: BookingSearchParams): Promise<Bookin
 }
 
 export const addBooking = async (newBooking: NewBooking): Promise<void> => {
-    const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
+    const URL: string = base_URL + API_ENDPOINTS.BOOKINGS;
     try {
         const res = await axios.post(URL, { ...newBooking }, { headers: authHeader() })
         return res.data.message;
@@ -29,7 +29,7 @@ export const addBooking = async (newBooking: NewBooking): Promise<void> => {
 }
 
 export const deleteBooking = async (bookingId: string): Promise<void> => {
-    const URL: string = base_URL + API_ENDPONTS.BOOKINGS;
+    const URL: string = base_URL + API_ENDPOINTS.BOOKINGS;
     try {
         const res = await axios.delete(`${URL}/${bookingId}`, { headers: authHeader() })
         return res.data.message;
