@@ -34,6 +34,7 @@ import BookingTable from "./Table";
 import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";
 import MobileBooking from "./mobile";
+import FmCalendar from "../../utils/calendar/calendar";
 
 dayjs.extend(customParseFormat);
 const roundedTime = (time: Dayjs): Dayjs => {
@@ -216,10 +217,11 @@ const BookingComponent = () => {
               ) : (
                 <>
                   <Typography className="label">{t("Select Date")}</Typography>
-                  <DateCalendar
+                  <FmCalendar />
+                  {/* <DateCalendar
                     value={selectedDate}
                     onChange={(newDate) => setSelectedDate(newDate)}
-                  />
+                  /> */}
                 </>
               )}
             </LocalizationProvider>
