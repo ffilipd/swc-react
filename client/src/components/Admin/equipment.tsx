@@ -23,11 +23,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import "./equipment.css";
 import { FmButton2 } from "../../utils/buttons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import i18next from "i18next";
 import { NewEquipment } from "../../interfaces";
+import { getEquipmentTree } from "../../service/equipment.service";
+import { useEquipment } from "../../EquipmentContext";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -66,11 +68,16 @@ const AdminEquipmentComponent = () => {
     useState<boolean>(false);
   const [newNameInputVisible, setNewNameInputVisible] =
     useState<boolean>(false);
+  const [availableEquipmentNames, setAvailableEquipmentNames] = useState<
+    string[]
+  >([""]);
+
   const handleSetType = (typeName: string) => {
     if (typeName === "new-type") {
       setNewTypeInputVisible(true);
       setNewNameInputVisible(true);
     }
+    setNewEquipment({ ...newEquipment, type: typeName });
   };
 
   const handleSetName = (typeName: string) => {
@@ -79,11 +86,17 @@ const AdminEquipmentComponent = () => {
     }
   };
 
+  const { equipment, equipmentTypes, equipmentNames } = useEquipment();
   const [newEquipment, setNewEquipment] = useState<NewEquipment>({
     type: "",
     name: "",
     number: "",
   });
+
+  useEffect(() => {
+    if (newEquipment.type)
+      setAvailableEquipmentNames(equipmentNames(newEquipment.type));
+  }, [newEquipment]);
 
   const handleAddEquipmentClick = async () => {};
 
@@ -149,14 +162,14 @@ const AdminEquipmentComponent = () => {
                   handleSetType(e.target.value);
                 }}
               >
-                {/* {availableEquipment.types?.map((type: string, index: number) => (
-                <MenuItem key={`${type}-${index}`} value={type}>
-                  {type}
-                </MenuItem>
-              ))} */}
                 <MenuItem key={"new-type"} value={"new-type"}>
-                  {t("–– New ––")}
+                  {`–– ${t("New")} ––`}
                 </MenuItem>
+                {equipmentTypes.map((type: string, index: number) => (
+                  <MenuItem key={`${type}-${index}`} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             {newTypeInputVisible && (
@@ -187,14 +200,14 @@ const AdminEquipmentComponent = () => {
                   handleSetName(e.target.value);
                 }}
               >
-                {/* {availableEquipment.names.map((name) => (
-                <MenuItem key={name.id} value={name.id}>
-                  {name.name}
-                </MenuItem>
-              ))} */}
                 <MenuItem key={"new-name"} value={"new-name"}>
-                  {t("–– New ––")}
+                  {`–– ${t("New")} ––`}
                 </MenuItem>
+                {availableEquipmentNames.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             {newNameInputVisible && (

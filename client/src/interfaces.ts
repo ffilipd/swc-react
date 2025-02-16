@@ -89,6 +89,7 @@ export interface EquipmentTree {
 
 export interface Equipment {
     [key: string]: {
+        [x: string]: any;
         type: string;
         equipment_name: string;
         swc_number: string;

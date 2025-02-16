@@ -11,6 +11,8 @@ import { useUser } from "./UserContext";
 
 type EquipmentContextType = {
   equipment: EquipmentTree | null;
+  equipmentTypes: string[];
+  equipmentNames: (typeName: string) => string[];
   sailboatNames: string[];
   motorboatNames: string[];
   populateEquipment: () => void;
@@ -32,6 +34,14 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
   });
   const [sailboatNames, setSailboatNames] = useState<string[]>([]);
   const [motorboatNames, setMotorboatNames] = useState<string[]>([]);
+  const [equipmentTypes, setEquipmentTypes] = useState<string[]>([]);
+  const equipmentNames = (typeName: string): string[] => {
+    if (!equipment) return [];
+    const type = equipment.find(
+      (typeObj: any) => typeObj.typeName === typeName
+    ) as Equipment;
+    return type ? type.names.map((nameObj: any) => nameObj.name) : [];
+  };
 
   const populateEquipment = async () => {
     if (user) {
@@ -43,6 +53,9 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
         (type) => type.typeName === "Sailboat"
       );
       setSailboatNames(sailboats.names.map((nameObj: any) => nameObj.name));
+
+      const types: any = equipment.map((typeObj: any) => typeObj.typeName);
+      setEquipmentTypes(types);
 
       // const motorboats: any = equipment.find(
       //   (type) => type.typeName === "Motorboat"
@@ -59,6 +72,8 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
     <EquipmentContext.Provider
       value={{
         equipment,
+        equipmentTypes,
+        equipmentNames,
         sailboatNames,
         motorboatNames,
         populateEquipment,
