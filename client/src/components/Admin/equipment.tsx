@@ -78,6 +78,15 @@ const AdminEquipmentComponent = () => {
     string[]
   >([""]);
 
+  const [newType, setNewType] = useState<string>("");
+  const [newName, setNewName] = useState<string>("");
+
+  const handleSetNewType = (newType: string) => {
+    setNewType(newType);
+  };
+  const handleSetNewName = (newName: string) => {
+    setNewName(newName);
+  };
   const handleSetType = (typeName: string) => {
     if (typeName === "new-type") {
       setNewTypeInputVisible(true);
@@ -111,6 +120,10 @@ const AdminEquipmentComponent = () => {
   }, [newEquipment]);
 
   const handleAddEquipmentClick = async () => {
+    if (newEquipment.type === "new-type")
+      setNewEquipment({ ...newEquipment, type: newType });
+    if (newEquipment.name === "new-name")
+      setNewEquipment({ ...newEquipment, name: newName });
     try {
       const res = await addNewEquipment(newEquipment);
       alert(res);
@@ -206,6 +219,7 @@ const AdminEquipmentComponent = () => {
                   className="booking-select-button"
                   label={labels.equipment.newType}
                   autoFocus
+                  onChange={(e) => handleSetNewType(e.target.value)}
                 />
                 <Divider sx={{ margin: "16px 0 0 0" }} />
               </FormControl>
@@ -244,6 +258,7 @@ const AdminEquipmentComponent = () => {
                   className="booking-select-button"
                   label={labels.equipment.newName}
                   autoFocus
+                  onChange={(e) => handleSetNewName(e.target.value)}
                 />
                 <Divider sx={{ margin: "16px 0 0 0" }} />
               </FormControl>
