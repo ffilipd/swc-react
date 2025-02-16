@@ -75,6 +75,7 @@ export interface NewEquipment {
     type: string;
     name: string;
     number: string;
+    userId: string | undefined;
 }
 
 export interface EquipmentTree {

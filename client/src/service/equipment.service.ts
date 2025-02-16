@@ -1,6 +1,6 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import { Equipment, EquipmentFilterResponse, EquipmentTree } from "../interfaces";
+import { Equipment, EquipmentFilterResponse, EquipmentTree, NewEquipment } from "../interfaces";
 
 
 
@@ -51,6 +51,16 @@ export async function getEquipmentFilters(_params?: EquipmentSearchParams): Prom
     }
 };
 
+export async function addNewEquipment(NewEquipment: NewEquipment): Promise<void> {
+    const URL: string = base_URL + API_ENDPONTS.EQUIPMENT;
+    try {
+        const res = await axios.post(URL, { ...NewEquipment }, { headers: authHeader() })
+        return res.data.message;
+    } catch (error) {
+        throw new Error('Error adding new equipment: ' + error);
+    }
+
+}
 
 
 /******* BUILD PARAMETERS *******/

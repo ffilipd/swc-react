@@ -28,9 +28,13 @@ import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import i18next from "i18next";
 import { NewEquipment } from "../../interfaces";
-import { getEquipmentTree } from "../../service/equipment.service";
+import {
+  addNewEquipment,
+  getEquipmentTree,
+} from "../../service/equipment.service";
 import { useEquipment } from "../../EquipmentContext";
 import { TextChange } from "typescript";
+import { useUser } from "../../UserContext";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -43,6 +47,7 @@ const Transition = React.forwardRef(function Transition(
 
 const AdminEquipmentComponent = () => {
   const { t } = useTranslation();
+  const { user } = useUser();
   const labels = {
     equipment: {
       type: "*" + i18next.t("Equipment type"),
@@ -97,6 +102,7 @@ const AdminEquipmentComponent = () => {
     type: "",
     name: "",
     number: "",
+    userId: user?.id,
   });
 
   useEffect(() => {
@@ -104,7 +110,20 @@ const AdminEquipmentComponent = () => {
       setAvailableEquipmentNames(equipmentNames(newEquipment.type));
   }, [newEquipment]);
 
-  const handleAddEquipmentClick = async () => {};
+  const handleAddEquipmentClick = async () => {
+    try {
+      const res = await addNewEquipment(newEquipment);
+      alert(res);
+      setNewEquipment({
+        ...newEquipment,
+        type: "",
+        name: "",
+        number: "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <React.Fragment>
