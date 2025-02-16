@@ -38,7 +38,7 @@ const AccountInfoComponent = () => {
   const searchId: string | null = searchParams.get("id");
   const { t } = useTranslation();
   const { user, setUser } = useUser();
-  const { equipment, sailboatNames, motorboatNames } = useEquipment();
+  const { equipment } = useEquipment();
 
   const labels = {
     selectRole: i18next.t("Role"),
