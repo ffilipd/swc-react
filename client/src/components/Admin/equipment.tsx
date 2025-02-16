@@ -30,6 +30,7 @@ import i18next from "i18next";
 import { NewEquipment } from "../../interfaces";
 import { getEquipmentTree } from "../../service/equipment.service";
 import { useEquipment } from "../../EquipmentContext";
+import { TextChange } from "typescript";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -80,10 +81,15 @@ const AdminEquipmentComponent = () => {
     setNewEquipment({ ...newEquipment, type: typeName });
   };
 
-  const handleSetName = (typeName: string) => {
-    if (typeName === "new-name") {
+  const handleSetName = (newName: string) => {
+    if (newName === "new-name") {
       setNewNameInputVisible(true);
     }
+    setNewEquipment({ ...newEquipment, name: newName });
+  };
+
+  const handleSetNumber = (number: string) => {
+    setNewEquipment({ ...newEquipment, number: number });
   };
 
   const { equipment, equipmentTypes, equipmentNames } = useEquipment();
@@ -112,6 +118,8 @@ const AdminEquipmentComponent = () => {
           {t("Add new")}
         </FmButton2>
       </Box>
+
+      {/* ADD EQUIPMENT */}
       <Dialog
         fullScreen
         open={addEquipmentDialogOpen}
@@ -157,7 +165,7 @@ const AdminEquipmentComponent = () => {
                 labelId="equipment-type-label"
                 id="equipment-type"
                 label={labels.equipment.type}
-                // value={selectedEquipment.type}
+                value={newEquipment.type}
                 onChange={(e: SelectChangeEvent) => {
                   handleSetType(e.target.value);
                 }}
@@ -192,10 +200,10 @@ const AdminEquipmentComponent = () => {
               <Select
                 className="booking-select-button"
                 labelId="equipment-name-label"
-                // disabled={selectedEquipment.type === ""}
+                disabled={newEquipment.type === ""}
                 id="equipment-name"
                 label={labels.equipment.name}
-                // value={selectedEquipment.equipmentNameId}
+                value={newEquipment.name}
                 onChange={(e: SelectChangeEvent) => {
                   handleSetName(e.target.value);
                 }}
@@ -203,8 +211,8 @@ const AdminEquipmentComponent = () => {
                 <MenuItem key={"new-name"} value={"new-name"}>
                   {`–– ${t("New")} ––`}
                 </MenuItem>
-                {availableEquipmentNames.map((name) => (
-                  <MenuItem key={name} value={name}>
+                {availableEquipmentNames.map((name: string, index: number) => (
+                  <MenuItem key={`${name}-${index}`} value={name}>
                     {name}
                   </MenuItem>
                 ))}
@@ -229,13 +237,17 @@ const AdminEquipmentComponent = () => {
                 className="booking-select-button"
                 label={labels.equipment.number}
                 autoFocus
+                disabled={newEquipment.name === ""}
+                onChange={(e) => {
+                  handleSetNumber(e.target.value);
+                }}
               />
               <Divider sx={{ margin: "16px 0 0 0" }} />
             </FormControl>
 
             <FmButton2
               // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
-              // disabled={!bookingFilledOut()}
+              disabled={newEquipment.number === ""}
               onClick={handleAddEquipmentClick}
             >
               {t("Add equipment")}
@@ -244,6 +256,7 @@ const AdminEquipmentComponent = () => {
         </Box>
       </Dialog>
 
+      {/* EDIT EQUIPMENT */}
       <Dialog
         fullScreen
         open={editEquipmentDialogOpen}

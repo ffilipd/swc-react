@@ -4,9 +4,6 @@
       "path": "server"
     },
     {
-      "path": "client_2.0"
-    },
-    {
       "path": "client"
     }
   ],

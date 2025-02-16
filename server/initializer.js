@@ -40,12 +40,11 @@ const initalizeDB = async () => {
                         // create default equipment types
                         Equipment.Type.create({
                             name: 'Sailboat',
-                            id: 1
+                            id: 1,
                         })
-                        // Equipment.Type.create({
-                        //     name: 'Motorboat',
-                        //     id: 2
-                        // })
+                        Equipment.Type.create({
+                            name: 'Motorboat'
+                        })
                         // Equipment.Type.create({
                         //     name: 'Windsurfing board',
                         //     id: 3,
