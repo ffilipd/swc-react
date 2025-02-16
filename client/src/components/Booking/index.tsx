@@ -217,7 +217,10 @@ const BookingComponent = () => {
               ) : (
                 <>
                   <Typography className="label">{t("Select Date")}</Typography>
-                  <FmCalendar />
+                  <FmCalendar
+                    value={selectedDate}
+                    onChange={(newDate) => setSelectedDate(newDate)}
+                  />
                   {/* <DateCalendar
                     value={selectedDate}
                     onChange={(newDate) => setSelectedDate(newDate)}

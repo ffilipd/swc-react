@@ -3,10 +3,13 @@
  * first day of week, to Monday as first day of week.              *
  *******************************************************************/
 import { DateCalendar, DateCalendarProps } from "@mui/x-date-pickers";
-import React, { useEffect } from "react";
+import { Dayjs } from "dayjs";
+import React, { useEffect, useState } from "react";
 
-const FmCalendar: React.FC<DateCalendarProps<Date>> = (props) => {
-  useEffect(() => {
+interface FmCalendarProps extends DateCalendarProps<Dayjs> {}
+
+const FmCalendar: React.FC<FmCalendarProps> = ({ ...props }) => {
+  const mapCalendar = () => {
     // Move the Sunday header element to the last position
     const headerElement = document.querySelector<HTMLDivElement>(
       ".MuiDayCalendar-header"
@@ -15,97 +18,123 @@ const FmCalendar: React.FC<DateCalendarProps<Date>> = (props) => {
     const sundayElement = headerElement.querySelector<HTMLDivElement>(
       '[aria-label="Sunday"]'
     );
+
+    // fix weekday header
+    if (sundayElement !== headerElement.lastChild && sundayElement) {
+      headerElement.appendChild(sundayElement);
+    }
+
     // Get month container
     const monthContainer = document.querySelector<HTMLDivElement>(
       ".MuiDayCalendar-monthContainer"
     );
 
     /** GUARD **/
-    if (
-      !monthContainer ||
-      sundayElement === headerElement.lastChild ||
-      !sundayElement
-    )
-      return;
-    // fix weekday header
-    headerElement.appendChild(sundayElement);
+    if (!monthContainer) return;
 
     // Get week containers
     const weeksContainers = document.querySelectorAll<HTMLDivElement>(
       ".MuiDayCalendar-weekContainer"
     );
-    // Collect the days
-    const days = monthContainer.querySelectorAll("[data-timestamp]");
-    // filler (blank) day
-    const weekLen: number = 6;
+
     const daysInWeek: number = 7;
 
+    const checkMappingDone = () => {
+      // get index from first day from calendar
+      const currentFirstDayIndex =
+        daysInWeek - weeksContainers[0].querySelectorAll("button").length;
+      // const gregorianFirstDayIndex =
+      const monthYearElement = document.querySelector(
+        ".MuiPickersCalendarHeader-label"
+      );
+      const monthYear: string | null = monthYearElement
+        ? monthYearElement.textContent
+        : null;
+      const monthYearArray = monthYear?.split(" ");
+      const gregorianFirstDayIndex = monthYearArray
+        ? new Date(`${monthYearArray[0]} 1, ${monthYearArray[1]}`).getDay() - 1
+        : null;
+      const isMapped = gregorianFirstDayIndex === currentFirstDayIndex;
+      return isMapped;
+    };
+
+    if (checkMappingDone()) return;
+
+    // Query the day elements
+    const days =
+      monthContainer.querySelectorAll<HTMLButtonElement>("[data-timestamp]");
+
     if (weeksContainers) {
-      // Start assembling the new monthContainer
-      let newMonthContainer = monthContainer;
-      newMonthContainer.innerHTML = "";
-
-      // if there are only 4 weeks in the month (february every now and then)
-      // create a new week because when we shift the dates there will be 5 weeks
-      let newWeekContainer: HTMLDivElement | null = null;
-
-      // Check how many dates in the old first week
-      const daysInFirstWeek: number =
-        weeksContainers[0].querySelectorAll<HTMLButtonElement>("button").length;
-
       const fillerDay = monthContainer.querySelector<HTMLDivElement>(
         ".MuiPickersDay-hiddenDaySpacingFiller"
       );
 
-      const newWeekFillerDays: number = 6;
-      const firstWeekFillerDaysLen: number =
-        daysInFirstWeek < daysInWeek
-          ? daysInWeek - (daysInFirstWeek + 1)
-          : newWeekFillerDays;
-
       let dayIndex = 0;
-      const getDayIndex = (): number => {
-        const currentDayIndex = dayIndex;
-        dayIndex++;
-        return currentDayIndex;
-      };
 
-      weeksContainers.forEach((week, index) => {
-        // first week
-        if (index === 0 && fillerDay) {
-          //   empty the week
+      // Convert NodeList to array and sort the buttons
+      const sortedDays = Array.from(days).sort((a, b) => {
+        const aText = parseInt(a.textContent || "0", 10);
+        const bText = parseInt(b.textContent || "0", 10);
+        return aText - bText;
+      });
+
+      weeksContainers.forEach((week: HTMLDivElement, index: number) => {
+        if (!fillerDay) return;
+        // handle first week
+        if (index === 0) {
+          // Calculate index for the first day
+          let firstDayIndex: number =
+            Array.from(week.children).findIndex(
+              (day) => day instanceof HTMLButtonElement
+            ) - 1;
+
+          if (firstDayIndex < 0) firstDayIndex = 6;
           week.innerHTML = "";
-          for (let i = 0; i < firstWeekFillerDaysLen; i++) {
-            week.append(fillerDay);
+
+          for (let i = 0; i < firstDayIndex; i++) {
+            if (fillerDay) {
+              week.appendChild(fillerDay.cloneNode(true));
+            }
           }
-          for (let i = 0; i < daysInWeek - firstWeekFillerDaysLen; i++) {
-            week.append(days[getDayIndex()]);
+          for (let i = firstDayIndex; i < daysInWeek; i++) {
+            week.appendChild(sortedDays[dayIndex]);
+            dayIndex++;
           }
+          return;
         }
 
-        // Check if we need to add a week. In that case wee add the new week last
-        if (weeksContainers.length < 5 && index === 4) {
-          //   // copy a week container
-          //   newWeekContainer = weeksContainers[0];
-          //   // empty it
-          //   newWeekContainer.innerHTML = "";
-          //   //   fill in 6 filler days
-          //   for (let d = 0; d < weekLen - 1; d++) {
-          //     if (fillerDay) {
-          //       newWeekContainer.append(fillerDay);
-          //     }
-          //   }
-          //   newWeekContainer.append(days[0]);
-        }
-
+        // The rest of the weeks
+        week.innerHTML = "";
         for (let i = 0; i < daysInWeek; i++) {
-          week.append(days[getDayIndex()]);
+          if (dayIndex < days.length) {
+            week.appendChild(sortedDays[dayIndex]);
+            dayIndex++;
+          } else {
+            week.appendChild(fillerDay.cloneNode(true));
+          }
         }
       });
     }
+  };
+  useEffect(() => {
+    mapCalendar();
   }, []);
 
-  return <DateCalendar {...props} />;
+  const handleOnMonthChange = () => {
+    // Set timeout to make sure the new month is loaded before mapping
+    setTimeout(() => {
+      mapCalendar();
+    }, 0);
+  };
+
+  return (
+    <DateCalendar
+      {...props}
+      fixedWeekNumber={6}
+      onMonthChange={handleOnMonthChange}
+      onYearChange={handleOnMonthChange}
+    />
+  );
 };
 
 export default FmCalendar;
