@@ -23,14 +23,38 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   border: "none",
   backgroundColor: "#104462",
   color: "#fff",
-  padding: "8px",
+  padding: "8px 40px",
   borderRadius: "23px",
+  margin: "5px",
   height: "46px",
+  fontSize: "large",
   "&.Mui-focused": {
     border: "none",
   },
   "&:hover": {
-    backgroundColor: "#003865",
+    backgroundColor: "#1b70a1",
+    border: "none",
+  },
+  ".MuiSvgIcon-root ": {
+    fill: "#fff",
+  },
+}));
+
+export const FmButtonDanger = styled(Button)<ButtonProps>(({ theme }) => ({
+  variant: "outlined",
+  border: "none",
+  backgroundColor: "#960606",
+  color: "#fff",
+  padding: "8px 40px",
+  borderRadius: "23px",
+  margin: "5px",
+  height: "46px",
+  fontSize: "large",
+  "&.Mui-focused": {
+    border: "none",
+  },
+  "&:hover": {
+    backgroundColor: "#de0404",
     border: "none",
   },
   ".MuiSvgIcon-root ": {

@@ -62,6 +62,17 @@ export async function addNewEquipment(NewEquipment: NewEquipment): Promise<void>
 
 }
 
+// export async function editEquipment(NewEquipment: NewEquipment): Promise<void> {
+//     const URL: string = base_URL + API_ENDPONTS.EQUIPMENT;
+//     try {
+//         const res = await axios.post(URL, { ...NewEquipment }, { headers: authHeader() })
+//         return res.data.message;
+//     } catch (error) {
+//         throw new Error('Error adding new equipment: ' + error);
+//     }
+
+// }
+
 
 /******* BUILD PARAMETERS *******/
 function buildParams(options: EquipmentSearchParams): URLSearchParams {

@@ -5,6 +5,7 @@ import {
   Dialog,
   Divider,
   FormControl,
+  Grid,
   IconButton,
   InputBase,
   InputLabel,
@@ -22,7 +23,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import "./equipment.css";
-import { FmButton2 } from "../../utils/buttons";
+import { FmButton2, FmButtonDanger } from "../../utils/buttons";
 import { useEffect, useState } from "react";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
@@ -410,14 +411,23 @@ const AdminEquipmentComponent = () => {
               </Select>
               <Divider sx={{ margin: "16px 0 0 0" }} />
             </FormControl>
+            <Grid container spacing={2}>
+              <FmButton2
+              // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
+              // disabled={!bookingFilledOut()}
+              // onClick={handleBookEquipmentClick}
+              >
+                {t("Edit")}
+              </FmButton2>
 
-            <FmButton2
-            // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
-            // disabled={!bookingFilledOut()}
-            // onClick={handleBookEquipmentClick}
-            >
-              {t("Edit")}
-            </FmButton2>
+              <FmButtonDanger
+              // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
+              // disabled={!bookingFilledOut()}
+              // onClick={handleBookEquipmentClick}
+              >
+                {t("Remove Equipment")}
+              </FmButtonDanger>
+            </Grid>
           </Box>
         </Box>
       </Dialog>
