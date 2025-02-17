@@ -8,19 +8,22 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true
         },
         number: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: true
         }
     });
 
     const Name = sequelize.define("equipment_name", {
         name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: true
         }
-    })
+    });
 
     const Type = sequelize.define("equipment_type", {
         name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: true
         }
     });
 

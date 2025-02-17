@@ -25,7 +25,7 @@ const { initalizeDB, resetDB } = require('./initializer');
 
 
 
-// resetDB().then
+// resetDB()
 initalizeDB()
     .then(() => {
         require('./app/routes/auth.routes')(app);

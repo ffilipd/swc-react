@@ -4,8 +4,58 @@ const User = db.user;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Equipment
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
+    const { type, name, number, userId } = req.body;
+    if (!type || !name || !number) {
+        res.send({
+            message: "Parameters missing!"
+        });
+        return;
+    }
 
+    try {
+        // Check that user is allowed to book this equipment
+        const user = await User.findByPk(userId);
+        if (user.role === 'admin' || user.role === 'moderator') {
+            // Check if type exists
+            let equipmentType = await Type.findOne({ where: { name: type } });
+            if (!equipmentType) {
+                equipmentType = await Type.create({ name: type });
+            }
+
+            // Check if name exists
+            let equipmentName = await Name.findOne({ where: { name: name, equipmentTypeId: equipmentType.id } });
+            if (!equipmentName) {
+                equipmentName = await Name.create({ name: name, equipmentTypeId: equipmentType.id });
+            }
+
+            // Check if equipment exists
+            const existingEquipment = await Equipment.findOne({ where: { number: number, equipmentNameId: equipmentName.id } });
+            if (existingEquipment) {
+                res.send({
+                    message: "Equipment with the same name and number already exists!"
+                });
+                return;
+            }
+
+            // Create new equipment
+            await Equipment.create({
+                equipmentNameId: equipmentName.id,
+                number: number
+            });
+            res.status(200).send({ message: 'Equipment added!' });
+        } else {
+            res.send({
+                message: "Only admin and moderator can add equipment!"
+            });
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            message: 'Error occurred while creating equipment.'
+        });
+    }
 };
 
 // Retrieve all Equipment from the database.
