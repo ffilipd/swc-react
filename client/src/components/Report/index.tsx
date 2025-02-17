@@ -352,14 +352,14 @@ const ReportComponent = () => {
                 </Select>
               </FormControl>
 
-              {/* SWC NUMBER */}
+              {/* EQUIPMENT NUMBER */}
               <FormControl fullWidth className="report-select-item">
-                <InputLabel id="equipment-swc-nbr">{labels.number}</InputLabel>
+                <InputLabel id="equipment-nbr">{labels.number}</InputLabel>
                 <Select
                   className="booking-select-button"
-                  labelId="equipment-swc-nbr-label"
+                  labelId="equipment-nbr-label"
                   disabled={newReportWithoutBooking.equipmentNameId === ""}
-                  id="equipment-swc-nbr"
+                  id="equipment-nbr"
                   label={labels.number}
                   value={newReportWithoutBooking.equipmentNumber}
                   onChange={(e: SelectChangeEvent) => {

@@ -45,7 +45,7 @@ export interface ReportSearchParams {
     bookingId?: string;
     type?: string;
     equipment_name?: string;
-    swc_number?: string;
+    equipment_number?: string;
     date?: string;
     user_id?: string;
     damage_type?: string;
@@ -61,7 +61,7 @@ export interface Report {
     booking_id?: string;
     type?: string;
     equipment_name?: string;
-    swc_number?: string;
+    equipment_number?: string;
     date?: string;
     user_id: string;
     notes?: string;
@@ -93,7 +93,7 @@ export interface Equipment {
         [x: string]: any;
         type: string;
         equipment_name: string;
-        swc_number: string;
+        equipment_number: string;
         size?: string; // Optional property for windsurfing boards and sails
     };
 }

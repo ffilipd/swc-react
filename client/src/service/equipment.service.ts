@@ -7,8 +7,10 @@ import { Equipment, EquipmentFilterResponse, EquipmentTree, NewEquipment } from 
 
 interface EquipmentSearchParams {
     type?: string;
+    equipmentName?: string;
+    equipmentNumber?: string;
     equipmentNameId?: string;
-    swc_number?: string;
+    equipment_number?: string;
 }
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
@@ -78,7 +80,7 @@ export async function addNewEquipment(NewEquipment: NewEquipment): Promise<void>
 function buildParams(options: EquipmentSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof EquipmentSearchParams)[] = ['equipmentNameId', 'swc_number', 'type'];
+    const allowedParams: (keyof EquipmentSearchParams)[] = ['equipmentNameId', 'equipment_number', 'type'];
 
     // Loop through parameters
     for (const key of allowedParams) {

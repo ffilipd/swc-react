@@ -324,17 +324,17 @@ const BookingComponent = () => {
                 </Select>
               </FormControl>
 
-              {/* SWC NUMBER */}
+              {/* EQUIPMENT NUMBER */}
 
               <FormControl fullWidth className="booking-select-item">
-                <InputLabel id="equipment-swc-nbr">
+                <InputLabel id="equipment-nbr">
                   {labels.equipment.number}
                 </InputLabel>
                 <Select
                   className="booking-select-button"
-                  labelId="equipment-swc-nbr-label"
+                  labelId="equipment-nbr-label"
                   disabled={selectedEquipment.equipmentNameId === ""}
-                  id="equipment-swc-nbr"
+                  id="equipment-nbr"
                   label={labels.equipment.number}
                   value={selectedEquipment.number}
                   onChange={(e: SelectChangeEvent) => {

@@ -145,6 +145,11 @@ const AdminEquipmentComponent = () => {
     }
   };
 
+  const handleRemoveEquipmentClick = async () => {
+    // Get equipment to remove
+    return;
+  };
+
   return (
     <React.Fragment>
       <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box>
@@ -324,15 +329,15 @@ const AdminEquipmentComponent = () => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {t("Edit")}
+              {t("Edit & Remove Equipment")}
             </Typography>
-            <Button
+            {/* <Button
               autoFocus
               color="inherit"
               onClick={handleAddEquipmentDialogClose}
             >
               {t("Save")}
-            </Button>
+            </Button> */}
           </Toolbar>
         </AppBar>
         <Box id="admin-equipment-select-wrapper">
@@ -421,9 +426,9 @@ const AdminEquipmentComponent = () => {
               </FmButton2>
 
               <FmButtonDanger
-              // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
-              // disabled={!bookingFilledOut()}
-              // onClick={handleBookEquipmentClick}
+                // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
+                // disabled={!bookingFilledOut()}
+                onClick={handleRemoveEquipmentClick}
               >
                 {t("Remove Equipment")}
               </FmButtonDanger>

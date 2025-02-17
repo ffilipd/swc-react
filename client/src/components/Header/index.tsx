@@ -150,7 +150,7 @@ function Header() {
         </Box>
       )}
       <Box id="header-and-buttongroup">
-        <Box id="swc-header-text">
+        <Box id="header-text">
           <FleetControlTextWhite />
         </Box>
         {isMobile ? (
@@ -263,7 +263,7 @@ function Header() {
               <Select
                 id="language-button"
                 variant="outlined"
-                className="swc-select"
+                className="select"
                 sx={{
                   color: "#fff",
                   ".MuiOutlinedInput-notchedOutline": {

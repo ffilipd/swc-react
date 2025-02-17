@@ -88,7 +88,7 @@ const BookingTable = (props: BookingsProps) => {
   //       getBookingsByParams({
   //         type: filters.type,
   //         name: filters.name,
-  //         swc_number: filters.number,
+  //         equipment_number: filters.number,
   //       })
   //     );
   //   }, [filters]);
