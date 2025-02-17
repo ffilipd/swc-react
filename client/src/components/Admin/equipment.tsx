@@ -120,12 +120,15 @@ const AdminEquipmentComponent = () => {
   }, [newEquipment]);
 
   const handleAddEquipmentClick = async () => {
-    if (newEquipment.type === "new-type")
-      setNewEquipment({ ...newEquipment, type: newType });
-    if (newEquipment.name === "new-name")
-      setNewEquipment({ ...newEquipment, name: newName });
+    let equipmentToSave = { ...newEquipment };
+    if (newEquipment.type === "new-type") {
+      equipmentToSave.type = newType;
+    }
+    if (newEquipment.name === "new-name") {
+      equipmentToSave.name = newName;
+    }
     try {
-      const res = await addNewEquipment(newEquipment);
+      const res = await addNewEquipment(equipmentToSave);
       alert(res);
       setNewEquipment({
         ...newEquipment,
