@@ -14,54 +14,52 @@ exports.create = async (req, res) => {
     }
 
     try {
-        // Check that user are allowed to book this equipment
+        // Check that user is allowed to book this equipment
         const user = await User.findByPk(userId);
         // User is admin
         if (user.role === 'admin' || user.role === 'moderator') {
             // Check if type exists
-            const typeExists = await Type.findOne({
+            let typeInstance = await Type.findOne({
                 where: { name: type }
-            })
+            });
 
-
-            // check if type exists
-            let newType;
-            if (!typeExists) {
-                newType = await Type.create({ name: name });
+            // If type does not exist, create a new type
+            if (!typeInstance) {
+                typeInstance = await Type.create({ name: type });
             }
 
-            let equipmentName;
-            // create new type
-            if (!newType) {
-                const dupletEquipment = await Equipment.findOne({
-                    where: { number: number },
-                    include: {
-                        model: Name,
-                        where: { name: name }
-                    }
-                });
-                // check duplet
-                if (dupletEquipment) {
-                    res.send({
-                        message: "Equipment with the same name and number already exists!"
-                    });
-                    return;
-                }
-                // Find name
-                equipmentName = await Name.findOne({
+            // Check for duplicate equipment
+            const dupletEquipment = await Equipment.findOne({
+                where: { number: number },
+                include: {
+                    model: Name,
                     where: { name: name }
+                }
+            });
+
+            if (dupletEquipment) {
+                res.send({
+                    message: "Equipment with the same name and number already exists!"
                 });
-            } else {
-                await Type.create({ where: { name: type } });
-                // create new equipment name
-                equipmentName = await Name.create({ name: name })
+                return;
             }
 
+            // Find or create the equipment name
+            let equipmentName = await Name.findOne({
+                where: { name: name }
+            });
+
+            if (!equipmentName) {
+                equipmentName = await Name.create({ name: name, equipmentTypeId: typeInstance.id });
+            }
+
+            // Create the equipment
             await Equipment.create({
                 equipmentNameId: equipmentName.id,
                 number: number
-            })
-            res.status(200).send({ message: 'Equipment added!' })
+            });
+
+            res.status(200).send({ message: 'Equipment added!' });
         } else {
             res.send({
                 message: "Only admin and moderator can add equipment!"
