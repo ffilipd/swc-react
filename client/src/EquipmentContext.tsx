@@ -5,8 +5,14 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { getEquipmentTree } from "./service/equipment.service";
-import { Equipment, EquipmentTree } from "./interfaces";
+import { getEquipmentTree, getEquipmentId } from "./service/equipment.service";
+import {
+  Equipment,
+  EquipmentFilterResponse,
+  EquipmentIdSearchParams,
+  EquipmentSearchParams,
+  EquipmentTree,
+} from "./interfaces";
 import { useUser } from "./UserContext";
 
 type EquipmentContextType = {
@@ -14,6 +20,9 @@ type EquipmentContextType = {
   equipmentTypes: string[];
   getEquipmentNames: (equipmentType: string) => string[];
   getEquipmentNumbers: (equipmentName: string) => string[];
+  findEquipmentId: (
+    equipment: EquipmentIdSearchParams
+  ) => Promise<string | undefined>;
   populateEquipment: () => void;
 };
 
@@ -54,6 +63,16 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
     return [];
   };
 
+  const findEquipmentId = async (
+    equipment: EquipmentIdSearchParams
+  ): Promise<string | undefined> => {
+    const equipmentId = await getEquipmentId(equipment);
+    if (equipmentId) {
+      return equipmentId;
+    }
+    return undefined;
+  };
+
   const populateEquipment = async () => {
     if (user) {
       const equipment = await getEquipmentTree(user.id);
@@ -76,6 +95,7 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
         equipmentTypes,
         getEquipmentNames,
         getEquipmentNumbers,
+        findEquipmentId,
         populateEquipment,
       }}
     >

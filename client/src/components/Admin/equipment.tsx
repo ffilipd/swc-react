@@ -7,11 +7,7 @@ import {
   FormControl,
   Grid,
   IconButton,
-  InputBase,
   InputLabel,
-  List,
-  ListItem,
-  ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -29,7 +25,10 @@ import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import i18next from "i18next";
 import { NewEquipment } from "../../interfaces";
-import { addNewEquipment } from "../../service/equipment.service";
+import {
+  addNewEquipment,
+  removeEquipment,
+} from "../../service/equipment.service";
 import { useEquipment } from "../../EquipmentContext";
 import { useUser } from "../../UserContext";
 
@@ -87,28 +86,60 @@ const AdminEquipmentComponent = () => {
   const handleSetNewName = (newName: string) => {
     setNewName(newName);
   };
-  const handleSetType = (typeName: string) => {
-    if (typeName === "new-type") {
+  const handleSetType = (event: SelectChangeEvent) => {
+    const typeName = event.target.value;
+    const eventName = event.target.name;
+    if (typeName === "new-type" && eventName === "newType") {
       setNewTypeInputVisible(true);
       setNewNameInputVisible(true);
     }
-    setNewEquipment({ ...newEquipment, type: typeName });
+    if (eventName === "newType")
+      setNewEquipment({ ...newEquipment, type: typeName });
+    if (eventName === "editType")
+      setEquipmentToEdit({ ...equipmentToEdit, type: typeName });
   };
 
-  const handleSetName = (newName: string) => {
-    if (newName === "new-name") {
+  const handleSetName = (event: SelectChangeEvent) => {
+    const newName = event.target.value;
+    const eventName = event.target.name;
+    if (newName === "new-name" && eventName === "newName") {
       setNewNameInputVisible(true);
     }
-    setNewEquipment({ ...newEquipment, name: newName });
+    if (eventName === "newName")
+      setNewEquipment({ ...newEquipment, name: newName });
+    if (eventName === "editName")
+      setEquipmentToEdit({ ...equipmentToEdit, name: newName });
   };
 
-  const handleSetNumber = (number: string) => {
-    setNewEquipment({ ...newEquipment, number: number });
+  const handleSetNumber = (
+    event:
+      | SelectChangeEvent
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const number = event.target.value;
+    const eventName = event.target.name;
+    if (eventName === "newNumber")
+      setNewEquipment({ ...newEquipment, number: number });
+    if (eventName === "editNumber")
+      setEquipmentToEdit({ ...equipmentToEdit, number: number });
   };
 
-  const { equipment, equipmentTypes, getEquipmentNames, getEquipmentNumbers } =
-    useEquipment();
+  const {
+    equipment,
+    equipmentTypes,
+    getEquipmentNames,
+    getEquipmentNumbers,
+    findEquipmentId,
+  } = useEquipment();
+
   const [newEquipment, setNewEquipment] = useState<NewEquipment>({
+    type: "",
+    name: "",
+    number: "",
+    userId: user?.id,
+  });
+
+  const [equipmentToEdit, setEquipmentToEdit] = useState<NewEquipment>({
     type: "",
     name: "",
     number: "",
@@ -120,8 +151,11 @@ const AdminEquipmentComponent = () => {
       setAvailableEquipmentNames(getEquipmentNames(newEquipment.type));
     if (newEquipment.name)
       setAvailableEquipmentNumbers(getEquipmentNumbers(newEquipment.name));
-    console.log(newEquipment);
-  }, [newEquipment, getEquipmentNames, getEquipmentNumbers]);
+    if (equipmentToEdit.type)
+      setAvailableEquipmentNames(getEquipmentNames(equipmentToEdit.type));
+    if (equipmentToEdit.name)
+      setAvailableEquipmentNumbers(getEquipmentNumbers(equipmentToEdit.name));
+  }, [newEquipment, getEquipmentNames, getEquipmentNumbers, equipmentToEdit]);
 
   const handleAddEquipmentClick = async () => {
     let equipmentToSave = { ...newEquipment };
@@ -146,7 +180,9 @@ const AdminEquipmentComponent = () => {
   };
 
   const handleRemoveEquipmentClick = async () => {
-    // Get equipment to remove
+    // Get id for selected equipment
+    const id = await findEquipmentId(equipmentToEdit);
+    if (id) await removeEquipment(id);
     return;
   };
 
@@ -212,8 +248,9 @@ const AdminEquipmentComponent = () => {
                 id="equipment-type"
                 label={labels.equipment.type}
                 value={newEquipment.type}
+                name="newType"
                 onChange={(e: SelectChangeEvent) => {
-                  handleSetType(e.target.value);
+                  handleSetType(e);
                 }}
               >
                 <MenuItem key={"new-type"} value={"new-type"}>
@@ -251,8 +288,9 @@ const AdminEquipmentComponent = () => {
                 id="equipment-name"
                 label={labels.equipment.name}
                 value={newEquipment.name}
+                name="newName"
                 onChange={(e: SelectChangeEvent) => {
-                  handleSetName(e.target.value);
+                  handleSetName(e);
                 }}
               >
                 <MenuItem key={"new-name"} value={"new-name"}>
@@ -286,8 +324,9 @@ const AdminEquipmentComponent = () => {
                 label={labels.equipment.number}
                 autoFocus
                 disabled={newEquipment.name === ""}
+                name="newNumber"
                 onChange={(e) => {
-                  handleSetNumber(e.target.value);
+                  handleSetNumber(e);
                 }}
               />
               <Divider sx={{ margin: "16px 0 0 0" }} />
@@ -353,9 +392,10 @@ const AdminEquipmentComponent = () => {
                 labelId="equipment-type-label"
                 id="equipment-type"
                 label={labels.equipment.type}
+                name="editType"
                 // value={selectedEquipment.type}
                 onChange={(e: SelectChangeEvent) => {
-                  handleSetType(e.target.value);
+                  handleSetType(e);
                 }}
               >
                 {equipmentTypes.map((type: string, index: number) => (
@@ -377,9 +417,10 @@ const AdminEquipmentComponent = () => {
                 // disabled={selectedEquipment.type === ""}
                 id="equipment-name"
                 label={labels.equipment.name}
+                name="editName"
                 // value={selectedEquipment.equipmentNameId}
                 onChange={(e: SelectChangeEvent) => {
-                  handleSetName(e.target.value);
+                  handleSetName(e);
                 }}
               >
                 {availableEquipmentNames.map((name: string, index: number) => (
@@ -402,8 +443,9 @@ const AdminEquipmentComponent = () => {
                 id="equipment-number"
                 label={labels.equipment.number}
                 // value={selectedEquipment.equipmentNameId}
+                name="editNumber"
                 onChange={(e: SelectChangeEvent) => {
-                  handleSetNumber(e.target.value);
+                  handleSetNumber(e);
                 }}
               >
                 {availableEquipmentNumbers.map(

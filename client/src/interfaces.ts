@@ -71,6 +71,18 @@ export interface Report {
 export type FilterTargetType = "type" | "name" | "number";
 export type EquipmentFilterResponse = string[] | { id: string, number: string }[] | { id: string, name: string }[]
 
+export interface EquipmentSearchParams {
+    type?: string;
+    equipmentNameId?: string;
+    equipment_number?: string;
+}
+
+export interface EquipmentIdSearchParams {
+    type: string;
+    name: string;
+    number: string;
+}
+
 export interface NewEquipment {
     type: string;
     name: string;

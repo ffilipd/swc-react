@@ -1,23 +1,18 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import { Equipment, EquipmentFilterResponse, EquipmentTree, NewEquipment } from "../interfaces";
+import { Equipment, EquipmentFilterResponse, EquipmentIdSearchParams, EquipmentSearchParams, EquipmentTree, NewEquipment } from "../interfaces";
 
 
 
 
-interface EquipmentSearchParams {
-    type?: string;
-    equipmentName?: string;
-    equipmentNumber?: string;
-    equipmentNameId?: string;
-    equipment_number?: string;
-}
+
 
 const base_URL: string = process.env.REACT_APP_API_URL || '';
 const API_ENDPONTS = {
     EQUIPMENT: '/equipment',
     EQUIPMENT_TREE: '/equipment/tree',
-    FILTERS: '/equipment/filters'
+    FILTERS: '/equipment/filters',
+    ID: '/equipment/id',
 }
 
 export async function getEquipment(_params?: EquipmentSearchParams): Promise<Equipment[]> {
@@ -53,10 +48,30 @@ export async function getEquipmentFilters(_params?: EquipmentSearchParams): Prom
     }
 };
 
+export async function getEquipmentId(equipment?: EquipmentIdSearchParams): Promise<string> {
+    const URL: string = base_URL + API_ENDPONTS.ID;;
+    try {
+        const res = await axios.get(URL, { params: equipment, headers: authHeader() });
+        return res.data;
+    } catch (error) {
+        throw new Error('error getting equipment id' + error);
+    }
+};
+
 export async function addNewEquipment(NewEquipment: NewEquipment): Promise<void> {
     const URL: string = base_URL + API_ENDPONTS.EQUIPMENT;
     try {
         const res = await axios.post(URL, { ...NewEquipment }, { headers: authHeader() })
+        return res.data.message;
+    } catch (error) {
+        throw new Error('Error adding new equipment: ' + error);
+    }
+};
+
+export async function removeEquipment(equipmentId: string): Promise<void> {
+    const URL: string = base_URL + API_ENDPONTS.EQUIPMENT;
+    try {
+        const res = await axios.delete(`${URL}/${equipmentId}`, { headers: authHeader() })
         return res.data.message;
     } catch (error) {
         throw new Error('Error adding new equipment: ' + error);
