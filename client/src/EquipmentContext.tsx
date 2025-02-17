@@ -12,7 +12,8 @@ import { useUser } from "./UserContext";
 type EquipmentContextType = {
   equipment: EquipmentTree | null;
   equipmentTypes: string[];
-  equipmentNames: (typeName: string) => string[];
+  getEquipmentNames: (equipmentType: string) => string[];
+  getEquipmentNumbers: (equipmentName: string) => string[];
   populateEquipment: () => void;
 };
 
@@ -33,12 +34,24 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
 
   const [equipmentTypes, setEquipmentTypes] = useState<string[]>([]);
 
-  const equipmentNames = (typeName: string): string[] => {
+  const getEquipmentNames = (equipmentType: string): string[] => {
     if (!equipment) return [];
     const type = equipment.find(
-      (typeObj: any) => typeObj.typeName === typeName
+      (typeObj: any) => typeObj.typeName === equipmentType
     ) as Equipment;
     return type ? type.names.map((nameObj: any) => nameObj.name) : [];
+  };
+
+  const getEquipmentNumbers = (equipmentName: string): string[] => {
+    if (!equipment) return [];
+    for (const type of Object.values(equipment)) {
+      for (const name of type.names) {
+        if (name.name === equipmentName) {
+          return name.numbers;
+        }
+      }
+    }
+    return [];
   };
 
   const populateEquipment = async () => {
@@ -61,7 +74,8 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
       value={{
         equipment,
         equipmentTypes,
-        equipmentNames,
+        getEquipmentNames,
+        getEquipmentNumbers,
         populateEquipment,
       }}
     >

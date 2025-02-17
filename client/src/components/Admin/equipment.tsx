@@ -28,12 +28,8 @@ import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import i18next from "i18next";
 import { NewEquipment } from "../../interfaces";
-import {
-  addNewEquipment,
-  getEquipmentTree,
-} from "../../service/equipment.service";
+import { addNewEquipment } from "../../service/equipment.service";
 import { useEquipment } from "../../EquipmentContext";
-import { TextChange } from "typescript";
 import { useUser } from "../../UserContext";
 
 const Transition = React.forwardRef(function Transition(
@@ -77,6 +73,9 @@ const AdminEquipmentComponent = () => {
   const [availableEquipmentNames, setAvailableEquipmentNames] = useState<
     string[]
   >([""]);
+  const [availableEquipmentNumbers, setAvailableEquipmentNumbers] = useState<
+    string[]
+  >([""]);
 
   const [newType, setNewType] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
@@ -106,7 +105,8 @@ const AdminEquipmentComponent = () => {
     setNewEquipment({ ...newEquipment, number: number });
   };
 
-  const { equipment, equipmentTypes, equipmentNames } = useEquipment();
+  const { equipment, equipmentTypes, getEquipmentNames, getEquipmentNumbers } =
+    useEquipment();
   const [newEquipment, setNewEquipment] = useState<NewEquipment>({
     type: "",
     name: "",
@@ -116,8 +116,11 @@ const AdminEquipmentComponent = () => {
 
   useEffect(() => {
     if (newEquipment.type)
-      setAvailableEquipmentNames(equipmentNames(newEquipment.type));
-  }, [newEquipment]);
+      setAvailableEquipmentNames(getEquipmentNames(newEquipment.type));
+    if (newEquipment.name)
+      setAvailableEquipmentNumbers(getEquipmentNumbers(newEquipment.name));
+    console.log(newEquipment);
+  }, [newEquipment, getEquipmentNames, getEquipmentNumbers]);
 
   const handleAddEquipmentClick = async () => {
     let equipmentToSave = { ...newEquipment };
@@ -154,7 +157,9 @@ const AdminEquipmentComponent = () => {
         </FmButton2>
       </Box>
 
-      {/* ADD EQUIPMENT */}
+      {/*************************************************/}
+      {/***************** ADD EQUIPMENT *****************/}
+      {/*************************************************/}
       <Dialog
         fullScreen
         open={addEquipmentDialogOpen}
@@ -293,7 +298,9 @@ const AdminEquipmentComponent = () => {
         </Box>
       </Dialog>
 
-      {/* EDIT EQUIPMENT */}
+      {/**************************************************/}
+      {/***************** EDIT EQUIPMENT *****************/}
+      {/**************************************************/}
       <Dialog
         fullScreen
         open={editEquipmentDialogOpen}
@@ -335,6 +342,7 @@ const AdminEquipmentComponent = () => {
                 {labels.equipment.type}
               </InputLabel>
               <Select
+                fullWidth
                 className="booking-select-button"
                 labelId="equipment-type-label"
                 id="equipment-type"
@@ -344,27 +352,13 @@ const AdminEquipmentComponent = () => {
                   handleSetType(e.target.value);
                 }}
               >
-                {/* {availableEquipment.types?.map((type: string, index: number) => (
-                <MenuItem key={`${type}-${index}`} value={type}>
-                  {type}
-                </MenuItem>
-              ))} */}
-                <MenuItem key={"new-type"} value={"new-type"}>
-                  {t("–– New ––")}
-                </MenuItem>
+                {equipmentTypes.map((type: string, index: number) => (
+                  <MenuItem key={`${type}-${index}`} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
-            {newTypeInputVisible && (
-              <FormControl className="admin-equipment-select-item">
-                <TextField
-                  id="new-type-input"
-                  className="booking-select-button"
-                  label={labels.equipment.newType}
-                  autoFocus
-                />
-                <Divider sx={{ margin: "16px 0 0 0" }} />
-              </FormControl>
-            )}
 
             {/* CLASS/NAME */}
             <FormControl fullWidth className="admin-equipment-select-item">
@@ -382,36 +376,38 @@ const AdminEquipmentComponent = () => {
                   handleSetName(e.target.value);
                 }}
               >
-                {/* {availableEquipment.names.map((name) => (
-                <MenuItem key={name.id} value={name.id}>
-                  {name.name}
-                </MenuItem>
-              ))} */}
-                <MenuItem key={"new-name"} value={"new-name"}>
-                  {t("–– New ––")}
-                </MenuItem>
+                {availableEquipmentNames.map((name: string, index: number) => (
+                  <MenuItem key={`${name}-${index}`} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
-            {newNameInputVisible && (
-              <FormControl className="admin-equipment-select-item">
-                <TextField
-                  id="new-name-input"
-                  className="booking-select-button"
-                  label={labels.equipment.newName}
-                  autoFocus
-                />
-                <Divider sx={{ margin: "16px 0 0 0" }} />
-              </FormControl>
-            )}
 
             {/* NUMBER */}
             <FormControl fullWidth className="admin-equipment-select-item">
-              <TextField
-                id="number-input"
+              <InputLabel id="equipment-number">
+                {labels.equipment.number}
+              </InputLabel>
+              <Select
                 className="booking-select-button"
+                labelId="equipment-number-label"
+                // disabled={selectedEquipment.type === ""}
+                id="equipment-number"
                 label={labels.equipment.number}
-                autoFocus
-              />
+                // value={selectedEquipment.equipmentNameId}
+                onChange={(e: SelectChangeEvent) => {
+                  handleSetNumber(e.target.value);
+                }}
+              >
+                {availableEquipmentNumbers.map(
+                  (name: string, index: number) => (
+                    <MenuItem key={`${name}-${index}`} value={name}>
+                      {name}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
               <Divider sx={{ margin: "16px 0 0 0" }} />
             </FormControl>
 
