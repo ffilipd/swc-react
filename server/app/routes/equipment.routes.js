@@ -32,6 +32,11 @@ module.exports = app => {
         [authJwt.verifyToken],
         equipment.findFilters);
 
+    // Retrieve equipment id from provided equipment type and name and number
+    router.get("/id",
+        [authJwt.verifyToken],
+        equipment.findEquipmentId);
+
     // Retrieve a single equipment with id
     router.get("/:id",
         [authJwt.verifyToken],

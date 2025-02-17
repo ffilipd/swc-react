@@ -52,7 +52,7 @@ async function verifyGoogleToken(token) {
 
 
 app.get('/equipment', (req, res) => {
-    const { type, equipment_name, swc_number } = req.query;
+    const { type, equipment_name, equipment_number } = req.query;
     let filteredData = data.equipment;
 
     if (type) {
@@ -63,8 +63,8 @@ app.get('/equipment', (req, res) => {
         filteredData = filteredData.filter(item => item.equipment_name === equipment_name);
     }
 
-    if (swc_number) {
-        filteredData = filteredData.filter(item => item.swc_number === swc_number);
+    if (equipment_number) {
+        filteredData = filteredData.filter(item => item.equipment_number === equipment_number);
     }
 
     res.json(filteredData);
@@ -86,7 +86,7 @@ app.get('/equipment/filters', (req, res) => {
 
     // Return unique names or unique numbers based on parameters
     if (type && equipment_name) {
-        const uniqueNumbers = [...new Set(filteredData.map(item => item.swc_number))];
+        const uniqueNumbers = [...new Set(filteredData.map(item => item.equipment_number))];
         res.json(uniqueNumbers);
     } else if (type) {
         const uniqueNames = [...new Set(filteredData.map(item => item.equipment_name))];
@@ -98,7 +98,7 @@ app.get('/equipment/filters', (req, res) => {
 });
 
 app.get('/bookings', (req, res) => {
-    const { date, type, equipment_name, time_from, time_to, swc_number, user_id } = req.query;
+    const { date, type, equipment_name, time_from, time_to, equipment_number, user_id } = req.query;
     let filteredData = data.bookings;
 
     if (date) {
@@ -131,8 +131,8 @@ app.get('/bookings', (req, res) => {
     }
 
 
-    if (swc_number) {
-        filteredData = filteredData.filter(item => item.swc_number === swc_number);
+    if (equipment_number) {
+        filteredData = filteredData.filter(item => item.equipment_number === equipment_number);
     }
     if (user_id) {
         filteredData = filteredData.filter(item => item.user_id === user_id);
@@ -142,7 +142,7 @@ app.get('/bookings', (req, res) => {
 });
 
 app.get('/report', (req, res) => {
-    const { date, type, equipment_name, swc_number, user_id, booking_id, damage_type } = req.query;
+    const { date, type, equipment_name, equipment_number, user_id, booking_id, damage_type } = req.query;
     let filteredData = data.reports;
 
     if (date) {
@@ -157,8 +157,8 @@ app.get('/report', (req, res) => {
         filteredData = filteredData.filter(item => item.equipment_name === equipment_name);
     }
 
-    if (swc_number) {
-        filteredData = filteredData.filter(item => item.swc_number === swc_number);
+    if (equipment_number) {
+        filteredData = filteredData.filter(item => item.equipment_number === equipment_number);
     }
 
     if (user_id) {
