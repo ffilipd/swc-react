@@ -58,7 +58,7 @@ export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<an
     const prefillParams: (keyof FMProfile)[] = ['language', 'role', 'active'];
     for (const key of prefillParams) {
         if (!profile[key] && key === 'language') profile[key] = 'en';
-        if (!profile[key] && key === 'role') profile[key] = 'viewer';
+        if (!profile[key] && key === 'role') profile[key] = 'user';
     }
 
     const request = await buildRequestConfig({ method: 'PUT', data: profile, id: profile.id })

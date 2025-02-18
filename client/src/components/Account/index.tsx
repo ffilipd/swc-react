@@ -58,7 +58,7 @@ const AccountInfoComponent = () => {
     created_date: "",
     last_login: "",
     language: "en",
-    role: "viewer",
+    role: "user",
     access: "",
     rejected: true,
   });

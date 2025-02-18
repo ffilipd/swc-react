@@ -31,6 +31,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  SelectChangeEvent,
 } from "@mui/material";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import CloseIcon from "@mui/icons-material/Close";
@@ -43,6 +44,8 @@ import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile, deleteUser } from "../../service/user.service";
 import { dummyUser } from "../../utils/dummy-data";
 import { FmButton2 } from "../../utils/buttons";
+import { useEquipment } from "../../EquipmentContext";
+import { getEquipment } from "../../service/equipment.service";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -133,13 +136,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const UsersTable = (props: UsersProps) => {
   const { isMobile, users, fetchUsers } = props;
   const { t } = useTranslation();
+  const { equipmentTypes, getEquipmentNames } = useEquipment();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
   const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
-  const userRoles: UserRole[] = ["admin", "user", "viewer"];
-  const userAccess: string[] | "" = ["J/70", "Elliott 6M", "RS Toura"];
+  const userRoles: UserRole[] = ["admin", "user", "moderator"];
+  const userAccess: string[] = equipmentTypes;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -172,51 +176,50 @@ const UsersTable = (props: UsersProps) => {
     fetchUsers();
   };
 
-  const handleChangeUserRole = () => {
-    // const currentRole = selectedUser?.role;
+  const handleChangeUserRole = async (event: SelectChangeEvent<UserRole>) => {
+    const selectedRole = event.target.value as UserRole;
+    const currentRole = selectedUser?.role;
+    if (selectedRole === currentRole) return;
+    updateUser("role", selectedRole);
   };
-  // const handleChangeUserAccess = () => {
-  //   const currentRole = selectedUser?.role;
-  // };
 
-  const handleCheckboxActiveClick = async () => {
+  const handleCheckboxActiveClick = () => {
     updateUser("active");
   };
 
-  const handleCheckboxRejectedClick = async () => {
+  const handleCheckboxRejectedClick = () => {
     updateUser("rejected");
   };
 
-  const updateUser = (action: keyof FMProfile) => {
+  const updateUser = (action: keyof FMProfile, selectedRole?: UserRole) => {
     if (!selectedUser || !selectedUser.id) return;
-    const newStatus = !selectedUser[action];
-    setUpdatedUser({ ...selectedUser, [action]: newStatus });
+    if (action === "role") {
+      const updated = { ...selectedUser, role: selectedRole as UserRole };
+      updateUserProfileHandler(updated);
+    } else {
+      const newStatus = !selectedUser[action];
+      const updated = { ...selectedUser, [action]: newStatus };
+      updateUserProfileHandler(updated);
+      setUpdatedUser(updated);
+    }
   };
 
-  useEffect(() => {
-    if (
-      updatedUser &&
-      updatedUser.id === selectedUser.id &&
-      selectedUser.id !== "12345" // dummy id, without this check it will try to update a non existing user
-    ) {
-      const sendUpdatedUserProfile = async () => {
-        try {
-          const res = await updateUserProfile(updatedUser);
-          setSelectedUser(updatedUser);
-          setUpdatedUser(dummyUser);
-          alert(res.message);
-        } catch (err) {
-          if (err instanceof Error) {
-            alert(err.message);
-          } else {
-            alert("An unknown error occurred");
-          }
+  const updateUserProfileHandler = async (user: FMProfile) => {
+    if (updatedUser && updatedUser.id !== "12345") {
+      // dummy id, without this check it might try to update a non existing user
+      try {
+        const res = await updateUserProfile(user);
+        setSelectedUser(user);
+        alert(res.message);
+      } catch (err) {
+        if (err instanceof Error) {
+          alert(err.message);
+        } else {
+          alert("An unknown error occurred");
         }
-      };
-
-      sendUpdatedUserProfile();
+      }
     }
-  }, [updatedUser, selectedUser.id]);
+  };
 
   const handleCloseDeleteDialog = () => {
     setDeleteDialogOpen(false);
@@ -389,7 +392,7 @@ const UsersTable = (props: UsersProps) => {
               labelId="user-role"
               id="user-role-select"
               value={selectedUser?.role}
-              onChange={handleChangeUserRole}
+              onChange={(e) => handleChangeUserRole(e)}
             >
               {userRoles.map((role) => (
                 <MenuItem key={role} value={role}>

@@ -123,7 +123,7 @@ export type Profile = {
 };
 
 export type Language = "en" | "sv" | "fi";
-export type UserRole = "admin" | "user" | "viewer";
+export type UserRole = "admin" | "user" | "moderator";
 export type DamageType = 'none' | 'major' | 'minor' | 'other';
 
 export interface FMProfile {
