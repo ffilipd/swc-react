@@ -11,5 +11,4 @@ exports.googleAuth = async (req, res) => {
         audience: process.env.GOOGLE_CLIENT_ID
     })
     const payload = ticket.getPayload();
-    console.log(payload)
 }

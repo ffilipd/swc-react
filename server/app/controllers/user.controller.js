@@ -45,7 +45,6 @@ exports.create = async (req, res) => {
                 rejected: user.rejected,
                 language: user.language,
                 access: user.access
-                // Add other user properties as needed
             }
         });
     } catch (error) {
