@@ -32,11 +32,13 @@ import {
   DialogActions,
   Button,
   SelectChangeEvent,
+  Divider,
+  TextField,
 } from "@mui/material";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
-import { FMProfile, UserRole } from "../../interfaces";
+import { EquipmentSearchParams, FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
@@ -46,6 +48,7 @@ import { dummyUser } from "../../utils/dummy-data";
 import { FmButton2 } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
 import { getEquipment } from "../../service/equipment.service";
+import { Height } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -136,14 +139,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const UsersTable = (props: UsersProps) => {
   const { isMobile, users, fetchUsers } = props;
   const { t } = useTranslation();
-  const { equipmentTypes, getEquipmentNames } = useEquipment();
+  const { equipment, equipmentTypes, getEquipmentNames } = useEquipment();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
   const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
-  const userAccess: string[] = equipmentTypes;
+  const userAccess: string[] = [];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -415,13 +418,35 @@ const UsersTable = (props: UsersProps) => {
               onChange={handleCheckboxRejectedClick}
             />
           </FormGroup>
+          <Typography sx={{ marginTop: "20px" }}>
+            {t("User Access Rights")}
+          </Typography>
+          <Divider />
           <FormGroup>
-            {userAccess.map((accessItem) => (
-              <FormControlLabel
-                key={accessItem}
-                control={<Checkbox color="secondary" />}
-                label={accessItem}
-              />
+            {equipmentTypes.map((type) => (
+              <React.Fragment key={type}>
+                <FormControlLabel
+                  id={`equipment-type-${type}`}
+                  control={<Checkbox color="primary" />}
+                  label={type}
+                  onChange={() => getEquipmentNames(type)}
+                />
+                <FormControlLabel
+                  style={{ marginLeft: "20px" }}
+                  key={`select-all-${type}`}
+                  control={<Checkbox color="primary" />}
+                  label={`-- ${t("Select all")} --`}
+                />
+                {getEquipmentNames(type).map((name) => (
+                  <FormControlLabel
+                    disabled
+                    style={{ marginLeft: "20px" }}
+                    key={name.toString()}
+                    control={<Checkbox color="primary" />}
+                    label={name.toString()}
+                  />
+                ))}
+              </React.Fragment>
             ))}
           </FormGroup>
 
