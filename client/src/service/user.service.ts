@@ -33,23 +33,23 @@ export const loginWithGoogle = async (code: any): Promise<any> => {
     }
 }
 
-export const loginWithCredentials = async (credentials: LoginCredentials): Promise<FMProfile> => {
+export const loginWithCredentials = async (credentials: LoginCredentials): Promise<any> => {
     const URL = base_URL + API_ENDPOINTS.SIGNIN;
     try {
         const response = await axios.post(URL, credentials);
         return response.data;
-    } catch (error) {
-        throw new Error('Error signing in: ' + error);
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) alert(error.response.data.message)
     }
 }
 
-export const createUser = async (googleProfile: Profile): Promise<FMProfile> => {
+export const createUser = async (googleProfile: Profile): Promise<FMProfile | any> => {
     const URL: string = base_URL + API_ENDPOINTS.USERS;
     try {
         const response = await axios.post(URL, googleProfile);
         return response.data.user;
-    } catch (error) {
-        throw new Error('Error creating user: ' + error);
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) alert(error.response.data.message)
     }
 };
 

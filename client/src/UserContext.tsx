@@ -46,10 +46,15 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setUser(null);
   };
 
-  const credentialLogin = async (credentials: LoginCredentials) => {
-    const user = await loginWithCredentials(credentials);
-    localStorage.setItem("user", JSON.stringify(user));
-    setUser(user);
+  const credentialLogin = async (credentials: any) => {
+    try {
+      const user = await loginWithCredentials(credentials);
+      if (!user) return;
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+    } catch (error: any) {
+      alert("Error logging in: " + error.message);
+    }
   };
 
   const googleLogin = useGoogleLogin({
