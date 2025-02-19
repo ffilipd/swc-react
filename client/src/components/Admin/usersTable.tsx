@@ -45,10 +45,11 @@ import TablePaginationActions from "../Pagination";
 import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile, deleteUser } from "../../service/user.service";
 import { dummyUser } from "../../utils/dummy-data";
-import { FmButton2 } from "../../utils/buttons";
+import { FmButton2, FmButtonDanger } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
 import { getEquipment } from "../../service/equipment.service";
-import { Height } from "@mui/icons-material";
+import { Height, Label } from "@mui/icons-material";
+import { use } from "i18next";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -146,8 +147,8 @@ const UsersTable = (props: UsersProps) => {
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
   const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
-  const userAccess: string[] = [];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
@@ -179,40 +180,56 @@ const UsersTable = (props: UsersProps) => {
     fetchUsers();
   };
 
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteUserClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  useEffect(() => {
+    setSelectedUser(updatedUser);
+  }, [updatedUser]);
+
+  const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
+    const { name, checked } = event.target as HTMLInputElement;
+    if (name === "active" || name === "rejected") {
+      setUpdatedUser({ ...selectedUser, [name]: checked });
+    }
+    if (name === "type" || name === "name") {
+      const item = (event.target as HTMLInputElement).id.split("-")[2];
+      if (checked) {
+        setUpdatedUser({
+          ...selectedUser,
+          access: selectedUser.access + "," + item,
+        });
+      } else {
+        setUpdatedUser({
+          ...selectedUser,
+          access: selectedUser.access
+            ?.replace(item, "")
+            // Clean away any double commas left when removing a type
+            .replace(/(^,)|(,$)/g, "")
+            .replace(/,,+/g, ","),
+        });
+      }
+    }
+  };
+
   const handleChangeUserRole = async (event: SelectChangeEvent<UserRole>) => {
     const selectedRole = event.target.value as UserRole;
     const currentRole = selectedUser?.role;
     if (selectedRole === currentRole) return;
-    updateUser("role", selectedRole);
+    setUpdatedUser({ ...selectedUser, role: selectedRole });
   };
 
-  const handleCheckboxActiveClick = () => {
-    updateUser("active");
-  };
-
-  const handleCheckboxRejectedClick = () => {
-    updateUser("rejected");
-  };
-
-  const updateUser = (action: keyof FMProfile, selectedRole?: UserRole) => {
-    if (!selectedUser || !selectedUser.id) return;
-    if (action === "role") {
-      const updated = { ...selectedUser, role: selectedRole as UserRole };
-      updateUserProfileHandler(updated);
-    } else {
-      const newStatus = !selectedUser[action];
-      const updated = { ...selectedUser, [action]: newStatus };
-      updateUserProfileHandler(updated);
-      setUpdatedUser(updated);
-    }
-  };
-
-  const updateUserProfileHandler = async (user: FMProfile) => {
+  const handleSaveUser = async () => {
     if (updatedUser && updatedUser.id !== "12345") {
       // dummy id, without this check it might try to update a non existing user
       try {
-        const res = await updateUserProfile(user);
-        setSelectedUser(user);
+        const res = await updateUserProfile(updatedUser);
+        setSelectedUser(updatedUser);
         alert(res.message);
       } catch (err) {
         if (err instanceof Error) {
@@ -222,14 +239,6 @@ const UsersTable = (props: UsersProps) => {
         }
       }
     }
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setDeleteDialogOpen(false);
-  };
-
-  const deleteUserClick = () => {
-    setDeleteDialogOpen(true);
   };
 
   const handleDeleteUser = async () => {
@@ -409,13 +418,15 @@ const UsersTable = (props: UsersProps) => {
               control={<Checkbox color="success" />}
               label={t("Active")}
               checked={selectedUser?.active}
-              onChange={handleCheckboxActiveClick}
+              name={"active"}
+              onChange={(e) => handleCheckboxClick(e)}
             />
             <FormControlLabel
               control={<Checkbox color="error" />}
               label={t("Rejected")}
               checked={selectedUser?.rejected}
-              onChange={handleCheckboxRejectedClick}
+              name={"rejected"}
+              onChange={(e) => handleCheckboxClick(e)}
             />
           </FormGroup>
           <Typography sx={{ marginTop: "20px" }}>
@@ -426,33 +437,44 @@ const UsersTable = (props: UsersProps) => {
             {equipmentTypes.map((type) => (
               <React.Fragment key={type}>
                 <FormControlLabel
-                  id={`equipment-type-${type}`}
-                  control={<Checkbox color="primary" />}
+                  control={
+                    <Checkbox color="primary" id={`equipment-type-${type}`} />
+                  }
+                  checked={selectedUser.access?.split(",").includes(type)}
                   label={type}
-                  onChange={() => getEquipmentNames(type)}
+                  name="type"
+                  onChange={(e) => handleCheckboxClick(e)}
                 />
-                <FormControlLabel
+                {/* <Typography>{type}</Typography> */}
+                {/* <FormControlLabel
+                  disabled={isTypeSelected(type)}
                   style={{ marginLeft: "20px" }}
                   key={`select-all-${type}`}
                   control={<Checkbox color="primary" />}
                   label={`-- ${t("Select all")} --`}
-                />
+                  onChange={checkAllNames(type)}
+                  /> */}
                 {getEquipmentNames(type).map((name) => (
                   <FormControlLabel
-                    disabled
                     style={{ marginLeft: "20px" }}
-                    key={name.toString()}
-                    control={<Checkbox color="primary" />}
-                    label={name.toString()}
+                    key={name}
+                    control={
+                      <Checkbox color="primary" id={`equipment-name-${name}`} />
+                    }
+                    checked={selectedUser.access?.split(",").includes(name)}
+                    label={name}
+                    name="name"
+                    onChange={(e) => handleCheckboxClick(e)}
                   />
                 ))}
               </React.Fragment>
             ))}
           </FormGroup>
 
-          <FmButton2 className="delete-button" onClick={deleteUserClick}>
+          <FmButton2 onClick={handleSaveUser}>{t("Save")}</FmButton2>
+          <FmButtonDanger onClick={handleDeleteUserClick}>
             {t("Delete User")}
-          </FmButton2>
+          </FmButtonDanger>
         </Box>
       </Dialog>
       <Dialog open={deleteDialogOpen} onClose={handleCloseDeleteDialog}>
