@@ -175,6 +175,10 @@ const UsersTable = (props: UsersProps) => {
   };
 
   const closeUserDetailsDialog = () => {
+    if (selectedUser !== updatedUser) {
+      alert!("Changes not saved");
+      return;
+    }
     setShowUserDetails(false);
     fetchUsers();
   };
@@ -188,25 +192,29 @@ const UsersTable = (props: UsersProps) => {
   };
 
   useEffect(() => {
-    setSelectedUser(updatedUser);
-  }, [updatedUser]);
+    setUpdatedUser(selectedUser);
+  }, [selectedUser]);
+
+  // useEffect(() => {
+  //   setSelectedUser(updatedUser);
+  // }, [updatedUser]);
 
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
     if (name === "active" || name === "rejected") {
-      setUpdatedUser({ ...selectedUser, [name]: checked });
+      setUpdatedUser({ ...updatedUser, [name]: checked });
     }
     if (name === "type" || name === "name") {
       const item = (event.target as HTMLInputElement).id.split("-")[2];
       if (checked) {
         setUpdatedUser({
-          ...selectedUser,
-          access: selectedUser.access + "," + item,
+          ...updatedUser,
+          access: updatedUser.access + "," + item,
         });
       } else {
         setUpdatedUser({
-          ...selectedUser,
-          access: selectedUser.access
+          ...updatedUser,
+          access: updatedUser.access
             ?.replace(item, "")
             // Clean away any double commas left when removing a type
             .replace(/(^,)|(,$)/g, "")
@@ -218,14 +226,17 @@ const UsersTable = (props: UsersProps) => {
 
   const handleChangeUserRole = async (event: SelectChangeEvent<UserRole>) => {
     const selectedRole = event.target.value as UserRole;
-    const currentRole = selectedUser?.role;
+    const currentRole = updatedUser?.role;
     if (selectedRole === currentRole) return;
-    setUpdatedUser({ ...selectedUser, role: selectedRole });
+    setUpdatedUser({ ...updatedUser, role: selectedRole });
   };
 
   const handleSaveUser = async () => {
-    if (updatedUser && updatedUser.id !== "12345") {
-      // dummy id, without this check it might try to update a non existing user
+    if (
+      updatedUser &&
+      updatedUser.id !== "12345" && // dummy id, without this check it might try to update a non existing user
+      JSON.stringify(updatedUser) !== JSON.stringify(selectedUser)
+    ) {
       try {
         const res = await updateUserProfile(updatedUser);
         setSelectedUser(updatedUser);
@@ -237,7 +248,9 @@ const UsersTable = (props: UsersProps) => {
           alert("An unknown error occurred");
         }
       }
+      return;
     }
+    alert("No changes made");
   };
 
   const handleDeleteUser = async () => {
@@ -391,18 +404,18 @@ const UsersTable = (props: UsersProps) => {
           {/* NAME */}
           <FormControl variant="standard" className="show-user-dialog-input">
             <InputLabel htmlFor="user-name">{t("Full Name")}</InputLabel>
-            <Input id="user-name" value={selectedUser?.name} />
+            <Input id="user-name" value={updatedUser?.name} />
           </FormControl>
           <FormControl variant="standard" className="show-user-dialog-input">
             <InputLabel htmlFor="user-email">{t("Email")}</InputLabel>
-            <Input id="user-email" value={selectedUser?.email} />
+            <Input id="user-email" value={updatedUser?.email} />
           </FormControl>
           <FormControl variant="standard" className="show-user-dialog-input">
             <InputLabel htmlFor="user-role">{t("Role")}</InputLabel>
             <Select
               labelId="user-role"
               id="user-role-select"
-              value={selectedUser?.role}
+              value={updatedUser?.role}
               onChange={(e) => handleChangeUserRole(e)}
             >
               {userRoles.map((role) => (
@@ -416,14 +429,14 @@ const UsersTable = (props: UsersProps) => {
             <FormControlLabel
               control={<Checkbox color="success" />}
               label={t("Active")}
-              checked={selectedUser?.active}
+              checked={updatedUser?.active}
               name={"active"}
               onChange={(e) => handleCheckboxClick(e)}
             />
             <FormControlLabel
               control={<Checkbox color="error" />}
               label={t("Rejected")}
-              checked={selectedUser?.rejected}
+              checked={updatedUser?.rejected}
               name={"rejected"}
               onChange={(e) => handleCheckboxClick(e)}
             />
@@ -439,7 +452,7 @@ const UsersTable = (props: UsersProps) => {
                   control={
                     <Checkbox color="primary" id={`equipment-type-${type}`} />
                   }
-                  checked={selectedUser.access?.split(",").includes(type)}
+                  checked={updatedUser.access?.split(",").includes(type)}
                   label={type}
                   name="type"
                   onChange={(e) => handleCheckboxClick(e)}
@@ -460,7 +473,7 @@ const UsersTable = (props: UsersProps) => {
                     control={
                       <Checkbox color="primary" id={`equipment-name-${name}`} />
                     }
-                    checked={selectedUser.access?.split(",").includes(name)}
+                    checked={updatedUser.access?.split(",").includes(name)}
                     label={name}
                     name="name"
                     onChange={(e) => handleCheckboxClick(e)}
@@ -481,7 +494,7 @@ const UsersTable = (props: UsersProps) => {
         <DialogContent>
           <DialogContentText id="alert-dialog-delete">
             {/* {description} */}
-            {t("Are you sure you want to delete user ")}"{selectedUser.name}"
+            {t("Are you sure you want to delete user ")}"{updatedUser.name}"
           </DialogContentText>
         </DialogContent>
         <DialogActions>
