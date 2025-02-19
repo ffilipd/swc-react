@@ -140,7 +140,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const UsersTable = (props: UsersProps) => {
   const { isMobile, users, fetchUsers } = props;
   const { t } = useTranslation();
-  const { equipment, equipmentTypes, getEquipmentNames } = useEquipment();
+  const { equipmentTypes, getEquipmentNames } = useEquipment();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
@@ -148,7 +148,6 @@ const UsersTable = (props: UsersProps) => {
   const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =

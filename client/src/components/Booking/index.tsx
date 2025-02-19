@@ -50,8 +50,8 @@ const BookingComponent = () => {
   // const equipmentTypes = getEquipmentTypes();
   const labels = {
     equipment: {
-      type: "*" + i18next.t("Equipment type"),
-      name: "*" + i18next.t("Class / Name"),
+      type: "*" + i18next.t("Type"),
+      name: "*" + i18next.t("Name"),
       number: "*" + i18next.t("Number"),
     },
   };
@@ -279,13 +279,15 @@ const BookingComponent = () => {
             <Box id="select-box">
               {/* TYPE */}
               <FormControl fullWidth className="booking-select-item">
-                <InputLabel id="equipment-type">{accessTypes}</InputLabel>
+                <InputLabel id="equipment-type">
+                  {labels.equipment.type}
+                </InputLabel>
                 <Select
                   className="booking-select-button"
                   labelId="equipment-type-label"
                   id="equipment-type"
                   label={labels.equipment.type}
-                  value={selectedEquipment.type}
+                  // value={labels.equipment.type}
                   onChange={(e: SelectChangeEvent) => {
                     handleSetType(e.target.value);
                   }}
