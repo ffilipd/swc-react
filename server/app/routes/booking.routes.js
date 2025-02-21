@@ -3,13 +3,6 @@ const booking = require("../controllers/booking.controller.js");
 const router = require("express").Router();
 
 module.exports = app => {
-    app.use(function (req, res, next) {
-        res.header(
-            "Access-Control-Allow-Headers",
-            "x-access-token, Origin, Content-Type, Accept"
-        );
-        next();
-    });
 
     // Create a new booking
     router.post("/",
@@ -42,5 +35,5 @@ module.exports = app => {
         [authJwt.verifyToken],
         booking.delete);
 
-    app.use('/api/bookings', router);
+    app.use('/bookings', router);
 };

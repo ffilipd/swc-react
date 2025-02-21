@@ -3,55 +3,58 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true
+            type: Sequelize.CHAR(36),
+            primaryKey: true,
+            allowNull: false,
+            defaultValue: Sequelize.UUIDV4,
         },
         email: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
+            unique: true,
         },
         name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         language: {
             type: Sequelize.STRING,
-            defaultValue: 'en'
+            defaultValue: 'en',
         },
         last_login: {
-            type: Sequelize.DATE
+            type: Sequelize.DATE,
         },
         active: {
             type: Sequelize.BOOLEAN,
-            defaultValue: false
+            defaultValue: false,
         },
         rejected: {
             type: Sequelize.BOOLEAN,
-            defaultValue: false
+            defaultValue: false,
         },
         password: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         role: {
             type: Sequelize.ENUM('admin', 'moderator', 'user'),
-            defaultValue: 'user'
+            defaultValue: 'user',
         },
         talkoo_points: {
             type: Sequelize.INTEGER,
-            defaultValue: 0
+            defaultValue: 0,
         },
         first_point_given: {
-            type: Sequelize.DATEONLY,
+            type: Sequelize.DATE,
             allowNull: false,
-            defaultValue: Sequelize.fn('NOW')
         },
         latest_point_given: {
-            type: Sequelize.DATEONLY,
+            type: Sequelize.DATE,
             allowNull: false,
-            defaultValue: Sequelize.fn('NOW')
         },
         access: {
-            type: Sequelize.STRING
-        }
+            type: Sequelize.STRING,
+        },
     });
 
     return User;

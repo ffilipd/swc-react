@@ -3,13 +3,6 @@ const equipment = require("../controllers/equipment.controller.js");
 const router = require("express").Router();
 
 module.exports = app => {
-    app.use(function (req, res, next) {
-        res.header(
-            "Access-Control-Allow-Headers",
-            "x-access-token, Origin, Content-Type, Accept"
-        );
-        next();
-    });
 
     // Create a new equipment
     router.post("/",
@@ -52,5 +45,5 @@ module.exports = app => {
         [authJwt.verifyToken, authJwt.isAdmin],
         equipment.delete);
 
-    app.use('/api/equipment', router);
+    app.use('/equipment', router);
 };
