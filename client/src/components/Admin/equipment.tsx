@@ -325,6 +325,7 @@ const AdminEquipmentComponent = () => {
                 autoFocus
                 disabled={newEquipment.name === ""}
                 name="newNumber"
+                value={newEquipment.number}
                 onChange={(e) => {
                   handleSetNumber(e);
                 }}

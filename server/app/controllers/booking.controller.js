@@ -29,7 +29,7 @@ exports.create = async (req, res) => {
         // Check that user are allowed to book this equipment
         const user = await User.findByPk(userId);
         // users has access to
-        const userAccess = user.access?.split(',');
+        const userAccess = user.access ? user.access.split(',') : [];
         // get name of the equipment user tries to book
         const equipment = await Equipment.findOne({
             where: { id: equipmentId },
@@ -132,7 +132,33 @@ exports.findAll = async (req, res) => {
 
 
     try {
-        const bookings = await Booking.findAll(bookingsQuery);
+        const user = await User.findByPk(userId);
+        const userAccess = user.access ? user.access.split(',') : [];
+        if (userAccess.length === 0 || !userAccess.includes('all')) {
+            return res.status(401).json({ message: 'Looks like you cannot book this equipment' });
+        }
+
+        const bookings = await Booking.findAll({
+            ...bookingsQuery,
+            include: [
+                ...bookingsQuery.include,
+                {
+                    model: Equipment,
+                    attributes: ['number', 'id'],
+                    include:
+                    {
+                        model: Name,
+                        attributes: ['name'],
+                        where: {
+                            ...equipmentIdSearch,
+                            '$equipment.equipment_name.name$': {
+                                [Op.in]: userAccess
+                            }
+                        }
+                    }
+                }
+            ]
+        });
         const formattedBookings = bookings.map(booking => {
             return {
                 id: booking.id,

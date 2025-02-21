@@ -42,7 +42,8 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   });
   const logOut = () => {
     googleLogout();
-    localStorage.removeItem("user");
+    // localStorage.removeItem("user");
+    localStorage.clear();
     setUser(null);
   };
 

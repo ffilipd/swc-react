@@ -143,6 +143,7 @@ const BookingComponent = () => {
       time_from: selectedTime.fromTime?.format("HH:mm") || "",
       time_to: selectedTime.toTime?.format("HH:mm") || "",
       usage: "booking",
+      userId: user?.id,
     });
     setBookings(bookingsData);
   };
