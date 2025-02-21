@@ -31,7 +31,7 @@ export interface NewBooking {
 };
 
 export interface BookingSearchParams {
-    userId?: string;
+    userId: string;
     equipment_type?: string;
     equipmentNameId?: string;
     equipmentId?: string;

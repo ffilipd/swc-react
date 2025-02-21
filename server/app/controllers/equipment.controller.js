@@ -120,6 +120,7 @@ exports.findEquipmentTree = async (req, res) => {
 
     try {
         const user = await User.findByPk(userId);
+        const isAdmin = user.role === 'admin' || user.role === 'moderator';
 
         if (!user) {
             res.status(404).send({ message: 'User not found' });
@@ -154,6 +155,9 @@ exports.findEquipmentTree = async (req, res) => {
 
         // Filter the equipment tree based on user access
         const filteredEquipmentTree = formattedEquipmentTree.filter(type => {
+            if (isAdmin) {
+                return type;
+            }
             return user.access.includes(type.typeName);
         });
 

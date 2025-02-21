@@ -138,8 +138,9 @@ const MyPageComponent = () => {
   };
 
   const fetchBookings = async () => {
+    if (!user) return;
     const bookingsData: Booking[] = await getBookings({
-      userId: user?.role === "user" ? user.id : undefined,
+      userId: user.id,
       equipmentNameId: selectedEquipment.equipmentNameId,
       equipment_type: selectedEquipment.type,
       equipmentId: selectedEquipment.number,

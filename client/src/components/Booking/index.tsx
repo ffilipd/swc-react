@@ -135,6 +135,7 @@ const BookingComponent = () => {
   };
 
   const fetchBookings = async () => {
+    if (!user) return;
     const bookingsData: Booking[] = await getBookings({
       equipmentNameId: selectedEquipment.equipmentNameId,
       equipment_type: selectedEquipment.type,
@@ -143,7 +144,7 @@ const BookingComponent = () => {
       time_from: selectedTime.fromTime?.format("HH:mm") || "",
       time_to: selectedTime.toTime?.format("HH:mm") || "",
       usage: "booking",
-      userId: user?.id,
+      userId: user.id,
     });
     setBookings(bookingsData);
   };

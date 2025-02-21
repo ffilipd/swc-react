@@ -125,8 +125,9 @@ const ReportComponent = () => {
   };
 
   const fetchBookings = async () => {
+    if (!user) return;
     const bookingsData: Booking[] = await getBookings({
-      userId: yourBooking === true ? user?.id : undefined,
+      userId: user.id,
       date: selectedDate?.format("DD-MM-YYYY"),
       usage: "report",
     });
@@ -247,12 +248,12 @@ const ReportComponent = () => {
       <Divider />
       <Box id="report-wrapper">
         <Box id="report-container">
-          <FormGroup id="your-booking-select">
+          {/*<FormGroup id="your-booking-select">
             <FormControlLabel
               control={<Checkbox onChange={handleChangeYourBooking} />}
               label={t("I booked the equipment myself")}
             />
-          </FormGroup>
+          </FormGroup>*/}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               format="DD-MM-YYYY"

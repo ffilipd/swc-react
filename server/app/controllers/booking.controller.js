@@ -134,8 +134,8 @@ exports.findAll = async (req, res) => {
     try {
         const user = await User.findByPk(userId);
         const userAccess = user.access ? user.access.split(',') : [];
-        if (userAccess.length === 0 || !userAccess.includes('all')) {
-            return res.status(401).json({ message: 'Looks like you cannot book this equipment' });
+        if (userAccess.length === 0) {
+            return res.status(401).json({ message: 'Looks like you dont have any rights to book equipment' });
         }
 
         const bookings = await Booking.findAll({
