@@ -205,7 +205,7 @@ const AdminEquipmentComponent = () => {
       </Box>
 
       {/* <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box> */}
-      <Divider />
+      {/* <Divider /> */}
       <Box id="admin-equipment-wrapper">
         <FmButton2 className="admin-equipment-button" onClick={handleEditClick}>
           {t("Edit")}

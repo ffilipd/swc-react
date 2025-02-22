@@ -18,6 +18,7 @@ import { useUser } from "./UserContext";
 type EquipmentContextType = {
   equipment: EquipmentTree | null;
   equipmentTypes: string[];
+  equipmentNames: string[];
   getEquipmentNames: (equipmentType: string) => string[];
   getEquipmentNumbers: (equipmentName: string) => string[];
   findEquipmentId: (
@@ -39,6 +40,14 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
   const [equipment, setEquipment] = useState<EquipmentTree | null>(() => {
     const storedEquipment = localStorage.getItem("equipment");
     return storedEquipment ? JSON.parse(storedEquipment) : null;
+  });
+
+  const [equipmentNames, setEquipmentNames] = useState<string[]>(() => {
+    return equipment
+      ? equipment.flatMap((equipmentObj: any) =>
+          equipmentObj.names.map((name: any) => name.name as string)
+        )
+      : [];
   });
 
   const [equipmentTypes, setEquipmentTypes] = useState<string[]>([]);
@@ -81,6 +90,11 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
 
       const types: any = equipment.map((typeObj: any) => typeObj.typeName);
       setEquipmentTypes(types);
+
+      const names: any = equipment.flatMap((equipmentObj: any) =>
+        equipmentObj.names.map((name: any) => name.name as string)
+      );
+      setEquipmentNames(names);
     }
   };
 
@@ -93,6 +107,7 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
       value={{
         equipment,
         equipmentTypes,
+        equipmentNames,
         getEquipmentNames,
         getEquipmentNumbers,
         findEquipmentId,

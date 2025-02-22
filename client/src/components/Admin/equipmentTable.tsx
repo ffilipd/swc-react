@@ -37,7 +37,13 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
-import { Equipment, FMProfile, UserRole } from "../../interfaces";
+import {
+  Equipment,
+  EquipmentIdSearchParams,
+  EquipmentSearchParams,
+  FMProfile,
+  UserRole,
+} from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
@@ -48,6 +54,7 @@ import { FmButton2, FmButtonDanger, FmDeleteButton } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
 import { FMEquipmentTableCell } from "../../utils/custom-elements";
 import { dir } from "console";
+import { set } from "date-fns";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -109,14 +116,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const EquipmentTable = (props: EquipmentProps) => {
   const { isMobile, getEquipment } = props;
   const { t } = useTranslation();
-  const { equipmentTypes, getEquipmentNames } = useEquipment();
+  const { equipmentTypes, equipmentNames } = useEquipment();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
   const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
-  const userRoles: UserRole[] = ["admin", "user", "moderator"];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [equipmentFilter, setEquipmentFilter] = useState<any>({
+    type: [],
+    name: [],
+  });
 
   const [equipment, setEquipment] = useState<Equipment[] | null>(null);
 
@@ -284,13 +294,95 @@ const EquipmentTable = (props: EquipmentProps) => {
     }
   };
 
+  const handleFilterSelect = (
+    event: SelectChangeEvent<string>,
+    item: string
+  ) => {
+    const value = event.target.value as unknown as string[];
+    setEquipmentFilter({ ...equipmentFilter, [item]: value });
+  };
+
   return (
     <React.Fragment>
       <Box id="my-page-table-wrapper">
         {/* <Typography className="label">
           {t("Booking and report history")}
         </Typography> */}
-        <TableContainer id="my-table-container">
+        <Box
+          id="equipment-filter-element"
+          sx={{
+            display: "grid",
+            flexDirection: "row",
+            gridTemplateColumns: "0.5fr 3fr 3fr",
+            margin: "5px",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <InputLabel sx={{ margin: "15px 0 0 0", fontSize: "1.2em" }}>
+            {t("Filter: ")}
+          </InputLabel>
+          <FormControl variant="standard" className="type-filter-form">
+            <InputLabel htmlFor="type-filter" sx={{ padding: "2px 0 0 10px" }}>
+              {t("Type")}
+            </InputLabel>
+            <Select
+              sx={{
+                borderRadius: "20px",
+                border: "1px solid var(--color-secondary-gray)",
+                padding: "2px 0 0 10px",
+                boxShadow: "1px 2px 2px var(--color-secondary-gray)",
+              }}
+              labelId="type-filter"
+              id="type-filter-select"
+              multiple
+              disableUnderline
+              value={equipmentFilter.type}
+              onChange={(e) => handleFilterSelect(e, "type")}
+            >
+              {equipmentTypes.map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl variant="standard" className="name-filter-form">
+            <InputLabel htmlFor="name-filter" sx={{ padding: "2px 0 0 10px" }}>
+              {t("Name")}
+            </InputLabel>
+            <Select
+              sx={{
+                borderRadius: "20px",
+                border: "1px solid var(--color-secondary-gray)",
+                padding: "2px 0 0 10px",
+                boxShadow: "1px 2px 2px var(--color-secondary-gray)",
+              }}
+              disableUnderline
+              labelId="name-filter"
+              id="name-filter-select"
+              multiple
+              value={equipmentFilter.name}
+              onChange={(e) => handleFilterSelect(e, "name")}
+            >
+              {equipmentNames?.map((name) => (
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <TableContainer
+          id="my-table-container"
+          sx={{
+            borderRadius: "10px",
+            boxShadow: "1px 2px 2px var(--color-secondary-gray)",
+            margin: "5px",
+            width: "unset",
+          }}
+        >
           <Table size="small">
             <TableHead sx={{ backgroundColor: "var(--color-theme-dark)" }}>
               <StyledTableRow>
@@ -479,11 +571,11 @@ const EquipmentTable = (props: EquipmentProps) => {
               value={updatedUser?.role}
               onChange={(e) => handleChangeUserRole(e)}
             >
-              {userRoles.map((role) => (
+              {/* {userRoles.map((role) => (
                 <MenuItem key={role} value={role}>
                   {role.charAt(0).toUpperCase() + role.slice(1)}
                 </MenuItem>
-              ))}
+              ))} */}
             </Select>
           </FormControl>
           <FormGroup sx={{ margin: "20px 0 0 0" }}>
@@ -529,7 +621,7 @@ const EquipmentTable = (props: EquipmentProps) => {
                   onChange={checkAllNames(type)}
                   /> */}
                 <Divider />
-                {getEquipmentNames(type).map((name) => (
+                {/* {getEquipmentNames(type).map((name) => (
                   <FormControlLabel
                     style={{ marginLeft: "20px" }}
                     key={name}
@@ -541,7 +633,7 @@ const EquipmentTable = (props: EquipmentProps) => {
                     name="name"
                     onChange={(e) => handleCheckboxClick(e)}
                   />
-                ))}
+                ))} */}
               </React.Fragment>
             ))}
           </FormGroup>

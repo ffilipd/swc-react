@@ -91,6 +91,7 @@ export interface NewEquipment {
 }
 
 export interface EquipmentTree {
+    flatMap(arg0: (equipmentObj: any) => any): string[];
     find(arg0: (equipment: any) => boolean): unknown;
     map(arg0: (type: any) => void): unknown;
     typeName: string;
