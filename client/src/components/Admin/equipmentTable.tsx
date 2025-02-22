@@ -33,10 +33,11 @@ import {
   Button,
   SelectChangeEvent,
   Divider,
+  TableSortLabel,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
-import { FMProfile, UserRole } from "../../interfaces";
+import { Equipment, FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
@@ -45,7 +46,8 @@ import { updateUserProfile, deleteUser } from "../../service/user.service";
 import { dummyUser } from "../../utils/dummy-data";
 import { FmButton2, FmButtonDanger, FmDeleteButton } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
-import { FMUserTableCell as StyledTableCell } from "../../utils/custom-elements";
+import { FMEquipmentTableCell } from "../../utils/custom-elements";
+import { dir } from "console";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -56,10 +58,10 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-interface UsersProps {
-  users: FMProfile[];
+interface EquipmentProps {
+  equipment: Equipment[] | null;
+  getEquipment: () => Promise<Equipment[]> | null;
   isMobile: boolean;
-  fetchUsers: () => Promise<void>;
 }
 
 const StatusChip: React.FC<{
@@ -104,8 +106,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const UsersTable = (props: UsersProps) => {
-  const { isMobile, users, fetchUsers } = props;
+const EquipmentTable = (props: EquipmentProps) => {
+  const { isMobile, getEquipment } = props;
   const { t } = useTranslation();
   const { equipmentTypes, getEquipmentNames } = useEquipment();
   const [page, setPage] = useState(0);
@@ -116,11 +118,33 @@ const UsersTable = (props: UsersProps) => {
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
+  const [equipment, setEquipment] = useState<Equipment[] | null>(null);
+
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
   //   page > 0
   //     ? Math.max(0, (1 + page) * rowsPerPage - (users ? users.length : 0))
   //     : 0;
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!equipment) {
+        const fetchedEquipment = await getEquipment();
+        if (fetchedEquipment) {
+          const simplifiedEquipment = fetchedEquipment.map((item) => {
+            return {
+              id: item.id,
+              type: item.equipment_name.equipment_type.name,
+              name: item.equipment_name.name,
+              number: item.number,
+            };
+          });
+          setEquipment(simplifiedEquipment);
+        }
+      }
+    }
+    fetchData();
+  }, [equipment, getEquipment]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -136,8 +160,8 @@ const UsersTable = (props: UsersProps) => {
     setPage(0);
   };
 
-  const handleClickUserRow = (user: FMProfile) => {
-    setSelectedUser(user);
+  const handleClickUserRow = (user: Equipment) => {
+    // setSelectedUser(user);
     setShowUserDetails(true);
   };
 
@@ -147,7 +171,7 @@ const UsersTable = (props: UsersProps) => {
       return;
     }
     setShowUserDetails(false);
-    fetchUsers();
+    // fetchUsers();
   };
 
   const handleCloseDeleteDialog = () => {
@@ -157,14 +181,6 @@ const UsersTable = (props: UsersProps) => {
   const handleDeleteUserClick = () => {
     setDeleteDialogOpen(true);
   };
-
-  useEffect(() => {
-    setUpdatedUser(selectedUser);
-  }, [selectedUser]);
-
-  // useEffect(() => {
-  //   setSelectedUser(updatedUser);
-  // }, [updatedUser]);
 
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
@@ -229,6 +245,45 @@ const UsersTable = (props: UsersProps) => {
     closeUserDetailsDialog();
   };
 
+  const [orderBy, setOrderBy] = useState<string>("type");
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
+
+  const onSort = (type: string) => {
+    if (orderBy === type) {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setOrderBy(type);
+      setOrder("asc");
+    }
+    if (equipment) {
+      setEquipment(
+        equipment.sort((a, b) => {
+          if (order === "asc") {
+            if (type === "number") {
+              return (
+                parseInt(a.number as unknown as string, 10) -
+                parseInt(b.number as unknown as string, 10)
+              );
+            }
+            return a[type as keyof Equipment] < b[type as keyof Equipment]
+              ? -1
+              : 1;
+          } else {
+            if (type === "number") {
+              return (
+                parseInt(b.number as unknown as string, 10) -
+                parseInt(a.number as unknown as string, 10)
+              );
+            }
+            return a[type as keyof Equipment] > b[type as keyof Equipment]
+              ? -1
+              : 1;
+          }
+        })
+      );
+    }
+  };
+
   return (
     <React.Fragment>
       <Box id="my-page-table-wrapper">
@@ -236,45 +291,68 @@ const UsersTable = (props: UsersProps) => {
           {t("Booking and report history")}
         </Typography> */}
         <TableContainer id="my-table-container">
-          <Table>
-            <TableHead>
+          <Table size="small">
+            <TableHead sx={{ backgroundColor: "var(--color-theme-dark)" }}>
               <StyledTableRow>
                 {isMobile ? (
                   <>
-                    <StyledTableCell align="left">{t("Date")}</StyledTableCell>
-                    <StyledTableCell align="left">{t("Name")}</StyledTableCell>
-                    <StyledTableCell align="left">
+                    <FMEquipmentTableCell sortDirection={"asc"} align="left">
+                      {t("Date")}
+                    </FMEquipmentTableCell>
+                    <FMEquipmentTableCell align="left">
+                      {t("Name")}
+                    </FMEquipmentTableCell>
+                    <FMEquipmentTableCell align="left">
                       {t("Number")}
-                    </StyledTableCell>
-                    <StyledTableCell></StyledTableCell>
+                    </FMEquipmentTableCell>
+                    <FMEquipmentTableCell></FMEquipmentTableCell>
                   </>
                 ) : (
                   <>
-                    <StyledTableCell align="left">
-                      {t("Created")}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">{t("Name")}</StyledTableCell>
-                    <StyledTableCell align="left">{t("Email")}</StyledTableCell>
-                    <StyledTableCell align="left">
-                      {t("Status")}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">{t("Role")}</StyledTableCell>
-                    <StyledTableCell align="left">
-                      {t("Last seen")}
-                    </StyledTableCell>
-                    <StyledTableCell />
+                    <FMEquipmentTableCell align="left" key={"type"}>
+                      <TableSortLabel
+                        // active={true}
+                        direction={orderBy === "type" ? order : "asc"}
+                        onClick={() => onSort("type")}
+                      >
+                        {t("Type")}
+                      </TableSortLabel>
+                    </FMEquipmentTableCell>
+                    {/* <FMEquipmentTableCell align="left">{t("Name")}</FMEquipmentTableCell>
+                    <FMEquipmentTableCell align="left">{t("Email")}</FMEquipmentTableCell> */}
+                    <FMEquipmentTableCell align="left">
+                      <TableSortLabel
+                        // active={true}
+                        direction={orderBy === "name" ? order : "asc"}
+                        onClick={() => onSort("name")}
+                      >
+                        {t("Name")}
+                      </TableSortLabel>
+                    </FMEquipmentTableCell>
+                    {/* <FMEquipmentTableCell align="left">{t("Role")}</FMEquipmentTableCell> */}
+                    <FMEquipmentTableCell align="left">
+                      <TableSortLabel
+                        // active={true}
+                        direction={orderBy === "number" ? order : "asc"}
+                        onClick={() => onSort("number")}
+                      >
+                        {t("Number")}
+                      </TableSortLabel>
+                    </FMEquipmentTableCell>
+                    <FMEquipmentTableCell />
                   </>
                 )}
               </StyledTableRow>
             </TableHead>
             <TableBody id="my-table-body">
               {!isMobile &&
+                equipment &&
                 (rowsPerPage > 0
-                  ? users?.slice(
+                  ? equipment.slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
                     )
-                  : users
+                  : equipment
                 ).map((row, i) => (
                   <React.Fragment key={`${row.id}-${row.name}-${i}`}>
                     <StyledTableRow
@@ -286,14 +364,16 @@ const UsersTable = (props: UsersProps) => {
                       onClick={() => handleClickUserRow(row)}
                       // onMouseOver={() => handleMouseOverRow(row)}
                     >
-                      <StyledTableCell align="left">
-                        {row.created_date}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">{row.name}</StyledTableCell>
-                      <StyledTableCell align="left">
-                        {row.email}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
+                      <FMEquipmentTableCell align="left">
+                        {String(row.type)}
+                      </FMEquipmentTableCell>
+                      <FMEquipmentTableCell align="left">
+                        {String(row.name)}
+                      </FMEquipmentTableCell>
+                      <FMEquipmentTableCell align="left">
+                        {String(row.number)}
+                      </FMEquipmentTableCell>
+                      {/* <FMEquipmentTableCell align="left">
                         <StatusChip
                           status={
                             row.rejected
@@ -303,12 +383,14 @@ const UsersTable = (props: UsersProps) => {
                               : "Inactive"
                           }
                         />
-                      </StyledTableCell>
-                      <StyledTableCell align="left">{row.role}</StyledTableCell>
-                      <StyledTableCell align="left">
-                        {row.last_login}
-                      </StyledTableCell>
-                      <StyledTableCell
+                      </FMEquipmentTableCell>
+                      <FMEquipmentTableCell align="left">
+                        {String(row.number)}
+                      </FMEquipmentTableCell>
+                      <FMEquipmentTableCell align="left">
+                        {String(row.name)}
+                      </FMEquipmentTableCell> */}
+                      <FMEquipmentTableCell
                         align="right"
                         className="delete-icon-cell"
                       >
@@ -316,11 +398,11 @@ const UsersTable = (props: UsersProps) => {
                           onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            setSelectedUser(row);
+                            // setSelectedUser(row);
                             handleDeleteUserClick();
                           }}
                         />
-                      </StyledTableCell>
+                      </FMEquipmentTableCell>
                     </StyledTableRow>
                   </React.Fragment>
                 ))}
@@ -333,7 +415,7 @@ const UsersTable = (props: UsersProps) => {
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                   colSpan={11}
                   width={"100%"}
-                  count={users ? users.length : 0}
+                  count={equipment ? equipment.length : 0}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
@@ -489,4 +571,4 @@ const UsersTable = (props: UsersProps) => {
   );
 };
 
-export default UsersTable;
+export default EquipmentTable;

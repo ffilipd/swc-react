@@ -1,4 +1,10 @@
-import { Typography } from "@mui/material";
+import {
+  styled,
+  TableCell,
+  tableCellClasses,
+  TableCellProps,
+  Typography,
+} from "@mui/material";
 
 type styledTypographyType = {
   text: string | null;
@@ -45,3 +51,50 @@ export const SmallText: React.FC<any> = ({ children }) => {
     </Typography>
   );
 };
+
+interface StyledTableCellProps extends TableCellProps {
+  status?: "active" | "inactive" | "rejected";
+}
+
+export const FMUserTableCell = styled(TableCell)<StyledTableCellProps>(
+  ({ theme, status }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: "var(--color-theme-dark)",
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.root}`]: {
+      backgroundColor:
+        status === "active"
+          ? "lightgreen"
+          : status === "inactive"
+          ? "orange"
+          : status === "rejected"
+          ? "red"
+          : "var(--color-theme-light",
+      color: theme.palette.common.white,
+      display: "flex",
+      alignItems: "center",
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  })
+);
+
+export const FMEquipmentTableCell = styled(TableCell)<TableCellProps>(
+  ({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: "var(--color-theme-dark)",
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.root}`]: {
+      backgroundColor: "var(--color-theme-light",
+      color: theme.palette.common.white,
+      display: "flex",
+      alignItems: "center",
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  })
+);

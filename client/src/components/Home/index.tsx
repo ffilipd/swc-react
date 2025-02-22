@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
-import { getEquipment } from "../../service/equipment.service";
-import { FmButton, FmButton2, FmButtonCube } from "../../utils/buttons";
+import { useState } from "react";
+import { FmButtonCube } from "../../utils/buttons";
 import "./home.css";
 import { useNavigate } from "react-router-dom";
 

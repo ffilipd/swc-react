@@ -27,10 +27,12 @@ import i18next from "i18next";
 import { NewEquipment } from "../../interfaces";
 import {
   addNewEquipment,
+  getEquipment,
   removeEquipment,
 } from "../../service/equipment.service";
 import { useEquipment } from "../../EquipmentContext";
 import { useUser } from "../../UserContext";
+import EquipmentTable from "./equipmentTable";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -53,6 +55,10 @@ const AdminEquipmentComponent = () => {
       newName: "*" + i18next.t("Enter new class / name"),
     },
   };
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
+  window.addEventListener("resize", () => {
+    setIsMobile(window.innerWidth <= 600);
+  });
   const [addEquipmentDialogOpen, setAddEquipmentDialogOpen] =
     useState<boolean>(false);
   const [editEquipmentDialogOpen, setEditEquipmentDialogOpen] =
@@ -187,8 +193,18 @@ const AdminEquipmentComponent = () => {
   };
 
   return (
-    <React.Fragment>
-      <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box>
+    <>
+      <Box id="my-page-header">{t("Equipment Management")}</Box>
+      {/* <Divider /> */}
+      <Box id="my-page-wrapper">
+        <EquipmentTable
+          isMobile={isMobile}
+          getEquipment={getEquipment}
+          equipment={Array.isArray(equipment) ? equipment : []}
+        />
+      </Box>
+
+      {/* <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box> */}
       <Divider />
       <Box id="admin-equipment-wrapper">
         <FmButton2 className="admin-equipment-button" onClick={handleEditClick}>
@@ -479,7 +495,7 @@ const AdminEquipmentComponent = () => {
           </Box>
         </Box>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 };
 
