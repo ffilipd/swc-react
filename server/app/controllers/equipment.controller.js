@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Equipment
 exports.create = async (req, res) => {
-    const { type, name, number, userId } = req.body;
+    const { type, name, number } = req.body;
     if (!type || !name || !number) {
         res.send({
             message: "Parameters missing!"
@@ -14,58 +14,49 @@ exports.create = async (req, res) => {
     }
 
     try {
-        // Check that user is allowed to book this equipment
-        const user = await User.findByPk(userId);
-        // User is admin
-        if (user.role === 'admin' || user.role === 'moderator') {
-            // Check if type exists
-            let typeInstance = await Type.findOne({
-                where: { name: type }
-            });
+        // Check if type exists
+        let typeInstance = await Type.findOne({
+            where: { name: type }
+        });
 
-            // If type does not exist, create a new type
-            if (!typeInstance) {
-                typeInstance = await Type.create({ name: type });
-            }
+        // If type does not exist, create a new type
+        if (!typeInstance) {
+            typeInstance = await Type.create({ name: type });
+        }
 
-            // Check for duplicate equipment
-            const dupletEquipment = await Equipment.findOne({
-                where: { number: number },
-                include: {
-                    model: Name,
-                    where: { name: name }
-                }
-            });
-
-            if (dupletEquipment) {
-                res.send({
-                    message: "Equipment with the same name and number already exists!"
-                });
-                return;
-            }
-
-            // Find or create the equipment name
-            let equipmentName = await Name.findOne({
+        // Check for duplicate equipment
+        const dupletEquipment = await Equipment.findOne({
+            where: { number: number },
+            include: {
+                model: Name,
                 where: { name: name }
-            });
-
-            if (!equipmentName) {
-                equipmentName = await Name.create({ name: name, equipmentTypeId: typeInstance.id });
             }
+        });
 
-            // Create the equipment
-            await Equipment.create({
-                equipmentNameId: equipmentName.id,
-                number: number
-            });
-
-            res.status(200).send({ message: 'Equipment added!' });
-        } else {
+        if (dupletEquipment) {
             res.send({
-                message: "Only admin and moderator can add equipment!"
+                message: "Equipment with the same name and number already exists!"
             });
             return;
         }
+
+        // Find or create the equipment name
+        let equipmentName = await Name.findOne({
+            where: { name: name }
+        });
+
+        if (!equipmentName) {
+            equipmentName = await Name.create({ name: name, equipmentTypeId: typeInstance.id });
+        }
+
+        // Create the equipment
+        await Equipment.create({
+            equipmentNameId: equipmentName.id,
+            number: number
+        });
+
+        res.status(200).send({ message: 'Equipment added!' });
+
     } catch (error) {
         console.error(error);
         res.status(500).send({
@@ -101,6 +92,10 @@ exports.findAll = async (req, res) => {
             ]
         });
 
+        if (user.role === 'admin' || user.role === 'moderator') {
+            res.json(equipment);
+            return;
+        }
         const filteredEquipment = equipment.filter(equip => {
             const typeName = equip.name.equipment_type.name;
             const nameString = equip.name.name;
@@ -120,7 +115,6 @@ exports.findEquipmentTree = async (req, res) => {
 
     try {
         const user = await User.findByPk(userId);
-        const isAdmin = user.role === 'admin' || user.role === 'moderator';
 
         if (!user) {
             res.status(404).send({ message: 'User not found' });
@@ -154,10 +148,12 @@ exports.findEquipmentTree = async (req, res) => {
         });
 
         // Filter the equipment tree based on user access
+        if (user.role === 'admin' || user.role === 'moderator') {
+            res.send(formattedEquipmentTree);
+            return;
+        }
+
         const filteredEquipmentTree = formattedEquipmentTree.filter(type => {
-            if (isAdmin) {
-                return type;
-            }
             return user.access.includes(type.typeName);
         });
 
@@ -199,6 +195,10 @@ exports.findFilters = async (req, res) => {
                 }
             });
 
+            if (user.role === 'admin' || user.role === 'moderator') {
+                return res.json(type.equipment_type.name);
+            }
+
             if (!user.access.includes(type.equipment_type.name)) {
                 res.status(403).send({ message: 'Access denied' });
                 return;
@@ -209,10 +209,6 @@ exports.findFilters = async (req, res) => {
 
         /** get equipment names for provided equipment type */
         if (!equipmentNameId) {
-            if (!user.access.includes(type)) {
-                res.status(403).send({ message: 'Access denied' });
-                return;
-            }
 
             const specificType = await Type.findOne({
                 where: { name: type },
@@ -221,6 +217,21 @@ exports.findFilters = async (req, res) => {
                     attributes: ['name', 'id'],
                 }
             });
+
+            if (user.role === 'admin' || user.role === 'moderator') {
+                const names = specificType.equipment_names.map(data => {
+                    return {
+                        name: data.name,
+                        id: data.id
+                    }
+                });
+                return res.json(names);
+            }
+
+            if (!user.access.includes(type)) {
+                res.status(403).send({ message: 'Access denied' });
+                return;
+            }
 
             const names = specificType.equipment_names.map(data => {
                 return {
@@ -264,6 +275,12 @@ exports.update = (req, res) => {
 // Delete a Equipment with the specified id in the request
 exports.delete = async (req, res) => {
     const id = req.params.id;
+    const userId = req.userId;
+
+    if (!id) {
+        res.status(400).send({ message: 'ID missing!' });
+        return;
+    }
 
     try {
         const equipment = await Equipment.findByPk(id);

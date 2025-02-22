@@ -38,41 +38,30 @@ isAdmin = (req, res, next) => {
 };
 
 isModerator = (req, res, next) => {
-    User.findByPk(req.params.id).then(user => {
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                if (roles[i].name === "moderator") {
-                    next();
-                    return;
-                }
-            }
+    User.findByPk(req.userId).then(user => {
+        if (user.role === "moderator") {
+            next();
+            return;
+        }
 
-            res.status(403).send({
-                message: "Require Moderator Role!"
-            });
+        res.status(403).send({
+            message: "Require Moderator Role!"
         });
+        return;
     });
 };
 
 isModeratorOrAdmin = (req, res, next) => {
     User.findByPk(req.userId).then(user => {
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                if (roles[i].name === "moderator") {
-                    next();
-                    return;
-                }
+        if (user.role === "admin" || user.role === "moderator") {
+            next();
+            return;
+        }
 
-                if (roles[i].name === "admin") {
-                    next();
-                    return;
-                }
-            }
-
-            res.status(403).send({
-                message: "Require Moderator or Admin Role!"
-            });
+        res.status(403).send({
+            message: "Require Admin or Moderator Role!"
         });
+        return;
     });
 };
 

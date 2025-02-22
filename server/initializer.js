@@ -1,6 +1,5 @@
 const db = require("./app/models");
 const User = db.user;
-const Equipment = db.equipment;
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
 

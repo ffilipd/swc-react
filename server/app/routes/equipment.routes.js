@@ -6,7 +6,7 @@ module.exports = app => {
 
     // Create a new equipment
     router.post("/",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         equipment.create
     );
 
@@ -37,12 +37,12 @@ module.exports = app => {
 
     // Update a equipment with id
     router.put("/:id",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         equipment.update);
 
     // Delete a equipment with id
     router.delete("/:id",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         equipment.delete);
 
     app.use('/equipment', router);
