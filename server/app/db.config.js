@@ -1,8 +1,8 @@
 module.exports = {
     // HOST: "dahlskog.fi",
-    // USER: "dahlskog_fm",
-    // PASSWORD: "NGi0BMK~QV)U",
-    // DB: "dahlskog_fm",
+    // USER: "dahlskog_fleetmanager",
+    // PASSWORD: "tKTz~0CycTTM",
+    // DB: "dahlskog_fleetmanager",
     HOST: "localhost",
     USER: "swc",
     PASSWORD: "swc",
