@@ -134,7 +134,7 @@ exports.findAll = async (req, res) => {
     try {
         const user = await User.findByPk(userId);
         const userAccess = user.access ? user.access.split(',') : [];
-        if (userAccess.length === 0) {
+        if (userAccess.length === 0 && !user.role === 'admin' && !user.role === 'moderator') {
             return res.status(401).json({ message: 'Looks like you dont have any rights to book equipment' });
         }
 
@@ -145,11 +145,10 @@ exports.findAll = async (req, res) => {
                 {
                     model: Equipment,
                     attributes: ['number', 'id'],
-                    include:
-                    {
+                    include: {
                         model: Name,
                         attributes: ['name'],
-                        where: {
+                        where: user.role === 'admin' || user.role === 'moderator' ? {} : {
                             ...equipmentIdSearch,
                             '$equipment.equipment_name.name$': {
                                 [Op.in]: userAccess

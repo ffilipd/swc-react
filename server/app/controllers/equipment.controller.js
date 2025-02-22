@@ -181,6 +181,9 @@ exports.findFilters = async (req, res) => {
         /** get all the equipment types available in db */
         if (!type && !equipmentNameId) {
             const types = await Type.findAll({ attributes: ['name'] });
+            if (user.role === 'admin' || user.role === 'moderator') {
+                return res.json(types.map(type => type.name));
+            }
             const filteredTypes = types.filter(type => user.access.includes(type.name));
             return res.json(filteredTypes.map(type => type.name));
         }
