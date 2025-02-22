@@ -35,7 +35,6 @@ import {
   Divider,
   TextField,
 } from "@mui/material";
-import { RiDeleteBin2Line } from "react-icons/ri";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
 import { EquipmentSearchParams, FMProfile, UserRole } from "../../interfaces";
@@ -45,7 +44,7 @@ import TablePaginationActions from "../Pagination";
 import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile, deleteUser } from "../../service/user.service";
 import { dummyUser } from "../../utils/dummy-data";
-import { FmButton2, FmButtonDanger } from "../../utils/buttons";
+import { FmButton2, FmButtonDanger, FmDeleteButton } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
 import { getEquipment } from "../../service/equipment.service";
 import { Height, Label } from "@mui/icons-material";
@@ -339,8 +338,18 @@ const UsersTable = (props: UsersProps) => {
                       <StyledTableCell align="left">
                         {row.last_login}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
-                        <RiDeleteBin2Line size={"large"} />
+                      <StyledTableCell
+                        align="right"
+                        className="delete-icon-cell"
+                      >
+                        <FmDeleteButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setSelectedUser(row);
+                            handleDeleteUserClick();
+                          }}
+                        />
                       </StyledTableCell>
                     </StyledTableRow>
                   </React.Fragment>

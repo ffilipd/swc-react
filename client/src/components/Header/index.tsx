@@ -133,7 +133,7 @@ function Header() {
     if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
-    if (clickedItem === "My Page") navigate("/mypage");
+    if (clickedItem === "My Bookings") navigate("/mybookings");
     if (clickedItem === "Accountinfo") navigate("/accountinfo");
     if (clickedItem === "Login") navigate("/login");
     if (clickedItem === "Logout") handleLogout();
@@ -218,8 +218,10 @@ function Header() {
               <FmButton onClick={() => navigate("/booking")}>
                 {t("Book equipment")}
               </FmButton>
-              <FmButton onClick={() => navigate("/mypage")}>
-                {t("My Page")}
+              <FmButton onClick={() => navigate("/mybookings")}>
+                {user?.role === "admin" || user?.role === "moderator"
+                  ? t("Bookings")
+                  : t("My Bookings")}
               </FmButton>
             </Box>
             <Box sx={{ display: "flex" }} id="right-button-group">

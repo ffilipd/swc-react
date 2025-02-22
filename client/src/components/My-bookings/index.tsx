@@ -47,7 +47,7 @@ const roundedTime = (time: Dayjs): Dayjs => {
     : time.startOf("hour").add(0, "minutes");
 };
 
-const MyPageComponent = () => {
+const MyBookingsComponent = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   // const equipmentTypes = getEquipmentTypes();
@@ -296,4 +296,4 @@ const MyPageComponent = () => {
   );
 };
 
-export default MyPageComponent;
+export default MyBookingsComponent;

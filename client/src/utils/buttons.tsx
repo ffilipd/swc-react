@@ -1,5 +1,17 @@
 import { styled } from "@mui/material/styles";
 import { Button, ButtonProps } from "@mui/material";
+import { RiDeleteBin2Line } from "react-icons/ri";
+import { IconBaseProps } from "react-icons";
+
+export const FmDeleteButton = styled(RiDeleteBin2Line)<IconBaseProps>(
+  ({ theme }) => ({
+    // color: "#960606",
+    fontSize: "large",
+    "&:hover": {
+      color: "#de0404",
+    },
+  })
+);
 
 export const FmButton = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
