@@ -33,11 +33,10 @@ import {
   Button,
   SelectChangeEvent,
   Divider,
-  TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
-import { EquipmentSearchParams, FMProfile, UserRole } from "../../interfaces";
+import { FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
@@ -46,9 +45,6 @@ import { updateUserProfile, deleteUser } from "../../service/user.service";
 import { dummyUser } from "../../utils/dummy-data";
 import { FmButton2, FmButtonDanger, FmDeleteButton } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
-import { getEquipment } from "../../service/equipment.service";
-import { Height, Label } from "@mui/icons-material";
-import { use } from "i18next";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -217,7 +213,9 @@ const UsersTable = (props: UsersProps) => {
             ?.replace(item, "")
             // Clean away any double commas left when removing a type
             .replace(/(^,)|(,$)/g, "")
-            .replace(/,,+/g, ","),
+            .replace(/,,+/g, ",")
+            .replace(/^,/, "")
+            .replace(/null/g, ""),
         });
       }
     }
