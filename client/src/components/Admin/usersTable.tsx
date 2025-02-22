@@ -432,7 +432,7 @@ const UsersTable = (props: UsersProps) => {
               ))}
             </Select>
           </FormControl>
-          <FormGroup>
+          <FormGroup sx={{ margin: "20px 0 0 0" }}>
             <FormControlLabel
               control={<Checkbox color="success" />}
               label={t("Active")}
@@ -448,14 +448,15 @@ const UsersTable = (props: UsersProps) => {
               onChange={(e) => handleCheckboxClick(e)}
             />
           </FormGroup>
-          <Typography sx={{ marginTop: "20px" }}>
+          <Typography sx={{ marginTop: "20px", fontWeight: "bold" }}>
             {t("User Access Rights")}
           </Typography>
           <Divider />
-          <FormGroup>
+          <FormGroup sx={{ margin: "0 0 100px 0" }}>
             {equipmentTypes.map((type) => (
               <React.Fragment key={type}>
                 <FormControlLabel
+                  sx={{ margin: "20px 0 0 0" }}
                   control={
                     <Checkbox color="primary" id={`equipment-type-${type}`} />
                   }
@@ -473,6 +474,7 @@ const UsersTable = (props: UsersProps) => {
                   label={`-- ${t("Select all")} --`}
                   onChange={checkAllNames(type)}
                   /> */}
+                <Divider />
                 {getEquipmentNames(type).map((name) => (
                   <FormControlLabel
                     style={{ marginLeft: "20px" }}
