@@ -140,6 +140,10 @@ exports.update = async (req, res) => {
             }
         }
 
+        // Exclude id and password from being updated
+        delete updateData.id;
+        delete updateData.password;
+
         // Proceed to update the user
         const num = await User.update(updateData, { where: { id: id } });
         if (num[0] === 1) {
