@@ -16,8 +16,10 @@ import {
   Checkbox,
   SelectChangeEvent,
   Slide,
+  Alert,
+  AlertProps,
 } from "@mui/material";
-import { t } from "i18next";
+import { t, use } from "i18next";
 import React, { useEffect } from "react";
 import { FmButton2, FmButtonDanger } from "../../../utils/buttons";
 import { UserStaticCheckBoxes } from "./user-table";
@@ -25,6 +27,8 @@ import { FMProfile, UserRole } from "../../../interfaces";
 import CloseIcon from "@mui/icons-material/Close";
 import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile } from "../../../service/user.service";
+import { exit } from "process";
+import { set } from "date-fns";
 
 interface UsersDialogProps {
   showUserDetails: boolean;
@@ -37,7 +41,6 @@ interface UsersDialogProps {
   userRoles: UserRole[];
   selectedUser: FMProfile;
 }
-
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -59,7 +62,7 @@ const UsersDialog = (props: UsersDialogProps) => {
     userRoles,
     selectedUser,
   } = props;
-
+  const [alertVisible, setAlertVisible] = React.useState(false);
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
     if (name === "active" || name === "rejected") {
@@ -100,7 +103,11 @@ const UsersDialog = (props: UsersDialogProps) => {
       try {
         const res = await updateUserProfile({ ...props, id: selectedUser.id });
         setSelectedUser({ ...selectedUser, ...props });
-        alert(res.message);
+        setAlertProps({
+          severity: "success",
+          message: res.message,
+        });
+        setAlertVisible(true);
       } catch (err) {
         if (err instanceof Error) {
           alert(err.message);
@@ -112,7 +119,18 @@ const UsersDialog = (props: UsersDialogProps) => {
     }
   };
 
-  // useEffect(())
+  const [alertProps, setAlertProps] = React.useState({
+    severity: "" as AlertProps["severity"],
+    message: "" as string,
+  });
+
+  useEffect(() => {
+    if (alertVisible) {
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+    }
+  }, [alertVisible]);
 
   return (
     <Dialog
@@ -141,6 +159,26 @@ const UsersDialog = (props: UsersDialogProps) => {
           </Typography>
         </Toolbar>
       </AppBar>
+      <Slide
+        direction="down"
+        in={alertVisible}
+        mountOnEnter
+        unmountOnExit
+        easing={"exit: theme.transitions.easing.sharp"}
+      >
+        <Alert
+          severity={alertProps.severity}
+          sx={{
+            margin: "0",
+            position: "absolute",
+            top: "65px",
+            width: "100%",
+            overflow: "ease",
+          }}
+        >
+          {alertProps.message}
+        </Alert>
+      </Slide>
       <Box id="admin-equipment-select-wrapper">
         {/* NAME */}
         <FormControl variant="standard" className="show-user-dialog-input">
