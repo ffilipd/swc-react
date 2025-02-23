@@ -24,7 +24,8 @@ import React, { useEffect } from "react";
 import { FmButton2, FmButtonDanger } from "../../../utils/buttons";
 import { UserStaticCheckBoxes } from "./user-table";
 import { FMProfile, UserRole } from "../../../interfaces";
-import CloseIcon from "@mui/icons-material/Close";
+// import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile } from "../../../service/user.service";
 import { exit } from "process";
@@ -145,16 +146,22 @@ const UsersDialog = (props: UsersDialogProps) => {
           backgroundColor: "var(--color-theme-dark)",
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ display: "flex" }}>
           <IconButton
             edge="start"
             color="inherit"
             onClick={() => closeUserDetailsDialog()}
             aria-label="close"
+            sx={{ fontSize: "1rem", flex: 1 }}
           >
-            <CloseIcon />
+            <KeyboardArrowLeftIcon fontSize="large" />
+            {t("Back")}
           </IconButton>
-          <Typography sx={{ ml: 4, flex: 1 }} variant="h6" component="div">
+          <Typography
+            sx={{ alignItems: "center", width: "100%", textAlign: "center" }}
+            variant="h6"
+            component="div"
+          >
             {t("Edit User")}
           </Typography>
         </Toolbar>
