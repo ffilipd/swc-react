@@ -188,7 +188,12 @@ const AdminEquipmentComponent = () => {
   const handleRemoveEquipmentClick = async () => {
     // Get id for selected equipment
     const id = await findEquipmentId(equipmentToEdit);
-    if (id) await removeEquipment(id);
+    if (id) {
+      const res = await removeEquipment(id);
+      alert(res);
+      handleEditEquipmentDialogClose();
+      window.location.reload();
+    }
     return;
   };
 
@@ -410,7 +415,7 @@ const AdminEquipmentComponent = () => {
                 id="equipment-type"
                 label={labels.equipment.type}
                 name="editType"
-                // value={selectedEquipment.type}
+                value={equipmentToEdit.type}
                 onChange={(e: SelectChangeEvent) => {
                   handleSetType(e);
                 }}
@@ -435,7 +440,7 @@ const AdminEquipmentComponent = () => {
                 id="equipment-name"
                 label={labels.equipment.name}
                 name="editName"
-                // value={selectedEquipment.equipmentNameId}
+                value={equipmentToEdit.name}
                 onChange={(e: SelectChangeEvent) => {
                   handleSetName(e);
                 }}
@@ -459,7 +464,7 @@ const AdminEquipmentComponent = () => {
                 // disabled={selectedEquipment.type === ""}
                 id="equipment-number"
                 label={labels.equipment.number}
-                // value={selectedEquipment.equipmentNameId}
+                value={equipmentToEdit.number}
                 name="editNumber"
                 onChange={(e: SelectChangeEvent) => {
                   handleSetNumber(e);
@@ -484,11 +489,7 @@ const AdminEquipmentComponent = () => {
                 {t("Edit")}
               </FmButton2>
 
-              <FmButtonDanger
-                // id={!bookingFilledOut() ? "disabled-button" : "book-button"}
-                // disabled={!bookingFilledOut()}
-                onClick={handleRemoveEquipmentClick}
-              >
+              <FmButtonDanger onClick={handleRemoveEquipmentClick}>
                 {t("Remove Equipment")}
               </FmButtonDanger>
             </Grid>
