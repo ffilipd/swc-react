@@ -278,7 +278,6 @@ exports.update = (req, res) => {
 // Delete a Equipment with the specified id in the request
 exports.delete = async (req, res) => {
     const id = req.params.id;
-    const userId = req.userId;
 
     if (!id) {
         res.status(400).send({ message: 'ID missing!' });
