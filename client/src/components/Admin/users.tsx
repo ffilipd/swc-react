@@ -13,10 +13,12 @@ import { useEffect, useState } from "react";
 import UsersTable from "./usersTable";
 import { FMProfile } from "../../interfaces";
 import { getAllUsers } from "../../service/user.service";
+import FmDialog from "../../utils/dialog";
+import { useUser } from "../../UserContext";
 
 const AdminUsersComponent = () => {
   const { t } = useTranslation();
-
+  const { user } = useUser();
   const [users, setUsers] = useState<FMProfile[]>([]);
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
@@ -52,26 +54,17 @@ const AdminUsersComponent = () => {
       <Box id="my-page-wrapper">
         <UsersTable users={users} isMobile={isMobile} fetchUsers={fetchUsers} />
       </Box>
-      <Dialog
-        open={deleteBookingDialogOpen}
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{t("Delete booking")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {t("Are you sure you want to delete booking?")}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} autoFocus>
-            {t("Cancel")}
-          </Button>
-          {/* <Button onClick={handleDeleteBooking}>{t("Delete")}</Button> */}
-        </DialogActions>
-      </Dialog>
-      <Dialog
+      <FmDialog
+        onDialogOpen={deleteBookingDialogOpen}
+        onDialogClose={handleCloseDeleteDialog}
+        onHandleAction={() => {}}
+        props={{
+          title: t("Delete booking"),
+          description: t("Are you sure you want to delete booking?"),
+          action: t("Delete"),
+        }}
+      />
+      {/* <Dialog
         open={descriptionDialogOpen}
         onClose={handleCloseDescriptionDialog}
       >
@@ -83,7 +76,7 @@ const AdminUsersComponent = () => {
             {description}
           </DialogContentText>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

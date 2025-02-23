@@ -3,14 +3,11 @@ import {
   IconButton,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableFooter,
   TableHead,
   TablePagination,
   TableRow,
-  styled,
-  tableCellClasses,
   Dialog,
   AppBar,
   Toolbar,
@@ -24,8 +21,6 @@ import {
   FormControlLabel,
   FormGroup,
   Checkbox,
-  TableCellProps,
-  Chip,
   DialogTitle,
   DialogContent,
   DialogContentText,
@@ -37,13 +32,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
-import {
-  Equipment,
-  EquipmentIdSearchParams,
-  EquipmentSearchParams,
-  FMProfile,
-  UserRole,
-} from "../../interfaces";
+import { Equipment, FMProfile, UserRole } from "../../interfaces";
 import { useTranslation } from "react-i18next";
 import "./mytable.css";
 import TablePaginationActions from "../Pagination";
@@ -53,8 +42,7 @@ import { dummyUser } from "../../utils/dummy-data";
 import { FmButton2, FmButtonDanger, FmDeleteButton } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
 import { FMEquipmentTableCell } from "../../utils/custom-elements";
-import { dir } from "console";
-import { set } from "date-fns";
+import { StyledTableRow } from "../../utils/styled";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -70,48 +58,6 @@ interface EquipmentProps {
   getEquipment: () => Promise<Equipment[]> | null;
   isMobile: boolean;
 }
-
-const StatusChip: React.FC<{
-  status: "Active" | "Inactive" | "Rejected" | "default";
-}> = ({ status }) => {
-  const getColor = (status: string) => {
-    switch (status) {
-      case "Active":
-        return "lightgreen";
-      case "Inactive":
-        return "orange";
-      case "Rejected":
-        return "red";
-      default:
-        return "var(--color-theme-light)";
-    }
-  };
-
-  return (
-    <Chip
-      label={status}
-      style={{
-        backgroundColor: getColor(status),
-        color: "white",
-        width: "100%",
-      }}
-    />
-  );
-};
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // darken row on hover
-  "&:hover": {
-    backgroundColor: theme.palette.action.selected,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
 
 const EquipmentTable = (props: EquipmentProps) => {
   const { isMobile, getEquipment } = props;
@@ -425,8 +371,6 @@ const EquipmentTable = (props: EquipmentProps) => {
                         {t("Type")}
                       </TableSortLabel>
                     </FMEquipmentTableCell>
-                    {/* <FMEquipmentTableCell align="left">{t("Name")}</FMEquipmentTableCell>
-                    <FMEquipmentTableCell align="left">{t("Email")}</FMEquipmentTableCell> */}
                     <FMEquipmentTableCell align="left">
                       <TableSortLabel
                         // active={true}
@@ -436,7 +380,6 @@ const EquipmentTable = (props: EquipmentProps) => {
                         {t("Name")}
                       </TableSortLabel>
                     </FMEquipmentTableCell>
-                    {/* <FMEquipmentTableCell align="left">{t("Role")}</FMEquipmentTableCell> */}
                     <FMEquipmentTableCell align="left">
                       <TableSortLabel
                         // active={true}
@@ -480,23 +423,6 @@ const EquipmentTable = (props: EquipmentProps) => {
                       <FMEquipmentTableCell align="left">
                         {String(row.number)}
                       </FMEquipmentTableCell>
-                      {/* <FMEquipmentTableCell align="left">
-                        <StatusChip
-                          status={
-                            row.rejected
-                              ? "Rejected"
-                              : row.active
-                              ? "Active"
-                              : "Inactive"
-                          }
-                        />
-                      </FMEquipmentTableCell>
-                      <FMEquipmentTableCell align="left">
-                        {String(row.number)}
-                      </FMEquipmentTableCell>
-                      <FMEquipmentTableCell align="left">
-                        {String(row.name)}
-                      </FMEquipmentTableCell> */}
                       <FMEquipmentTableCell
                         align="right"
                         className="delete-icon-cell"
@@ -540,125 +466,6 @@ const EquipmentTable = (props: EquipmentProps) => {
           </Table>
         </TableContainer>
       </Box>
-
-      {/* users dialog */}
-      <Dialog
-        fullScreen
-        open={showUserDetails}
-        // onClose={handleEditEquipmentDialogClose}
-        TransitionComponent={Transition}
-      >
-        <AppBar
-          sx={{
-            position: "relative",
-            backgroundColor: "var(--color-theme-dark)",
-          }}
-        >
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={() => closeUserDetailsDialog()}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 4, flex: 1 }} variant="h6" component="div">
-              {t("Edit User")}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Box id="admin-equipment-select-wrapper">
-          {/* NAME */}
-          <FormControl variant="standard" className="show-user-dialog-input">
-            <InputLabel htmlFor="user-name">{t("Full Name")}</InputLabel>
-            <Input id="user-name" value={updatedUser?.name} />
-          </FormControl>
-          <FormControl variant="standard" className="show-user-dialog-input">
-            <InputLabel htmlFor="user-email">{t("Email")}</InputLabel>
-            <Input id="user-email" value={updatedUser?.email} />
-          </FormControl>
-          <FormControl variant="standard" className="show-user-dialog-input">
-            <InputLabel htmlFor="user-role">{t("Role")}</InputLabel>
-            <Select
-              labelId="user-role"
-              id="user-role-select"
-              value={updatedUser?.role}
-              onChange={(e) => handleChangeUserRole(e)}
-            >
-              {/* {userRoles.map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role.charAt(0).toUpperCase() + role.slice(1)}
-                </MenuItem>
-              ))} */}
-            </Select>
-          </FormControl>
-          <FormGroup sx={{ margin: "20px 0 0 0" }}>
-            <FormControlLabel
-              control={<Checkbox color="success" />}
-              label={t("Active")}
-              checked={updatedUser?.active}
-              name={"active"}
-              onChange={(e) => handleCheckboxClick(e)}
-            />
-            <FormControlLabel
-              control={<Checkbox color="error" />}
-              label={t("Rejected")}
-              checked={updatedUser?.rejected}
-              name={"rejected"}
-              onChange={(e) => handleCheckboxClick(e)}
-            />
-          </FormGroup>
-          <Typography sx={{ marginTop: "20px", fontWeight: "bold" }}>
-            {t("User Access Rights")}
-          </Typography>
-          <Divider />
-          <FormGroup sx={{ margin: "0 0 100px 0" }}>
-            {equipmentTypes.map((type) => (
-              <React.Fragment key={type}>
-                <FormControlLabel
-                  sx={{ margin: "20px 0 0 0" }}
-                  control={
-                    <Checkbox color="primary" id={`equipment-type-${type}`} />
-                  }
-                  checked={updatedUser.access?.split(",").includes(type)}
-                  label={type}
-                  name="type"
-                  onChange={(e) => handleCheckboxClick(e)}
-                />
-                {/* <Typography>{type}</Typography> */}
-                {/* <FormControlLabel
-                  disabled={isTypeSelected(type)}
-                  style={{ marginLeft: "20px" }}
-                  key={`select-all-${type}`}
-                  control={<Checkbox color="primary" />}
-                  label={`-- ${t("Select all")} --`}
-                  onChange={checkAllNames(type)}
-                  /> */}
-                <Divider />
-                {/* {getEquipmentNames(type).map((name) => (
-                  <FormControlLabel
-                    style={{ marginLeft: "20px" }}
-                    key={name}
-                    control={
-                      <Checkbox color="primary" id={`equipment-name-${name}`} />
-                    }
-                    checked={updatedUser.access?.split(",").includes(name)}
-                    label={name}
-                    name="name"
-                    onChange={(e) => handleCheckboxClick(e)}
-                  />
-                ))} */}
-              </React.Fragment>
-            ))}
-          </FormGroup>
-
-          <FmButton2 onClick={handleSaveUser}>{t("Save")}</FmButton2>
-          <FmButtonDanger onClick={handleDeleteUserClick}>
-            {t("Delete User")}
-          </FmButtonDanger>
-        </Box>
-      </Dialog>
       <Dialog open={deleteDialogOpen} onClose={handleCloseDeleteDialog}>
         <DialogTitle id="alert-dialog-title">{t("Delete user")}</DialogTitle>
         <DialogContent>
