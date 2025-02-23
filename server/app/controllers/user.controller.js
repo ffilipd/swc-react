@@ -1,7 +1,9 @@
+const { isAdmin } = require("../middleware/authJwt");
 const db = require("../models");
 const User = db.user;
 const Op = db.Sequelize.Op;
 const jwt = require('jsonwebtoken')
+const { userUpdateSanityCheck } = require('./helpers');
 
 // Create and Save a new User
 exports.create = async (req, res) => {
@@ -106,59 +108,53 @@ exports.findOne = (req, res) => {
 
 // Update a User by the id in the request
 exports.update = async (req, res) => {
-    const id = req.params.id;
+    const userToUpdateId = req.params.id; // user id to update
     const { last_login, ...updateData } = req.body; // Exclude last_login since it's different format than sequelize expects and not really important for the action
+    const userId = req.userId; // user id from token
+    const userUpdatableFields = ['email', 'name', 'language', 'password'];
+
 
     try {
-        // Check if the user to be updated is an admin
-        const user = await User.findOne({ where: { id: id } });
-        if (!user) {
-            return res.status(404).send({
-                message: `Cannot update user with id=${id}. Maybe User was not found!`
+        // if user is not admin, check if the user is trying to update their own data
+        const requestUser = await User.findOne({ where: { id: userId } });
+        if (userToUpdateId !== userId && requestUser.role !== 'admin') {
+            return res.status(403).send({
+                message: "Unauthorized!"
             });
         }
 
-        // Count the number of admin users
-        const adminCount = await User.count({ where: { role: 'admin' } });
-        const isOnlyAdmin = adminCount === 1 && user.role === 'admin';
-
-        // If the user is the only admin, prevent changes to 'active' and 'rejected'
-        if (isOnlyAdmin) {
-            if ('active' in updateData || 'rejected' in updateData) {
-                return res.status(400).send({
-                    message: "Cannot change 'active' or 'rejected' properties for the only admin."
-                });
+        // if user is not admin, check if the user is trying to update fields that are not allowed
+        if (requestUser.role !== 'admin') {
+            for (const key in updateData) {
+                if (!userUpdatableFields.includes(key)) {
+                    return res.status(403).send({
+                        message: `Unauthorized! Field ${key} cannot be updated.`
+                    });
+                }
             }
         }
 
-        // Prevent changing the role of the only admin
-        if (user.role === 'admin' && updateData.role && updateData.role !== 'admin') {
-            if (adminCount === 1) {
-                return res.status(400).send({
-                    message: "Cannot change the role of the only admin user."
-                });
-            }
-        }
-
-        // Exclude id and password from being updated
+        // Prevent id from being updated
         delete updateData.id;
-        delete updateData.password;
+
+        // Sanity checks
+        await userUpdateSanityCheck({ userToUpdateId: userToUpdateId, updateData: updateData, res: res });
 
         // Proceed to update the user
-        const num = await User.update(updateData, { where: { id: id } });
+        const num = await User.update(updateData, { where: { id: userToUpdateId } });
         if (num[0] === 1) {
             res.send({
                 message: "User successfully updated!"
             });
         } else {
             res.send({
-                message: `Cannot update user with id=${id}. Maybe User was not found or req.body was empty!`
+                message: `Cannot update user with id=${userToUpdateId}. Maybe User was not found or req.body was empty!`
             });
         }
     } catch (err) {
         console.log(err);
         res.status(500).send({
-            message: "Error updating User with id=" + id
+            message: "Error updating User with id=" + userToUpdateId
         });
     }
 };

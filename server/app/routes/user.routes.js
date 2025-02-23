@@ -21,7 +21,7 @@ module.exports = app => {
 
     // Update a user with id
     router.put("/:id",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken],
         users.update
     );
 
