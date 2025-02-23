@@ -43,6 +43,7 @@ import { FmButton2, FmButtonDanger, FmDeleteButton } from "../../utils/buttons";
 import { useEquipment } from "../../EquipmentContext";
 import { FMEquipmentTableCell } from "../../utils/custom-elements";
 import { StyledTableRow } from "../../utils/styled";
+import FmDialog from "../../utils/dialog";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -335,15 +336,7 @@ const EquipmentTable = (props: EquipmentProps) => {
             </Select>
           </FormControl>
         </Box>
-        <TableContainer
-          id="my-table-container"
-          sx={{
-            borderRadius: "10px",
-            boxShadow: "1px 2px 2px var(--color-secondary-gray)",
-            margin: "5px",
-            width: "unset",
-          }}
-        >
+        <TableContainer id="my-table-container">
           <Table size="small">
             <TableHead sx={{ backgroundColor: "var(--color-theme-dark)" }}>
               <StyledTableRow>
@@ -466,21 +459,16 @@ const EquipmentTable = (props: EquipmentProps) => {
           </Table>
         </TableContainer>
       </Box>
-      <Dialog open={deleteDialogOpen} onClose={handleCloseDeleteDialog}>
-        <DialogTitle id="alert-dialog-title">{t("Delete user")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-delete">
-            {/* {description} */}
-            {t("Are you sure you want to delete user ")}"{updatedUser.name}"
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} autoFocus>
-            {t("Cancel")}
-          </Button>
-          <Button onClick={handleDeleteUser}>{t("Delete")}</Button>
-        </DialogActions>
-      </Dialog>
+      {/* <FmDialog // user dialog
+        onDialogOpen={showUserDetails}
+        onDialogClose={closeUserDetailsDialog}
+        onHandleAction={handleSaveUser}
+        props={{
+          title: "User Details",
+          description: "User Details",
+          action: "Save",
+        }}
+      /> */}
     </React.Fragment>
   );
 };

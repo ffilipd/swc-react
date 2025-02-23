@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import "./mypage.css";
 import { useEffect, useState } from "react";
@@ -14,11 +6,9 @@ import UsersTable from "./usersTable";
 import { FMProfile } from "../../interfaces";
 import { getAllUsers } from "../../service/user.service";
 import FmDialog from "../../utils/dialog";
-import { useUser } from "../../UserContext";
 
 const AdminUsersComponent = () => {
   const { t } = useTranslation();
-  const { user } = useUser();
   const [users, setUsers] = useState<FMProfile[]>([]);
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
@@ -39,14 +29,6 @@ const AdminUsersComponent = () => {
     useState<boolean>(false);
   const handleCloseDeleteDialog = () => setDeleteBookingDialogOpen(false);
 
-  const [description, setDescription] = useState<string>("");
-  const [descriptionDialogOpen, setDescriptionDialogOpen] =
-    useState<boolean>(false);
-  const handleCloseDescriptionDialog = () => {
-    setDescriptionDialogOpen(false);
-    setDescription("");
-  };
-
   return (
     <>
       <Box id="my-page-header">{t("User Management")}</Box>
@@ -64,19 +46,6 @@ const AdminUsersComponent = () => {
           action: t("Delete"),
         }}
       />
-      {/* <Dialog
-        open={descriptionDialogOpen}
-        onClose={handleCloseDescriptionDialog}
-      >
-        <DialogTitle id="alert-dialog-title">
-          {t("Description of damage report")}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {description}
-          </DialogContentText>
-        </DialogContent>
-      </Dialog> */}
     </>
   );
 };

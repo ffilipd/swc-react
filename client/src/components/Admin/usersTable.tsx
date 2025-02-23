@@ -69,10 +69,6 @@ const UsersTable = (props: UsersProps) => {
   };
 
   const closeUserDetailsDialog = () => {
-    if (selectedUser !== updatedUser) {
-      alert!("Changes not saved");
-      return;
-    }
     setShowUserDetails(false);
     fetchUsers();
   };
@@ -88,10 +84,6 @@ const UsersTable = (props: UsersProps) => {
   useEffect(() => {
     setUpdatedUser(selectedUser);
   }, [selectedUser]);
-
-  // useEffect(() => {
-  //   setSelectedUser(updatedUser);
-  // }, [updatedUser]);
 
   const handleDeleteUser = async () => {
     const res = await deleteUser(selectedUser.id as keyof FMProfile);

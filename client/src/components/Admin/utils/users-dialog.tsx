@@ -16,6 +16,7 @@ import {
   Checkbox,
   SelectChangeEvent,
   Slide,
+  Tooltip,
 } from "@mui/material";
 import { t } from "i18next";
 import React from "react";
@@ -115,10 +116,15 @@ const UsersDialog = (props: UsersDialogProps) => {
           alert("An unknown error occurred");
         }
       }
+      closeUserDetailsDialog();
       return;
     }
     alert("No changes made");
+    closeUserDetailsDialog();
   };
+
+  const userChanged =
+    JSON.stringify(selectedUser) !== JSON.stringify(updatedUser);
 
   return (
     <Dialog
@@ -211,8 +217,9 @@ const UsersDialog = (props: UsersDialogProps) => {
             </React.Fragment>
           ))}
         </FormGroup>
-
-        <FmButton2 onClick={handleSaveUser}>{t("Save")}</FmButton2>
+        <FmButton2 disabled={!userChanged} onClick={handleSaveUser}>
+          {t("Save")}
+        </FmButton2>
         <FmButtonDanger onClick={handleDeleteUserClick}>
           {t("Delete User")}
         </FmButtonDanger>
