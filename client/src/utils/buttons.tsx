@@ -7,6 +7,7 @@ export const FmDeleteButton = styled(RiDeleteBin2Line)<IconBaseProps>(
   ({ theme }) => ({
     // color: "#960606",
     fontSize: "large",
+    fontFamily: "Oxanium",
     "&:hover": {
       color: "#de0404",
     },
@@ -19,6 +20,7 @@ export const FmButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#fff",
   padding: "8px",
   borderRadius: "0",
+  fontFamily: "Oxanium",
   "&.Mui-focused": {
     border: "none",
   },
@@ -40,6 +42,7 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
   margin: "5px",
   height: "46px",
   fontSize: "large",
+  fontFamily: "Oxanium",
   "&.Mui-focused": {
     border: "none",
   },
@@ -62,6 +65,7 @@ export const FmButtonDanger = styled(Button)<ButtonProps>(({ theme }) => ({
   margin: "5px",
   height: "46px",
   fontSize: "large",
+  fontFamily: "Oxanium",
   "&.Mui-focused": {
     border: "none",
   },
@@ -84,6 +88,7 @@ export const FmButtonSecondary = styled(Button)<ButtonProps>(({ theme }) => ({
   borderRadius: "100%",
   height: "66px",
   aspectRatio: 1 / 1,
+  fontFamily: "Oxanium",
   fontSize: "large",
   "&.Mui-focused": {
     border: "none",
@@ -107,6 +112,7 @@ export const FmButtonCube = styled(Button)<ButtonProps>(({ theme }) => ({
   borderRadius: "38px",
   aspectRatio: 1 / 1,
   fontSize: "large",
+  fontFamily: "Oxanium",
   "&.Mui-focused": {
     border: "none",
   },

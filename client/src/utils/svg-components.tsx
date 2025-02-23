@@ -160,12 +160,12 @@ export const FleetControlTextWhite = (): any => {
       <defs>
         <style>
           @import
-          url(https://fonts.googleapis.com/css2?family=Megrim%3Aital%2Cwght%400%2C400&amp;display=swap);
+          url(https://fonts.googleapis.com/css2?family=Oxanium%3Aital%2Cwght%400%2C400&amp;display=swap);
         </style>
       </defs>
       <text
         style={{
-          fontFamily: "Megrim",
+          fontFamily: "Oxanium",
           fill: "#fff",
           stroke: "#fff",
           fontSize: "63px",
