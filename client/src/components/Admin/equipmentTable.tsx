@@ -129,6 +129,9 @@ const EquipmentTable = (props: EquipmentProps) => {
   });
 
   const [equipment, setEquipment] = useState<Equipment[] | null>(null);
+  const [filteredEquipment, setFilteredEquipment] = useState<
+    Equipment[] | null
+  >(null);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
@@ -150,6 +153,7 @@ const EquipmentTable = (props: EquipmentProps) => {
             };
           });
           setEquipment(simplifiedEquipment);
+          setFilteredEquipment(simplifiedEquipment);
         }
       }
     }
@@ -300,6 +304,17 @@ const EquipmentTable = (props: EquipmentProps) => {
   ) => {
     const value = event.target.value as unknown as string[];
     setEquipmentFilter({ ...equipmentFilter, [item]: value });
+    const filtered =
+      equipment?.filter((equipment) => {
+        return (
+          (value.length === 0 || value.includes(String(equipment[item]))) &&
+          (equipmentFilter.name.length === 0 ||
+            equipmentFilter.name.includes(equipment.name) ||
+            equipmentFilter.type.length === 0 ||
+            equipmentFilter.type.includes(equipment.type))
+        );
+      }) || null;
+    setFilteredEquipment(filtered);
   };
 
   return (
@@ -438,13 +453,13 @@ const EquipmentTable = (props: EquipmentProps) => {
             </TableHead>
             <TableBody id="my-table-body">
               {!isMobile &&
-                equipment &&
+                filteredEquipment &&
                 (rowsPerPage > 0
-                  ? equipment.slice(
+                  ? filteredEquipment.slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
                     )
-                  : equipment
+                  : filteredEquipment
                 ).map((row, i) => (
                   <React.Fragment key={`${row.id}-${row.name}-${i}`}>
                     <StyledTableRow
