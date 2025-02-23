@@ -255,9 +255,6 @@ function Header() {
                     <MenuItem value={2} onClick={handleAdminItemClick}>
                       {t("Users")}
                     </MenuItem>
-                    <MenuItem value={3} onClick={handleAdminItemClick}>
-                      {t("Talkoo points")}
-                    </MenuItem>
                   </Menu>
                 </>
               )}

@@ -16,10 +16,9 @@ import {
   Checkbox,
   SelectChangeEvent,
   Slide,
-  Tooltip,
 } from "@mui/material";
 import { t } from "i18next";
-import React from "react";
+import React, { useEffect } from "react";
 import { FmButton2, FmButtonDanger } from "../../../utils/buttons";
 import { UserStaticCheckBoxes } from "./user-table";
 import { FMProfile, UserRole } from "../../../interfaces";
@@ -30,9 +29,7 @@ import { updateUserProfile } from "../../../service/user.service";
 interface UsersDialogProps {
   showUserDetails: boolean;
   closeUserDetailsDialog: () => void;
-  updatedUser: FMProfile;
   handleDeleteUserClick: () => void;
-  setUpdatedUser: (user: FMProfile) => void;
   setSelectedUser: (user: FMProfile) => void;
   user: FMProfile | null;
   equipmentTypes: string[];
@@ -54,9 +51,7 @@ const UsersDialog = (props: UsersDialogProps) => {
   const {
     showUserDetails,
     closeUserDetailsDialog,
-    updatedUser,
     handleDeleteUserClick,
-    setUpdatedUser,
     setSelectedUser,
     user,
     equipmentTypes,
@@ -68,19 +63,17 @@ const UsersDialog = (props: UsersDialogProps) => {
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
     if (name === "active" || name === "rejected") {
-      setUpdatedUser({ ...updatedUser, [name]: checked });
+      handleUpdateUser({ [name]: checked });
     }
     if (name === "type" || name === "name") {
       const item = (event.target as HTMLInputElement).id.split("-")[2];
       if (checked) {
-        setUpdatedUser({
-          ...updatedUser,
-          access: updatedUser.access + "," + item,
+        handleUpdateUser({
+          access: selectedUser.access + "," + item,
         });
       } else {
-        setUpdatedUser({
-          ...updatedUser,
-          access: updatedUser.access
+        handleUpdateUser({
+          access: selectedUser.access
             ?.replace(item, "")
             // Clean away any double commas left when removing a type
             .replace(/(^,)|(,$)/g, "")
@@ -94,20 +87,19 @@ const UsersDialog = (props: UsersDialogProps) => {
 
   const handleChangeUserRole = async (event: SelectChangeEvent<UserRole>) => {
     const selectedRole = event.target.value as UserRole;
-    const currentRole = updatedUser?.role;
+    const currentRole = selectedUser?.role;
     if (selectedRole === currentRole) return;
-    setUpdatedUser({ ...updatedUser, role: selectedRole });
+    handleUpdateUser({ role: selectedRole });
   };
 
-  const handleSaveUser = async () => {
+  const handleUpdateUser = async (props: Partial<FMProfile>) => {
     if (
-      updatedUser &&
-      updatedUser.id !== "12345" && // dummy id, without this check it might try to update a non existing user
-      JSON.stringify(updatedUser) !== JSON.stringify(selectedUser)
+      selectedUser &&
+      selectedUser.id !== "12345" // dummy id, without this check it might try to update a non existing user
     ) {
       try {
-        const res = await updateUserProfile(updatedUser);
-        setSelectedUser(updatedUser);
+        const res = await updateUserProfile({ ...props, id: selectedUser.id });
+        setSelectedUser({ ...selectedUser, ...props });
         alert(res.message);
       } catch (err) {
         if (err instanceof Error) {
@@ -116,15 +108,11 @@ const UsersDialog = (props: UsersDialogProps) => {
           alert("An unknown error occurred");
         }
       }
-      closeUserDetailsDialog();
       return;
     }
-    alert("No changes made");
-    closeUserDetailsDialog();
   };
 
-  const userChanged =
-    JSON.stringify(selectedUser) !== JSON.stringify(updatedUser);
+  // useEffect(())
 
   return (
     <Dialog
@@ -157,18 +145,18 @@ const UsersDialog = (props: UsersDialogProps) => {
         {/* NAME */}
         <FormControl variant="standard" className="show-user-dialog-input">
           <InputLabel htmlFor="user-name">{t("Full Name")}</InputLabel>
-          <Input id="user-name" value={updatedUser?.name} />
+          <Input id="user-name" value={selectedUser?.name} />
         </FormControl>
         <FormControl variant="standard" className="show-user-dialog-input">
           <InputLabel htmlFor="user-email">{t("Email")}</InputLabel>
-          <Input id="user-email" value={updatedUser?.email} />
+          <Input id="user-email" value={selectedUser?.email} />
         </FormControl>
         <FormControl variant="standard" className="show-user-dialog-input">
           <InputLabel htmlFor="user-role">{t("Role")}</InputLabel>
           <Select
             labelId="user-role"
             id="user-role-select"
-            value={updatedUser?.role}
+            value={selectedUser?.role}
             onChange={(e) => handleChangeUserRole(e)}
           >
             {userRoles.map((role) => (
@@ -181,7 +169,7 @@ const UsersDialog = (props: UsersDialogProps) => {
         <UserStaticCheckBoxes
           user={user ? user : null}
           onChange={handleCheckboxClick}
-          updatedUser={updatedUser}
+          selectedUser={selectedUser}
         />
         <Typography sx={{ marginTop: "20px", fontWeight: "bold" }}>
           {t("User Access Rights")}
@@ -195,7 +183,7 @@ const UsersDialog = (props: UsersDialogProps) => {
                 control={
                   <Checkbox color="primary" id={`equipment-type-${type}`} />
                 }
-                checked={updatedUser.access?.split(",").includes(type)}
+                checked={selectedUser.access?.split(",").includes(type)}
                 label={type}
                 name="type"
                 onChange={(e) => handleCheckboxClick(e)}
@@ -208,7 +196,7 @@ const UsersDialog = (props: UsersDialogProps) => {
                   control={
                     <Checkbox color="primary" id={`equipment-name-${name}`} />
                   }
-                  checked={updatedUser.access?.split(",").includes(name)}
+                  checked={selectedUser.access?.split(",").includes(name)}
                   label={name}
                   name="name"
                   onChange={(e) => handleCheckboxClick(e)}
@@ -217,9 +205,9 @@ const UsersDialog = (props: UsersDialogProps) => {
             </React.Fragment>
           ))}
         </FormGroup>
-        <FmButton2 disabled={!userChanged} onClick={handleSaveUser}>
+        {/* <FmButton2 disabled={!userChanged} onClick={handleSaveUser}>
           {t("Save")}
-        </FmButton2>
+        </FmButton2> */}
         <FmButtonDanger onClick={handleDeleteUserClick}>
           {t("Delete User")}
         </FmButtonDanger>

@@ -39,7 +39,6 @@ const UsersTable = (props: UsersProps) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
-  const [updatedUser, setUpdatedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
@@ -80,10 +79,6 @@ const UsersTable = (props: UsersProps) => {
   const handleDeleteUserClick = () => {
     setDeleteDialogOpen(true);
   };
-
-  useEffect(() => {
-    setUpdatedUser(selectedUser);
-  }, [selectedUser]);
 
   const handleDeleteUser = async () => {
     const res = await deleteUser(selectedUser.id as keyof FMProfile);
@@ -173,9 +168,7 @@ const UsersTable = (props: UsersProps) => {
       <UsersDialog
         showUserDetails={showUserDetails}
         closeUserDetailsDialog={closeUserDetailsDialog}
-        updatedUser={updatedUser}
         handleDeleteUserClick={handleDeleteUserClick}
-        setUpdatedUser={setUpdatedUser}
         setSelectedUser={setSelectedUser}
         user={user ?? null}
         userRoles={userRoles}
@@ -190,7 +183,9 @@ const UsersTable = (props: UsersProps) => {
         props={{
           title: t("Delete user"),
           description:
-            t("Are you sure you want to delete user ") + updatedUser.name + "?",
+            t("Are you sure you want to delete user ") +
+            selectedUser.name +
+            "?",
           action: t("Delete"),
         }}
       />

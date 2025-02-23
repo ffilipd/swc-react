@@ -110,11 +110,11 @@ const StatusChip: React.FC<{
 interface UserStaticCheckBoxesProps {
   user: FMProfile | null;
   onChange: (e: React.SyntheticEvent<Element, Event>) => void;
-  updatedUser?: FMProfile;
+  selectedUser?: FMProfile;
 }
 
 export const UserStaticCheckBoxes = (props: UserStaticCheckBoxesProps) => {
-  const { user, updatedUser, onChange } = props;
+  const { user, selectedUser, onChange } = props;
   const { t } = useTranslation();
   const staticItems = [
     { label: "Active", color: "success", key: "active" },
@@ -130,7 +130,9 @@ export const UserStaticCheckBoxes = (props: UserStaticCheckBoxesProps) => {
             label={t(item.label)}
             name={item.key}
             checked={
-              !!(updatedUser ? updatedUser[item.key as keyof FMProfile] : false)
+              !!(selectedUser
+                ? selectedUser[item.key as keyof FMProfile]
+                : false)
             }
             key={i}
             disabled={user?.role !== "admin"}
