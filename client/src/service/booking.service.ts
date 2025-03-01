@@ -18,13 +18,13 @@ export const getBookings = async (_params?: BookingSearchParams): Promise<Bookin
     }
 }
 
-export const addBooking = async (newBooking: NewBooking): Promise<void> => {
+export const addBooking = async (newBooking: NewBooking): Promise<any> => {
     const URL: string = base_URL + API_ENDPOINTS.BOOKINGS;
     try {
         const res = await axios.post(URL, { ...newBooking }, { headers: authHeader() })
         return res.data.message;
     } catch (error) {
-        throw new Error('Error adding new booking: ' + error)
+        return ('Error adding new booking: ' + error);
     }
 }
 

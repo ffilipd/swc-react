@@ -35,6 +35,7 @@ import { Booking, NewBooking } from "../../interfaces";
 import { useUser } from "../../UserContext";
 import MobileBooking from "./mobile";
 import FmCalendar from "../../utils/calendar/calendar";
+import { useAlert } from "../../AlertContext";
 
 dayjs.extend(customParseFormat);
 const roundedTime = (time: Dayjs): Dayjs => {
@@ -47,6 +48,7 @@ const BookingComponent = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const accessTypes = user?.access?.split(",") || [];
+  const { showAlert } = useAlert();
   // const equipmentTypes = getEquipmentTypes();
   const labels = {
     equipment: {
@@ -174,11 +176,17 @@ const BookingComponent = () => {
     };
     try {
       const res = await addBooking(newBooking);
-      alert(res);
-      fetchBookings();
-      setSelectedEquipment({ ...selectedEquipment, number: "" });
+      if (res) {
+        showAlert({ severity: "success", message: res });
+        fetchBookings();
+        setSelectedEquipment({ ...selectedEquipment, number: "" });
+      }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        showAlert({ severity: "error", message: error.message });
+      } else {
+        showAlert({ severity: "error", message: String(error) });
+      }
     }
   };
 

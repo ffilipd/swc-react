@@ -39,7 +39,7 @@ export const loginWithCredentials = async (credentials: LoginCredentials): Promi
         const response = await axios.post(URL, credentials);
         return response.data;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) alert(error.response.data.message)
+        if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 }
 

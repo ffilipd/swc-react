@@ -9,6 +9,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Slide,
   Snackbar,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -30,6 +31,7 @@ import MobileDrawer from "./MobileDrawer";
 import i18next from "i18next";
 import { useUser } from "../../UserContext";
 import { useAlert } from "../../AlertContext";
+import { useLanguage } from "../../LanguageContext";
 
 function Header() {
   const languages = {
@@ -38,9 +40,11 @@ function Header() {
     fi: "Suomi",
   };
 
-  const [language, setLanguage] = useState<string>("en");
+  // const [language, setLanguage] = useState<string>("en");
   const { user, logOut, googleLogin } = useUser();
   const { t } = useTranslation();
+  const { alertProps, alertVisible } = useAlert();
+  const { language, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [userMenuAnchorEl, setUserMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -48,14 +52,15 @@ function Header() {
     React.useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
+  const { showAlert } = useAlert();
   window.addEventListener("resize", () => {
     setIsMobile(window.innerWidth <= 600);
   });
 
-  // Update page when language changes
-  useEffect(() => {
-    i18next.changeLanguage(language);
-  }, [language]);
+  // // Update page when language changes
+  // useEffect(() => {
+  //   i18next.changeLanguage(language);
+  // }, [language]);
 
   useEffect(() => {
     if (user?.language) {
@@ -69,6 +74,7 @@ function Header() {
 
   const updateLanguage = (newLanguage: string) => {
     setLanguage(newLanguage);
+    i18next.changeLanguage(newLanguage);
   };
   function handleAccountMenuClose(e: any) {
     /* eslint-disable */
@@ -132,8 +138,15 @@ function Header() {
   };
 
   const handleMenuItemClick = (clickedItem: any) => {
+    console.log("clickedItem", clickedItem);
     setDrawerOpen(false);
-    if (clickedItem === "Home") navigate("/");
+    if (clickedItem === "Home") {
+      showAlert({
+        severity: "info",
+        message: "Home button clicked!",
+      });
+    }
+    // if (clickedItem === "Home") navigate("/");
     if (clickedItem === "Book equipment") navigate("/booking");
     if (clickedItem === "Report") navigate("/report");
     if (clickedItem === "My Bookings") navigate("/mybookings");
@@ -179,13 +192,29 @@ function Header() {
     };
   }
 
-  const { alertVisible, alertProps } = useAlert();
-
   return (
     <Box id="header-wrapper">
-      <Snackbar open={alertVisible} autoHideDuration={3000} onClose={() => {}}>
-        <Alert severity={alertProps.severity}>{alertProps.message}</Alert>
-      </Snackbar>
+      <Slide
+        direction="down"
+        in={alertVisible}
+        mountOnEnter
+        unmountOnExit
+        easing={"exit: theme.transitions.easing.sharp"}
+      >
+        <Alert
+          severity={alertProps.severity}
+          sx={{
+            margin: "0",
+            position: "absolute",
+            top: "120px",
+            left: "0",
+            width: "100%",
+            overflow: "ease",
+          }}
+        >
+          {alertProps.message}
+        </Alert>
+      </Slide>
       {isMobile === false && (
         <Box id={"fm-logo"}>
           <FMLogoWhite />
@@ -219,7 +248,9 @@ function Header() {
             aria-label="header button group"
           >
             <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
-              <FmButton onClick={() => navigate("/")}>{t("Home")}</FmButton>
+              <FmButton onClick={() => handleMenuItemClick("Home")}>
+                {t("Home")}
+              </FmButton>
               <FmButton onClick={() => navigate("/report")}>
                 {t("Report")}
               </FmButton>

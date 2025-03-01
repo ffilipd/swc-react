@@ -11,6 +11,7 @@ import config from "./oauth-config";
 import { UserProvider } from "./UserContext";
 import { EquipmentProvider } from "./EquipmentContext";
 import { AlertProvider } from "./AlertContext";
+import { LanguageProvider } from "./LanguageContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") ?? new Element()
@@ -20,15 +21,17 @@ root.render(
   <GoogleOAuthProvider clientId={config.googleOAuthClientId}>
     <UserProvider>
       <EquipmentProvider>
-        <Router>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-            <React.StrictMode>
-              <AlertProvider>
-                <App />
-              </AlertProvider>
-            </React.StrictMode>
-          </I18nextProvider>
-        </Router>
+        <LanguageProvider>
+          <Router>
+            <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+              <React.StrictMode>
+                <AlertProvider>
+                  <App />
+                </AlertProvider>
+              </React.StrictMode>
+            </I18nextProvider>
+          </Router>
+        </LanguageProvider>
       </EquipmentProvider>
     </UserProvider>
   </GoogleOAuthProvider>
