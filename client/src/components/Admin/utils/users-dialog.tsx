@@ -28,8 +28,6 @@ import { FMProfile, UserRole } from "../../../interfaces";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile } from "../../../service/user.service";
-import { exit } from "process";
-import { set } from "date-fns";
 
 interface UsersDialogProps {
   showUserDetails: boolean;
@@ -64,6 +62,7 @@ const UsersDialog = (props: UsersDialogProps) => {
     selectedUser,
   } = props;
   const [alertVisible, setAlertVisible] = React.useState(false);
+
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
     if (name === "active" || name === "rejected") {

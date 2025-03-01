@@ -8,6 +8,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Slide,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -27,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import MobileDrawer from "./MobileDrawer";
 import i18next from "i18next";
 import { useUser } from "../../UserContext";
-
+import FmAlert from "./alert";
 function Header() {
   const languages = {
     en: "English",

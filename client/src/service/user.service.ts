@@ -55,11 +55,11 @@ export const createUser = async (googleProfile: Profile): Promise<FMProfile | an
 
 // UPDATE USER PROFILE
 export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<any> => {
-    const prefillParams: (keyof FMProfile)[] = ['language', 'role', 'active'];
-    for (const key of prefillParams) {
-        if (!profile[key] && key === 'language') profile[key] = 'en';
-        if (!profile[key] && key === 'role') profile[key] = 'user';
-    }
+    // const prefillParams: (keyof FMProfile)[] = ['language', 'role', 'active'];
+    // for (const key of prefillParams) {
+    //     if (!profile[key] && key === 'language') profile[key] = 'en';
+    //     if (!profile[key] && key === 'role') profile[key] = 'user';
+    // }
 
     const request = await buildRequestConfig({ method: 'PUT', data: profile, id: profile.id })
     try {
