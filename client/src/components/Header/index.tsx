@@ -248,9 +248,7 @@ function Header() {
             aria-label="header button group"
           >
             <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
-              <FmButton onClick={() => handleMenuItemClick("Home")}>
-                {t("Home")}
-              </FmButton>
+              <FmButton onClick={() => navigate("/")}>{t("Home")}</FmButton>
               <FmButton onClick={() => navigate("/report")}>
                 {t("Report")}
               </FmButton>
