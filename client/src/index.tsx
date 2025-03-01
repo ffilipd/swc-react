@@ -10,6 +10,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import config from "./oauth-config";
 import { UserProvider } from "./UserContext";
 import { EquipmentProvider } from "./EquipmentContext";
+import { AlertProvider } from "./AlertContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") ?? new Element()
@@ -22,7 +23,9 @@ root.render(
         <Router>
           <I18nextProvider i18n={i18n} defaultNS={"translation"}>
             <React.StrictMode>
-              <App />
+              <AlertProvider>
+                <App />
+              </AlertProvider>
             </React.StrictMode>
           </I18nextProvider>
         </Router>

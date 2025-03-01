@@ -18,6 +18,7 @@ import {
   Slide,
   Alert,
   AlertProps,
+  Snackbar,
 } from "@mui/material";
 import { t, use } from "i18next";
 import React, { useEffect } from "react";
@@ -30,6 +31,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import { updateUserProfile } from "../../../service/user.service";
 import { exit } from "process";
 import { set } from "date-fns";
+import { useAlert } from "../../../AlertContext";
 
 interface UsersDialogProps {
   showUserDetails: boolean;
@@ -63,7 +65,7 @@ const UsersDialog = (props: UsersDialogProps) => {
     userRoles,
     selectedUser,
   } = props;
-  const [alertVisible, setAlertVisible] = React.useState(false);
+  // const [alertVisible, setAlertVisible] = React.useState(false);
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
     if (name === "active" || name === "rejected") {
@@ -104,11 +106,11 @@ const UsersDialog = (props: UsersDialogProps) => {
       try {
         const res = await updateUserProfile({ ...props, id: selectedUser.id });
         setSelectedUser({ ...selectedUser, ...props });
-        setAlertProps({
+        showAlert({
           severity: "success",
           message: res.message,
         });
-        setAlertVisible(true);
+        // setAlertVisible(true);
       } catch (err) {
         if (err instanceof Error) {
           alert(err.message);
@@ -120,18 +122,20 @@ const UsersDialog = (props: UsersDialogProps) => {
     }
   };
 
-  const [alertProps, setAlertProps] = React.useState({
-    severity: "" as AlertProps["severity"],
-    message: "" as string,
-  });
+  // const [alertProps, setAlertProps] = React.useState({
+  //   severity: "" as AlertProps["severity"],
+  //   message: "" as string,
+  // });
 
-  useEffect(() => {
-    if (alertVisible) {
-      setTimeout(() => {
-        setAlertVisible(false);
-      }, 3000);
-    }
-  }, [alertVisible]);
+  // useEffect(() => {
+  //   if (alertVisible) {
+  //     setTimeout(() => {
+  //       setAlertVisible(false);
+  //     }, 3000);
+  //   }
+  // }, [alertVisible]);
+
+  const {showAlert, alertProps, alertVisible} = useAlert();
 
   return (
     <Dialog
@@ -166,6 +170,15 @@ const UsersDialog = (props: UsersDialogProps) => {
           </Typography>
         </Toolbar>
       </AppBar>
+      {/* <Snackbar open={alertVisible} autoHideDuration={3000} onClose={() => { }}>
+        <Alert sx={{
+          margin: "0",
+          position: "absolute",
+          top: "65px",
+          width: "100%",
+          overflow: "ease",
+        }} severity={alertProps.severity}>{alertProps.message}</Alert>
+      </Snackbar> */}
       <Slide
         direction="down"
         in={alertVisible}
