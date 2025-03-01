@@ -10,6 +10,10 @@ import {
   Alert,
   AlertProps,
   Snackbar,
+  ListItemText,
+  List,
+  ListSubheader,
+  ListItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -157,7 +161,45 @@ const AccountInfoComponent = () => {
             {t("save")}
           </FmButton2> */}
         </Box>
-        <Box id="account-info-box-2">USER ACCESS DATA</Box>
+        <Box id="account-info-box-2">
+          <List
+            dense
+            sx={{ width: "100%", maxWidth: 360 }}
+            subheader={
+              <ListSubheader sx={{ background: "none", padding: "0" }}>
+                {t("Access")}
+              </ListSubheader>
+            }
+          >
+            {equipment &&
+              Object.values(equipment)
+                .filter(
+                  (itemObj) =>
+                    user && user.access.split(",").includes(itemObj.typeName)
+                )
+                .map((itemObj) => (
+                  <React.Fragment key={itemObj.typeName}>
+                    <ListItem
+                      sx={{ padding: "0", textDecoration: "underline" }}
+                    >
+                      <ListItemText primary={itemObj.typeName} />
+                    </ListItem>
+                    {itemObj.names
+                      .filter((nameObj: { name: string }) =>
+                        user?.access.split(",").includes(nameObj.name)
+                      )
+                      .map((nameObj: { name: string }) => (
+                        <ListItem
+                          key={nameObj.name}
+                          sx={{ padding: "0", pl: 4 }}
+                        >
+                          <ListItemText primary={nameObj.name} />
+                        </ListItem>
+                      ))}
+                  </React.Fragment>
+                ))}
+          </List>
+        </Box>
       </Box>
     </React.Fragment>
   );
