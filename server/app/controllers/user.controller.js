@@ -118,24 +118,23 @@ exports.update = async (req, res) => {
         // if user is not admin, check if the user is trying to update their own data
         const requestUser = await User.findOne({ where: { id: userId } });
         if (userToUpdateId !== userId && requestUser.role !== 'admin') {
-            return res.status(403).send({
+            res.status(403).send({
                 message: "Unauthorized!"
             });
+            return;
         }
 
         // if user is not admin, check if the user is trying to update fields that are not allowed
         if (requestUser.role !== 'admin') {
             for (const key in updateData) {
-                if (!userUpdatableFields.includes(key)) {
-                    return res.status(403).send({
+                if (key !== 'id' && !userUpdatableFields.includes(key)) {
+                    res.status(403).send({
                         message: `Unauthorized! Field ${key} cannot be updated.`
                     });
+                    return;
                 }
             }
         }
-
-        // Prevent id from being updated
-        delete updateData.id;
 
         // Sanity checks
         await userUpdateSanityCheck({ userToUpdateId: userToUpdateId, updateData: updateData, res: res });

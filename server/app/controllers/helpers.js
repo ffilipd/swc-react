@@ -7,9 +7,10 @@ exports.userUpdateSanityCheck = async (props) => {
         // Check if the user to be updated is an admin
         const user = await User.findOne({ where: { id: userToUpdateId } });
         if (!user) {
-            return res.status(404).send({
+            res.status(404).send({
                 message: `Cannot update user with id=${id}. Maybe User was not found!`
             });
+            return;
         }
 
         // Count the number of admin users
@@ -19,18 +20,20 @@ exports.userUpdateSanityCheck = async (props) => {
         // If the user is the only admin, prevent changes to 'active' and 'rejected'
         if (isOnlyAdmin) {
             if ('active' in updateData || 'rejected' in updateData) {
-                return res.status(400).send({
+                res.status(400).send({
                     message: "Cannot change 'active' or 'rejected' properties for the only admin."
                 });
+                return;
             }
         }
 
         // Prevent changing the role of the only admin
         if (user.role === 'admin' && updateData.role && updateData.role !== 'admin') {
             if (adminCount === 1) {
-                return res.status(400).send({
+                res.status(400).send({
                     message: "Cannot change the role of the only admin user."
                 });
+                return;
             }
         }
     } catch (err) {
