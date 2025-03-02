@@ -51,7 +51,7 @@ const UsersTable = (props: UsersProps) => {
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-  const [filteredUsers, setFilteredUsers] = useState<FMProfile[]>(users);
+  const [filteredUsers, setFilteredUsers] = useState<FMProfile[]>([]);
   const [usersFilter, setUsersFilter] = useState<{
     role: string[];
     search: string;
@@ -60,11 +60,15 @@ const UsersTable = (props: UsersProps) => {
     search: "",
   });
 
+  useEffect(() => {
+    setFilteredUsers(users);
+  }, [users]);
+
   // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0
-  //     ? Math.max(0, (1 + page) * rowsPerPage - (users ? users.length : 0))
-  //     : 0;
+  const emptyRows =
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - (users ? users.length : 0))
+      : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -263,6 +267,11 @@ const UsersTable = (props: UsersProps) => {
                   </React.Fragment>
                 ))}
             </TableBody>
+            {emptyRows > 0 && (
+              <StyledTableRow style={{ height: 44 * emptyRows }}>
+                <StyledTableCell colSpan={6} />
+              </StyledTableRow>
+            )}
             <TableFooter>
               <TableRow>
                 <TablePagination
