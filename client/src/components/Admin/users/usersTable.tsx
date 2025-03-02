@@ -8,6 +8,14 @@ import {
   TablePagination,
   TableRow,
   TableCellProps,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Autocomplete,
+  TextField,
+  Icon,
+  SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { FMProfile, UserRole } from "../../../interfaces";
@@ -23,6 +31,8 @@ import { StyledTableRow } from "../../../utils/styled";
 import { useUser } from "../../../UserContext";
 import { deleteUser } from "../../../service/user.service";
 import UsersDialog from "./utils/users-dialog";
+import { RiSearchLine } from "react-icons/ri";
+import { set } from "date-fns";
 
 interface UsersProps {
   users: FMProfile[];
@@ -41,6 +51,14 @@ const UsersTable = (props: UsersProps) => {
   const [selectedUser, setSelectedUser] = useState<FMProfile>(dummyUser);
   const userRoles: UserRole[] = ["admin", "user", "moderator"];
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [filteredUsers, setFilteredUsers] = useState<FMProfile[]>(users);
+  const [usersFilter, setUsersFilter] = useState<{
+    role: string[];
+    search: string;
+  }>({
+    role: [],
+    search: "",
+  });
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
@@ -97,8 +115,116 @@ const UsersTable = (props: UsersProps) => {
     { text: "", align: "right" },
   ];
 
+  const roles = ["admin", "user", "moderator"];
+
+  const onFreeSearch = (value: string | null) => {
+    const results = users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(value?.toLowerCase() ?? "") ||
+        user.email.toLowerCase().includes(value?.toLowerCase() ?? "")
+    );
+    setFilteredUsers(results);
+  };
+
+  const onFilterByRole = (e: SelectChangeEvent<string[]>) => {
+    const value = e.target.value as string[];
+    if (value.length === 0) {
+      setFilteredUsers(users);
+      setUsersFilter({ ...usersFilter, role: value });
+      return;
+    }
+    setUsersFilter({ ...usersFilter, role: value });
+    const results = users.filter((user) => value.includes(user.role));
+    setFilteredUsers(results);
+  };
+
   return (
     <React.Fragment>
+      <Box
+        id="equipment-filter-element"
+        sx={{
+          display: "grid",
+          flexDirection: "row",
+          gridTemplateColumns: "3fr 3fr",
+          marginBottom: "15px",
+          justifyContent: "bottom",
+          alignItems: "center",
+          gap: "30px",
+          width: "100%",
+        }}
+      >
+        <FormControl variant="standard" className="name-filter-form">
+          <Autocomplete
+            freeSolo
+            options={users
+              .map((option) => option.name)
+              .concat(users.map((option) => option.email))
+              .sort()}
+            autoSelect
+            onChange={(e, value) => onFreeSearch(value)}
+            renderInput={(params) => (
+              <>
+                <TextField
+                  sx={{
+                    borderRadius: "20px",
+                    border: "1px solid var(--color-secondary-gray)",
+                    padding: "2px 0 0 10px",
+                    boxShadow: "1px 2px 2px var(--color-secondary-gray)",
+                    width: "100%",
+                  }}
+                  {...params}
+                  // label={"Free search..."}
+                  variant="standard"
+                  InputProps={{
+                    ...params.InputProps,
+                    disableUnderline: true,
+                    type: "search",
+                    placeholder: "Free search...",
+                    startAdornment: (
+                      <Icon
+                        color="action"
+                        sx={{ marginLeft: "0", marginRight: "5px" }}
+                      >
+                        <RiSearchLine />
+                      </Icon>
+                    ),
+                  }}
+                />
+              </>
+            )}
+          />
+        </FormControl>
+        <FormControl
+          variant="standard"
+          sx={{ marginBottom: "14px" }}
+          className="role-filter-form"
+        >
+          <InputLabel htmlFor="role-filter" sx={{ padding: "2px 0 0 15px" }}>
+            {t("Filter by role...")}
+          </InputLabel>
+          <Select
+            sx={{
+              borderRadius: "20px",
+              border: "1px solid var(--color-secondary-gray)",
+              padding: "2px 0 0 10px",
+              boxShadow: "1px 2px 2px var(--color-secondary-gray)",
+            }}
+            labelId="role-filter"
+            id="role-filter-select"
+            multiple
+            disableUnderline
+            value={usersFilter.role}
+            onChange={(e) => onFilterByRole(e)}
+            renderValue={(selected) => selected.join(", ")}
+          >
+            {roles.map((role) => (
+              <MenuItem key={role} value={role}>
+                {role}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
       <Box id="my-page-table-wrapper">
         <TableContainer id="my-table-container">
           <Table>
@@ -121,11 +247,11 @@ const UsersTable = (props: UsersProps) => {
             <TableBody id="my-table-body">
               {!isMobile &&
                 (rowsPerPage > 0
-                  ? users?.slice(
+                  ? filteredUsers?.slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
                     )
-                  : users
+                  : filteredUsers
                 ).map((row, i) => (
                   <React.Fragment key={`${row.id}-${row.name}-${i}`}>
                     <UserTableRow
@@ -145,7 +271,7 @@ const UsersTable = (props: UsersProps) => {
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                   colSpan={11}
                   width={"100%"}
-                  count={users ? users.length : 0}
+                  count={filteredUsers ? filteredUsers.length : 0}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
