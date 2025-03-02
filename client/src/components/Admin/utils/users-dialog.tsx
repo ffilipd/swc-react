@@ -17,6 +17,8 @@ import {
   SelectChangeEvent,
   Slide,
   Alert,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { t, use } from "i18next";
 import React, { useEffect } from "react";
@@ -61,7 +63,8 @@ const UsersDialog = (props: UsersDialogProps) => {
     userRoles,
     selectedUser,
   } = props;
-  // const [alertVisible, setAlertVisible] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const handleCheckboxClick = (event: React.SyntheticEvent<Element, Event>) => {
     const { name, checked } = event.target as HTMLInputElement;
     if (name === "active" || name === "rejected") {
@@ -122,9 +125,10 @@ const UsersDialog = (props: UsersDialogProps) => {
 
   return (
     <Dialog
-      fullScreen
+      fullScreen={fullScreen}
+      fullWidth
       open={showUserDetails}
-      // onClose={handleEditEquipmentDialogClose}
+      onClose={closeUserDetailsDialog}
       TransitionComponent={Transition}
     >
       <AppBar

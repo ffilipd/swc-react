@@ -1,10 +1,6 @@
 import {
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Divider,
   FormControl,
   InputLabel,
@@ -231,10 +227,6 @@ const BookingComponent = () => {
                     value={selectedDate}
                     onChange={(newDate) => setSelectedDate(newDate)}
                   />
-                  {/* <DateCalendar
-                    value={selectedDate}
-                    onChange={(newDate) => setSelectedDate(newDate)}
-                  /> */}
                 </>
               )}
             </LocalizationProvider>
@@ -283,7 +275,7 @@ const BookingComponent = () => {
             </LocalizationProvider>
           </Box>
 
-          {isMobile ? (
+          {false ? (
             <MobileBooking />
           ) : (
             <Box id="select-box">

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useEquipment } from "../../EquipmentContext";
 
 const MobileBooking = () => {
-  const { equipment } = useEquipment();
+  const { equipment, equipmentTypes, getEquipmentNames } = useEquipment();
+
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
     equipmentNameId: string;
@@ -13,8 +14,9 @@ const MobileBooking = () => {
 
   const [selectedEquipmentString, setSelectedEquipmentString] =
     useState<string>("");
-
-  const accessablEquipmentNames = ["Elliott 6M", "J/70", "RS Toura"];
+  const [availableEquipmentNames, setAvailableEquipmentNames] = useState<any>(
+    []
+  );
 
   const [expanded, setExpanded] = useState(-1);
 
@@ -24,6 +26,12 @@ const MobileBooking = () => {
 
   const handleMobileSelectEquipmentName = (name: string, index: number) => {
     setSelectedEquipmentString(name);
+    handleExpand(index);
+  };
+  const handleMobileSelectEquipmentType = (type: string, index: number) => {
+    setSelectedEquipment({ ...selectedEquipment, type });
+    setSelectedEquipmentString(type);
+    setAvailableEquipmentNames(getEquipmentNames(type));
     handleExpand(index);
   };
 
@@ -36,7 +44,7 @@ const MobileBooking = () => {
 
   return (
     <Box>
-      {accessablEquipmentNames.map((item: string, index: number) => (
+      {equipmentTypes.map((item: string, index: number) => (
         <Box key={`${item}-${index}`}>
           <FmButton2
             sx={{
@@ -45,7 +53,7 @@ const MobileBooking = () => {
               display: "flex",
               backgroundColor: expanded === index ? "#053654" : "",
             }}
-            onClick={() => handleMobileSelectEquipmentName(item, index)}
+            onClick={() => handleMobileSelectEquipmentType(item, index)}
           >
             {item}
           </FmButton2>
@@ -58,16 +66,20 @@ const MobileBooking = () => {
                 width: "100%",
               }}
             >
-              {[1, 2, 3, 4, 5, 6].map((num) => (
-                <FmButtonSecondary
-                  key={num}
+              {availableEquipmentNames.map((item: string, index: number) => (
+                <FmButton2
+                  key={`${item}-${index}`}
                   sx={{
-                    margin: "10px 10px 20px 10px",
+                    width: "80%",
+                    height: "30px",
+                    marginBottom: "15px",
+                    display: "flex",
+                    backgroundColor: expanded === index ? "#053654" : "",
                   }}
-                  onClick={() => handleMobileSelectEquipmentNumber(num, index)}
+                  onClick={() => handleMobileSelectEquipmentName(item, index)}
                 >
-                  {num}
-                </FmButtonSecondary>
+                  {item}
+                </FmButton2>
               ))}
             </Box>
           )}

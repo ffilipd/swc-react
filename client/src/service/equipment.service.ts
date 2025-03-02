@@ -59,7 +59,7 @@ export async function getEquipmentId(equipment?: EquipmentIdSearchParams): Promi
     }
 };
 
-export async function addNewEquipment(NewEquipment: NewEquipment): Promise<void> {
+export async function addNewEquipment(NewEquipment: NewEquipment): Promise<any> {
     const URL: string = base_URL + API_ENDPONTS.EQUIPMENT;
     try {
         const res = await axios.post(URL, { ...NewEquipment }, { headers: authHeader() })

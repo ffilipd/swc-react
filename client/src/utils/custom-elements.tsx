@@ -65,7 +65,7 @@ export const FMUserTableCell = styled(TableCell)<StyledTableCellProps>(
     [`&.${tableCellClasses.root}`]: {
       backgroundColor:
         status === "active"
-          ? "lightgreen"
+          ? "green"
           : status === "inactive"
           ? "orange"
           : status === "rejected"

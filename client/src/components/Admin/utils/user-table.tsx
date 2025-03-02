@@ -1,4 +1,5 @@
 import { FMProfile } from "../../../interfaces";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import {
   Checkbox,
   Chip,
@@ -8,7 +9,6 @@ import {
   CheckboxProps,
 } from "@mui/material";
 import { FMUserTableCell as StyledTableCell } from "../../../utils/custom-elements";
-import { FmDeleteButton } from "../../../utils/buttons";
 import { StyledTableRow } from "../../../utils/styled";
 import { useTranslation } from "react-i18next";
 
@@ -66,7 +66,8 @@ export const UserTableRow = (props: UserTableRowProps) => {
         );
       })}
       <StyledTableCell align="right" className="delete-icon-cell">
-        <FmDeleteButton
+        <DeleteOutlineOutlinedIcon
+          sx={{ cursor: "pointer", "&:hover": { color: "red", scale: 1.2 } }}
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -85,7 +86,7 @@ const StatusChip: React.FC<{
   const getColor = (status: string) => {
     switch (status) {
       case "Active":
-        return "lightgreen";
+        return "green";
       case "Inactive":
         return "orange";
       case "Rejected":

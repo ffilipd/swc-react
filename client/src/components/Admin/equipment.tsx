@@ -1,4 +1,5 @@
 import {
+  Alert,
   AppBar,
   Box,
   Button,
@@ -15,6 +16,8 @@ import {
   TextField,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
@@ -33,6 +36,7 @@ import {
 import { useEquipment } from "../../EquipmentContext";
 import { useUser } from "../../UserContext";
 import EquipmentTable from "./equipmentTable";
+import { useAlert } from "../../AlertContext";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -46,6 +50,10 @@ const Transition = React.forwardRef(function Transition(
 const AdminEquipmentComponent = () => {
   const { t } = useTranslation();
   const { user } = useUser();
+  const { showAlert, alertProps, alertVisible } = useAlert();
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const labels = {
     equipment: {
       type: "*" + i18next.t("Equipment type"),
@@ -173,7 +181,7 @@ const AdminEquipmentComponent = () => {
     }
     try {
       const res = await addNewEquipment(equipmentToSave);
-      alert(res);
+      showAlert({ severity: "success", message: res });
       setNewEquipment({
         ...newEquipment,
         type: "",
@@ -185,11 +193,15 @@ const AdminEquipmentComponent = () => {
     }
   };
 
-  const handleRemoveEquipmentClick = async () => {
+  const handleRemoveEquipmentClick = async (id?: string) => {
     // Get id for selected equipment
-    const id = await findEquipmentId(equipmentToEdit);
-    if (id) {
-      const res = await removeEquipment(id);
+    let equipmentIdToDelete = id || (await findEquipmentId(equipmentToEdit));
+    if (!equipmentIdToDelete) {
+      showAlert({ severity: "error", message: t("Equipment ID not found") });
+      return;
+    }
+    if (equipmentIdToDelete) {
+      const res = await removeEquipment(equipmentIdToDelete);
       alert(res);
       handleEditEquipmentDialogClose();
       window.location.reload();
@@ -206,6 +218,7 @@ const AdminEquipmentComponent = () => {
           isMobile={isMobile}
           getEquipment={getEquipment}
           equipment={Array.isArray(equipment) ? equipment : []}
+          handleRemoveEquipmentClick={handleRemoveEquipmentClick}
         />
       </Box>
 
@@ -224,7 +237,8 @@ const AdminEquipmentComponent = () => {
       {/***************** ADD EQUIPMENT *****************/}
       {/*************************************************/}
       <Dialog
-        fullScreen
+        fullScreen={fullScreen}
+        fullWidth
         open={addEquipmentDialogOpen}
         onClose={handleAddEquipmentDialogClose}
         TransitionComponent={Transition}
@@ -245,7 +259,7 @@ const AdminEquipmentComponent = () => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {t("Add new")}
+              {t("Add new equipment")}
             </Typography>
             <Button
               autoFocus
@@ -256,6 +270,26 @@ const AdminEquipmentComponent = () => {
             </Button>
           </Toolbar>
         </AppBar>
+        <Slide
+          direction="down"
+          in={alertVisible}
+          mountOnEnter
+          unmountOnExit
+          easing={"exit: theme.transitions.easing.sharp"}
+        >
+          <Alert
+            severity={alertProps.severity}
+            sx={{
+              margin: "0",
+              position: "absolute",
+              top: "65px",
+              width: "100%",
+              overflow: "ease",
+            }}
+          >
+            {alertProps.message}
+          </Alert>
+        </Slide>
         <Box id="admin-equipment-select-wrapper">
           <Box id="admin-equipment-select-box">
             {/* TYPE */}
@@ -369,7 +403,8 @@ const AdminEquipmentComponent = () => {
       {/***************** EDIT EQUIPMENT *****************/}
       {/**************************************************/}
       <Dialog
-        fullScreen
+        fullScreen={fullScreen}
+        fullWidth
         open={editEquipmentDialogOpen}
         onClose={handleEditEquipmentDialogClose}
         TransitionComponent={Transition}
@@ -489,7 +524,7 @@ const AdminEquipmentComponent = () => {
                 {t("Edit")}
               </FmButton2>
 
-              <FmButtonDanger onClick={handleRemoveEquipmentClick}>
+              <FmButtonDanger onClick={() => handleRemoveEquipmentClick()}>
                 {t("Remove Equipment")}
               </FmButtonDanger>
             </Grid>

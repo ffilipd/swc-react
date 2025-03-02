@@ -12,18 +12,7 @@ function Home() {
   window.addEventListener("resize", () => {
     setIsMobile(window.innerWidth <= 600);
   });
-  return isMobile ? (
-    <Box className="home-button-container">
-      <Box className="home-button-row">
-        <FmButtonCube onClick={() => navigate("/booking")}>Book</FmButtonCube>
-        <FmButtonCube onClick={() => navigate("/report")}>Report</FmButtonCube>
-      </Box>
-      <Box className="home-button-row">
-        <FmButtonCube>Status</FmButtonCube>
-        <FmButtonCube>Fix</FmButtonCube>
-      </Box>
-    </Box>
-  ) : (
+  return (
     <Box>
       <Box className="home-welcome-container">
         <h1 style={{ margin: "0 0 20px 0" }}>

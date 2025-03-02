@@ -1,18 +1,24 @@
 import { styled } from "@mui/material/styles";
 import { Button, ButtonProps } from "@mui/material";
-import { RiDeleteBin2Line } from "react-icons/ri";
-import { IconBaseProps } from "react-icons";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-export const FmDeleteButton = styled(RiDeleteBin2Line)<IconBaseProps>(
-  ({ theme }) => ({
-    // color: "#960606",
-    fontSize: "large",
-    fontFamily: "Oxanium",
-    "&:hover": {
-      color: "#de0404",
-    },
-  })
-);
+// export const FmDeleteButton = styled(Button)<ButtonProps>(({ theme }) => ({
+//   // color: "#960606",
+//   fontSize: "large",
+//   fontFamily: "Oxanium",
+//   "&:hover": {
+//     color: "#de0404",
+//   },
+// }));
+
+export const FmBinIcon = (props: any) => {
+  return (
+    <DeleteOutlineOutlinedIcon
+      {...props}
+      sx={{ cursor: "pointer", "&:hover": { color: "red", scale: 1.2 } }}
+    />
+  );
+};
 
 export const FmButton = styled(Button)<ButtonProps>(({ theme }) => ({
   variant: "outlined",
@@ -33,6 +39,7 @@ export const FmButton = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
+  boxShadow: "1px 2px 2px var(--color-secondary-gray)",
   variant: "outlined",
   border: "none",
   backgroundColor: "#104462",
@@ -56,6 +63,7 @@ export const FmButton2 = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 export const FmButtonDanger = styled(Button)<ButtonProps>(({ theme }) => ({
+  boxShadow: "1px 2px 2px var(--color-secondary-gray)",
   variant: "outlined",
   border: "none",
   backgroundColor: "#960606",
@@ -79,6 +87,7 @@ export const FmButtonDanger = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 export const FmButtonSecondary = styled(Button)<ButtonProps>(({ theme }) => ({
+  boxShadow: "1px 2px 2px var(--color-secondary-gray)",
   variant: "outlined",
   border: "none",
   background:
