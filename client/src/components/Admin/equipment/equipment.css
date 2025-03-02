@@ -38,6 +38,12 @@
     margin: 0 0 16px 0;
 }
 
+.admin-equipment-button {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+}
+
 @media only screen and (max-width:600px) {
     #admin-equipment-select-wrapper {
         margin: 50px 10px;

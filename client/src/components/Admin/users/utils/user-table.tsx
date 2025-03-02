@@ -1,4 +1,4 @@
-import { FMProfile } from "../../../interfaces";
+import { FMProfile } from "../../../../interfaces";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import {
   Checkbox,
@@ -8,8 +8,8 @@ import {
   TableCellProps,
   CheckboxProps,
 } from "@mui/material";
-import { FMUserTableCell as StyledTableCell } from "../../../utils/custom-elements";
-import { StyledTableRow } from "../../../utils/styled";
+import { FMUserTableCell as StyledTableCell } from "../../../../utils/custom-elements";
+import { StyledTableRow } from "../../../../utils/styled";
 import { useTranslation } from "react-i18next";
 
 interface UserTableRowProps {

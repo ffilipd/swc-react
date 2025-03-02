@@ -8,8 +8,8 @@ import LoginComponent from "./components/Login";
 import Body from "./components/Body";
 import SignupComponent from "./components/Signup";
 import MyBookingsComponent from "./components/My-bookings";
-import AdminEquipmentComponent from "./components/Admin/equipment";
-import AdminUsersComponent from "./components/Admin/users";
+import AdminEquipmentComponent from "./components/Admin/equipment/equipment";
+import AdminUsersComponent from "./components/Admin/users/users";
 import AccountInfoComponent from "./components/Account";
 
 function App() {

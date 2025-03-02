@@ -20,16 +20,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { t, use } from "i18next";
-import React, { useEffect } from "react";
-import { FmButton2, FmButtonDanger } from "../../../utils/buttons";
+import { t } from "i18next";
+import React from "react";
+import { FmButtonDanger } from "../../../../utils/buttons";
 import { UserStaticCheckBoxes } from "./user-table";
-import { FMProfile, UserRole } from "../../../interfaces";
-// import CloseIcon from "@mui/icons-material/Close";
+import { FMProfile, UserRole } from "../../../../interfaces";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { TransitionProps } from "@mui/material/transitions";
-import { updateUserProfile } from "../../../service/user.service";
-import { useAlert } from "../../../AlertContext";
+import { updateUserProfile } from "../../../../service/user.service";
+import { useAlert } from "../../../../AlertContext";
 
 interface UsersDialogProps {
   showUserDetails: boolean;
@@ -241,9 +240,6 @@ const UsersDialog = (props: UsersDialogProps) => {
             </React.Fragment>
           ))}
         </FormGroup>
-        {/* <FmButton2 disabled={!userChanged} onClick={handleSaveUser}>
-          {t("Save")}
-        </FmButton2> */}
         <FmButtonDanger onClick={handleDeleteUserClick}>
           {t("Delete User")}
         </FmButtonDanger>

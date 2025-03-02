@@ -16,16 +16,16 @@ import {
 } from "@mui/material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import React, { useEffect, useState } from "react";
-import { Equipment, FMProfile, UserRole } from "../../interfaces";
+import { Equipment, FMProfile, UserRole } from "../../../interfaces";
 import { useTranslation } from "react-i18next";
-import "./mytable.css";
-import TablePaginationActions from "../Pagination";
-import { updateUserProfile, deleteUser } from "../../service/user.service";
-import { dummyUser } from "../../utils/dummy-data";
-import { useEquipment } from "../../EquipmentContext";
-import { FMEquipmentTableCell } from "../../utils/custom-elements";
-import { StyledTableRow } from "../../utils/styled";
-import { FmBinIcon } from "../../utils/buttons";
+import "../mytable.css";
+import TablePaginationActions from "../../Pagination";
+import { updateUserProfile, deleteUser } from "../../../service/user.service";
+import { dummyUser } from "../../../utils/dummy-data";
+import { useEquipment } from "../../../EquipmentContext";
+import { FMEquipmentTableCell } from "../../../utils/custom-elements";
+import { StyledTableRow } from "../../../utils/styled";
+import { FmBinIcon } from "../../../utils/buttons";
 
 interface EquipmentProps {
   equipment: Equipment[] | null;

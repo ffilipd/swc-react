@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import "./mypage.css";
+import "../mypage.css";
 import { useEffect, useState } from "react";
 import UsersTable from "./usersTable";
-import { FMProfile } from "../../interfaces";
-import { getAllUsers } from "../../service/user.service";
-import FmDialog from "../../utils/dialog";
+import { FMProfile } from "../../../interfaces";
+import { getAllUsers } from "../../../service/user.service";
+import FmDialog from "../../../utils/dialog";
 
 const AdminUsersComponent = () => {
   const { t } = useTranslation();

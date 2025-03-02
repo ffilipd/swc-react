@@ -10,18 +10,18 @@ import {
   TableCellProps,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { FMProfile, UserRole } from "../../interfaces";
+import { FMProfile, UserRole } from "../../../interfaces";
 import { useTranslation } from "react-i18next";
-import "./mytable.css";
-import TablePaginationActions from "../Pagination";
-import { dummyUser } from "../../utils/dummy-data";
-import { useEquipment } from "../../EquipmentContext";
-import { FMUserTableCell as StyledTableCell } from "../../utils/custom-elements";
-import FmDialog from "../../utils/dialog";
+import "../mytable.css";
+import TablePaginationActions from "../../Pagination";
+import { dummyUser } from "../../../utils/dummy-data";
+import { useEquipment } from "../../../EquipmentContext";
+import { FMUserTableCell as StyledTableCell } from "../../../utils/custom-elements";
+import FmDialog from "../../../utils/dialog";
 import { UserTableRow } from "./utils/user-table";
-import { StyledTableRow } from "../../utils/styled";
-import { useUser } from "../../UserContext";
-import { deleteUser } from "../../service/user.service";
+import { StyledTableRow } from "../../../utils/styled";
+import { useUser } from "../../../UserContext";
+import { deleteUser } from "../../../service/user.service";
 import UsersDialog from "./utils/users-dialog";
 
 interface UsersProps {
