@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   SelectChangeEvent,
   Slide,
   useMediaQuery,
@@ -26,15 +27,9 @@ import AddEquipmentDialog from "./equipmentDialogs";
 
 const AdminEquipmentComponent = () => {
   const { t } = useTranslation();
-  const { user } = useUser();
-  const { showAlert, alertProps, alertVisible } = useAlert();
-  const {
-    equipment,
-    findEquipmentId,
-    equipmentTypes,
-    getEquipmentNames,
-    getEquipmentNumbers,
-  } = useEquipment();
+  const { showAlert } = useAlert();
+  const { equipment, findEquipmentId, equipmentTypes, getEquipmentNames } =
+    useEquipment();
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
   window.addEventListener("resize", () => {
@@ -43,36 +38,19 @@ const AdminEquipmentComponent = () => {
 
   const [addEquipmentDialogOpen, setAddEquipmentDialogOpen] =
     useState<boolean>(false);
-  const [editEquipmentDialogOpen, setEditEquipmentDialogOpen] =
-    useState<boolean>(false);
-  const [equipmentToEdit, setEquipmentToEdit] = useState<NewEquipment>({
-    type: "",
-    name: "",
-    number: "",
-    userId: user?.id,
-  });
 
-  const handleEditEquipmentDialogOpen = () => setEditEquipmentDialogOpen(true);
-  const handleEditEquipmentDialogClose = () =>
-    setEditEquipmentDialogOpen(false);
   const handleAddEquipmentDialogOpen = () => setAddEquipmentDialogOpen(true);
   const handleAddEquipmentDialogClose = () => setAddEquipmentDialogOpen(false);
   const handleAddClick = () => handleAddEquipmentDialogOpen();
-  const handleEditClick = () => handleEditEquipmentDialogOpen();
 
   const handleRemoveEquipmentClick = async (id?: string) => {
-    // Get id for selected equipment
-    let equipmentIdToDelete = id || (await findEquipmentId(equipmentToEdit));
-    if (!equipmentIdToDelete) {
+    if (!id) {
       showAlert({ severity: "error", message: t("Equipment ID not found") });
       return;
     }
-    if (equipmentIdToDelete) {
-      const res = await removeEquipment(equipmentIdToDelete);
-      alert(res);
-      handleEditEquipmentDialogClose();
-      window.location.reload();
-    }
+    const res = await removeEquipment(id);
+    alert(res);
+    window.location.reload();
     return;
   };
 
@@ -89,8 +67,6 @@ const AdminEquipmentComponent = () => {
         />
       </Box>
 
-      {/* <Box id="admin-equipment-header">{t("Add and edit equipment")}</Box> */}
-      {/* <Divider /> */}
       <Box id="admin-equipment-wrapper">
         {/* <FmButton2 className="admin-equipment-button" onClick={handleEditClick}>
           {t("Edit")}

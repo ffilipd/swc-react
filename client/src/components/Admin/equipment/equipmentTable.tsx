@@ -51,10 +51,14 @@ const EquipmentTable = (props: EquipmentProps) => {
   >(null);
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0
-  //     ? Math.max(0, (1 + page) * rowsPerPage - (users ? users.length : 0))
-  //     : 0;
+  const emptyRows =
+    page > 0
+      ? Math.max(
+          0,
+          (1 + page) * rowsPerPage -
+            (filteredEquipment ? filteredEquipment.length : 0)
+        )
+      : 0;
 
   useEffect(() => {
     async function fetchData() {
@@ -101,9 +105,9 @@ const EquipmentTable = (props: EquipmentProps) => {
       setOrderBy(type);
       setOrder("asc");
     }
-    if (equipment) {
+    if (filteredEquipment) {
       setEquipment(
-        equipment.sort((a, b) => {
+        filteredEquipment.sort((a, b) => {
           if (order === "asc") {
             if (type === "number") {
               return (
@@ -286,6 +290,7 @@ const EquipmentTable = (props: EquipmentProps) => {
                     <StyledTableRow
                       className="hover-highlight"
                       sx={{
+                        height: "44px",
                         "& > *": { borderBottom: "unset" },
                         cursor: "pointer",
                       }}
@@ -314,6 +319,11 @@ const EquipmentTable = (props: EquipmentProps) => {
                     </StyledTableRow>
                   </React.Fragment>
                 ))}
+              {emptyRows > 0 && (
+                <StyledTableRow style={{ height: 44 * emptyRows }}>
+                  <FMEquipmentTableCell colSpan={6} />
+                </StyledTableRow>
+              )}
             </TableBody>
             <TableFooter>
               <TableRow>
@@ -323,7 +333,7 @@ const EquipmentTable = (props: EquipmentProps) => {
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                   colSpan={11}
                   width={"100%"}
-                  count={equipment ? equipment.length : 0}
+                  count={filteredEquipment ? filteredEquipment.length : 0}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
@@ -341,16 +351,6 @@ const EquipmentTable = (props: EquipmentProps) => {
           </Table>
         </TableContainer>
       </Box>
-      {/* <FmDialog // user dialog
-        onDialogOpen={showUserDetails}
-        onDialogClose={closeUserDetailsDialog}
-        onHandleAction={handleSaveUser}
-        props={{
-          title: "User Details",
-          description: "User Details",
-          action: "Save",
-        }}
-      /> */}
     </Box>
   );
 };
