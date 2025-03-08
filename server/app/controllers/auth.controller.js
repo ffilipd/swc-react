@@ -47,7 +47,7 @@ exports.googleAuth = async (req, res) => {
                     })
                 }
                 var token = jwt.sign({ id: user.id }, config.secret, {
-                    expiresIn: 86400 // 24 hours
+                    expiresIn: 60 * 6 // 6 hours
                 });
 
                 user.update({ last_login: new Date() });
@@ -124,7 +124,7 @@ exports.signin = (req, res) => {
             }
 
             var token = jwt.sign({ id: user.id }, config.secret, {
-                expiresIn: 86400 // 24 hours
+                expiresIn: 60 * 6 // 6 hours
             });
 
             user.update({ last_login: new Date() });

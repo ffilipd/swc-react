@@ -12,13 +12,18 @@ const API_ENDPOINTS = {
     USERS_ID: (id: string) => `${API_ENDPOINTS.USERS}/${id}`
 }
 
+const handleUnauthorized = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+};
 
 export const signUp = async (signupform: NewUser) => {
     const URL: string = base_URL + API_ENDPOINTS.SIGNUP;
     try {
         const response = await axios.post(URL, signupform);
         return response;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) handleUnauthorized();
         throw new Error('Error signing up: ' + error);
     }
 }
@@ -29,7 +34,8 @@ export const loginWithGoogle = async (code: any): Promise<any> => {
         const response = await axios.post(URL, { code });
         return response.data;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) alert(error.response.data.message)
+        if (error.response && error.response.status === 401) handleUnauthorized();
+        if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 }
 
@@ -39,6 +45,7 @@ export const loginWithCredentials = async (credentials: LoginCredentials): Promi
         const response = await axios.post(URL, credentials);
         return response.data;
     } catch (error: any) {
+        if (error.response && error.response.status === 401) handleUnauthorized();
         if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 }
@@ -49,23 +56,19 @@ export const createUser = async (googleProfile: Profile): Promise<FMProfile | an
         const response = await axios.post(URL, googleProfile);
         return response.data.user;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) alert(error.response.data.message)
+        if (error.response && error.response.status === 401) handleUnauthorized();
+        if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 };
 
 // UPDATE USER PROFILE
 export const updateUserProfile = async (profile: Partial<FMProfile>): Promise<any> => {
-    // const prefillParams: (keyof FMProfile)[] = ['language', 'role', 'active'];
-    // for (const key of prefillParams) {
-    //     if (!profile[key] && key === 'language') profile[key] = 'en';
-    //     if (!profile[key] && key === 'role') profile[key] = 'user';
-    // }
-
     const request = await buildRequestConfig({ method: 'PUT', data: profile, id: profile.id })
     try {
         const response = await axios(request);
         return response.data as FMProfile;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) handleUnauthorized();
         if (error instanceof AxiosError && error.response && error.response.status === 400) {
             throw new Error(error.response.data.message);
         } else if (error instanceof Error) {
@@ -83,7 +86,8 @@ export const getUserById = async (userId: string): Promise<FMProfile> => {
     try {
         const res = await axios.get(URL, { headers: authHeader() });
         return res.data as FMProfile;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) handleUnauthorized();
         throw new Error('Error getting user by id');
     }
 }
@@ -93,7 +97,8 @@ export const getAllUsers = async (): Promise<FMProfile[]> => {
     try {
         const res = await axios.get(URL, { headers: authHeader() });
         return res.data as FMProfile[];
-    } catch (error) {
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) handleUnauthorized();
         throw new Error('Error getting user by id');
     }
 }
@@ -103,7 +108,8 @@ export const deleteUser = async (userId: keyof FMProfile): Promise<any> => {
     try {
         const res = await axios.delete(`${URL}/${userId}`, { headers: authHeader() })
         return res.data.message;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) handleUnauthorized();
         throw new Error('Error deleting booking: ' + error)
     }
 }
