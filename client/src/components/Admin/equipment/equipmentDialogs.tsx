@@ -89,7 +89,8 @@ const AddEquipmentDialog = (props: AddEquipmentDialogProps) => {
     if (typeName === "new-type") {
       setNewTypeInputVisible(true);
       setNewNameInputVisible(true);
-      setNewEquipment({ ...newEquipment, name: "new-name" });
+      setNewEquipment({ ...newEquipment, name: "new-name", type: typeName });
+      return;
     } else {
       setNewTypeInputVisible(false);
       setNewNameInputVisible(false);
