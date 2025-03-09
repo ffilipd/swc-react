@@ -199,6 +199,7 @@ exports.findFilters = async (req, res) => {
                 where: { id: equipmentNameId },
                 include: {
                     model: Type,
+                    as: 'equipment_type',
                     attributes: ["name"]
                 }
             });
@@ -222,6 +223,7 @@ exports.findFilters = async (req, res) => {
                 where: { name: type },
                 include: {
                     model: Name,
+                    as: 'equipment_names',
                     attributes: ['name', 'id'],
                 }
             });
@@ -254,6 +256,7 @@ exports.findFilters = async (req, res) => {
         const equipment = await Equipment.findAll({
             include: [{
                 model: Name,
+                as: 'equipment_name',
                 where: { id: equipmentNameId },
                 attributes: []
             }],
@@ -318,9 +321,11 @@ exports.findEquipmentId = async (req, res) => {
         const equipment = await Equipment.findOne({
             include: [{
                 model: Name,
+                as: 'equipment_name',
                 where: { name: name },
                 include: [{
                     model: Type,
+                    as: 'equipment_type',
                     where: { name: type }
                 }]
             }],

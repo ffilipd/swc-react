@@ -35,6 +35,7 @@ exports.create = async (req, res) => {
             where: { id: equipmentId },
             include: {
                 model: Name,
+                as: 'equipment_name',
                 attributes: ['name']
             }
         });
