@@ -98,9 +98,6 @@ exports.findAll = async (req, res) => {
         userId: userId ?? { [Op.gt]: '' },
     }
 
-
-
-
     let bookingsQuery = {
         where: bookingsWhere,
         order: [
@@ -132,7 +129,6 @@ exports.findAll = async (req, res) => {
         ]
     }
 
-
     try {
         const user = await User.findByPk(userId);
         const userAccess = user.access ? user.access.split(',') : [];
@@ -152,8 +148,7 @@ exports.findAll = async (req, res) => {
                         as: 'equipment_name',
                         attributes: ['name'],
                         where: user.role === 'admin' || user.role === 'moderator' ? {} : {
-                            ...equipmentIdSearch,
-                            '$equipment.equipment_name.name$': {
+                            '$equipment_name.name$': {
                                 [Op.in]: userAccess
                             }
                         }
@@ -161,7 +156,7 @@ exports.findAll = async (req, res) => {
                 }
             ]
         });
-        const formattedBookings = bookings.map(booking => {
+        const formattedBookings = bookings?.map(booking => {
             return {
                 id: booking.id,
                 date: formatDate(booking.date),
@@ -169,7 +164,7 @@ exports.findAll = async (req, res) => {
                 time_to: booking.time_to,
                 equipmentId: booking.equipment.id,
                 equipment_name: booking.equipment.equipment_name.name,
-                equipment_number: booking.equipment.number,
+                equipment_identifier: booking.equipment.identifier,
                 user_name: booking.user.name,
                 damage_type: booking.report ? booking.report.damageType : '',
                 damage_description: booking.report ? booking.report.description : '',
@@ -180,7 +175,7 @@ exports.findAll = async (req, res) => {
     }
     catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ message: 'Error occurred while retrieving bookings.' });
+        res.status(500).json({ message: 'Error occurred while retrieving bookings.', error });
     }
 };
 

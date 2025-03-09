@@ -58,5 +58,9 @@ module.exports = (sequelize, Sequelize) => {
     Name.hasMany(Equipment, { foreignKey: 'equipmentNameId', as: 'equipment' });
     Type.hasMany(Name, { foreignKey: 'equipmentTypeId', as: 'equipment_names' });
 
+    Equipment.associate = (models) => {
+        Equipment.hasMany(models.Booking, { foreignKey: 'equipmentId', as: 'bookings' });
+    };
+
     return { Equipment, Type, Name };
 };
