@@ -89,7 +89,7 @@ export async function removeEquipment(equipmentId: string): Promise<void> {
 function buildParams(options: EquipmentSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof EquipmentSearchParams)[] = ['equipmentNameId', 'equipment_number', 'type'];
+    const allowedParams: (keyof EquipmentSearchParams)[] = ['equipmentNameId', 'equipment_identifier', 'type'];
 
     // Loop through parameters
     for (const key of allowedParams) {

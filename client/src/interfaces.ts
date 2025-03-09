@@ -14,7 +14,7 @@ export interface Booking {
     date: string | undefined;
     time_from: string | undefined;
     time_to: string | undefined;
-    equipment_number: string;
+    equipment_identifier: string;
     equipment_name: string;
     equipmentId: string;
     user_name?: string;
@@ -45,7 +45,7 @@ export interface ReportSearchParams {
     bookingId?: string;
     type?: string;
     equipment_name?: string;
-    equipment_number?: string;
+    equipment_identifier?: string;
     date?: string;
     user_id?: string;
     damage_type?: string;
@@ -61,26 +61,26 @@ export interface Report {
     booking_id?: string;
     type?: string;
     equipment_name?: string;
-    equipment_number?: string;
+    equipment_identifier?: string;
     date?: string;
     user_id: string;
     notes?: string;
     damage_type: string;
 }
 
-export type FilterTargetType = "type" | "name" | "number";
-export type EquipmentFilterResponse = string[] | { id: string, number: string }[] | { id: string, name: string }[]
+export type FilterTargetType = "type" | "name" | "identifier";
+export type EquipmentFilterResponse = string[] | { id: string, identifier: string }[] | { id: string, name: string }[]
 
 export interface EquipmentSearchParams {
     type?: string;
     equipmentNameId?: string;
-    equipment_number?: string;
+    equipment_identifier?: string;
 }
 
 export interface EquipmentIdSearchParams {
     type: string;
     name: string;
-    number: string;
+    identifier: string;
 }
 
 export interface NewEquipment {
@@ -97,7 +97,7 @@ export interface EquipmentTree {
     typeName: string;
     names: {
         name: string;
-        number: string[];
+        identifier: string[];
     }[]
 }
 
@@ -106,7 +106,7 @@ export interface Equipment {
         [x: string]: any;
         type: string;
         equipment_name: string;
-        equipment_number: string;
+        identifier: string;
         size?: string; // Optional property for windsurfing boards and sails
     };
 }

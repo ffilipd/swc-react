@@ -55,7 +55,7 @@ const MyBookingsComponent = () => {
     equipment: {
       type: "*" + i18next.t("Equipment type"),
       name: "*" + i18next.t("Class / Name"),
-      number: "*" + i18next.t("Number"),
+      identifier: "*" + i18next.t("Number / Identifier"),
     },
   };
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
@@ -70,17 +70,17 @@ const MyBookingsComponent = () => {
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
     equipmentNameId: string;
-    number: string;
-  }>({ type: "", equipmentNameId: "", number: "" });
+    identifier: string;
+  }>({ type: "", equipmentNameId: "", identifier: "" });
 
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
     names: { id: string; name: string }[];
-    numbers: { id: string; number: string }[];
+    identifiers: { id: string; identifier: string }[];
   }>({
     types: [],
     names: [],
-    numbers: [],
+    identifiers: [],
   });
 
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -119,7 +119,7 @@ const MyBookingsComponent = () => {
       ...selectedEquipment,
       type,
       equipmentNameId: "",
-      number: "",
+      identifier: "",
     });
     const names = (await getFilters({ type })) as {
       id: string;
@@ -129,12 +129,16 @@ const MyBookingsComponent = () => {
   };
 
   const handleSetName = async (equipmentNameId: string) => {
-    setSelectedEquipment({ ...selectedEquipment, equipmentNameId, number: "" });
+    setSelectedEquipment({
+      ...selectedEquipment,
+      equipmentNameId,
+      identifier: "",
+    });
     const equipment = (await getFilters({
       type: selectedEquipment.type,
       equipmentNameId: equipmentNameId,
-    })) as { id: string; number: string }[];
-    setAvailableEquipment({ ...availableEquipment, numbers: equipment });
+    })) as { id: string; identifier: string }[];
+    setAvailableEquipment({ ...availableEquipment, identifiers: equipment });
   };
 
   const fetchBookings = async () => {
@@ -143,7 +147,7 @@ const MyBookingsComponent = () => {
       userId: user.id,
       equipmentNameId: selectedEquipment.equipmentNameId,
       equipment_type: selectedEquipment.type,
-      equipmentId: selectedEquipment.number,
+      equipmentId: selectedEquipment.identifier,
       date: selectedDate?.format("DD-MM-YYYY") || "",
       time_from: selectedTime.fromTime?.format("HH:mm") || "",
       time_to: selectedTime.toTime?.format("HH:mm") || "",
@@ -153,7 +157,7 @@ const MyBookingsComponent = () => {
   };
 
   const handleClearSelections = (): void => {
-    setSelectedEquipment({ equipmentNameId: "", type: "", number: "" });
+    setSelectedEquipment({ equipmentNameId: "", type: "", identifier: "" });
     setSelectedTime({ ...selectedTime, fromTime: null, toTime: null });
   };
 
@@ -165,7 +169,7 @@ const MyBookingsComponent = () => {
   };
 
   const handleBookEquipmentClick = async () => {
-    const { type, equipmentNameId, number } = selectedEquipment;
+    const { type, equipmentNameId, identifier } = selectedEquipment;
     const date = selectedDate?.format("DD-MM-YYYY").toString();
     const { fromTime, toTime } = selectedTime;
     const newBooking: NewBooking = {
@@ -173,13 +177,13 @@ const MyBookingsComponent = () => {
       time_from: fromTime?.format("HH:mm").toString(),
       time_to: toTime?.format("HH:mm").toString(),
       userId: user?.id,
-      equipmentId: number,
+      equipmentId: identifier,
     };
     try {
       const res = await addBooking(newBooking);
       alert(res);
       fetchBookings();
-      setSelectedEquipment({ ...selectedEquipment, number: "" });
+      setSelectedEquipment({ ...selectedEquipment, identifier: "" });
     } catch (error) {
       console.error(error);
     }
@@ -192,7 +196,7 @@ const MyBookingsComponent = () => {
       selectedTime.toTime &&
       selectedEquipment.type &&
       selectedEquipment.equipmentNameId &&
-      selectedEquipment.number
+      selectedEquipment.identifier
     )
       return true;
     return false;

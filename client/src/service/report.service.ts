@@ -60,7 +60,7 @@ export const getDamageTypes = async (): Promise<any> => {
 function buildParams(options: ReportSearchParams): URLSearchParams {
     // add parameters to the url
     let params = new URLSearchParams();
-    const allowedParams: (keyof ReportSearchParams)[] = ['equipment_name', 'equipment_number', 'type', 'date', 'bookingId', 'damage_type', 'user_id'];
+    const allowedParams: (keyof ReportSearchParams)[] = ['equipment_name', 'equipment_identifier', 'type', 'date', 'bookingId', 'damage_type', 'user_id'];
 
     // Loop through parameters
     for (const key of allowedParams) {

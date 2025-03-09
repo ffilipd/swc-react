@@ -50,7 +50,7 @@ const BookingComponent = () => {
     equipment: {
       type: "*" + i18next.t("Type"),
       name: "*" + i18next.t("Name"),
-      number: "*" + i18next.t("Number"),
+      identifier: "*" + i18next.t("Number"),
     },
   };
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
@@ -65,17 +65,17 @@ const BookingComponent = () => {
   const [selectedEquipment, setSelectedEquipment] = useState<{
     type: string;
     equipmentNameId: string;
-    number: string;
-  }>({ type: "", equipmentNameId: "", number: "" });
+    identifier: string;
+  }>({ type: "", equipmentNameId: "", identifier: "" });
 
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
     names: { id: string; name: string }[];
-    numbers: { id: string; number: string }[];
+    identifiers: { id: string; identifier: string }[];
   }>({
     types: [],
     names: [],
-    numbers: [],
+    identifiers: [],
   });
 
   const [bookings, setBookings] = useState<Booking[] | null>([]);
@@ -120,7 +120,7 @@ const BookingComponent = () => {
       ...selectedEquipment,
       type,
       equipmentNameId: "",
-      number: "",
+      identifier: "",
     });
     const names = (await getFilters({ type })) as {
       id: string;
@@ -130,12 +130,16 @@ const BookingComponent = () => {
   };
 
   const handleSetName = async (equipmentNameId: string) => {
-    setSelectedEquipment({ ...selectedEquipment, equipmentNameId, number: "" });
+    setSelectedEquipment({
+      ...selectedEquipment,
+      equipmentNameId,
+      identifier: "",
+    });
     const equipment = (await getFilters({
       type: selectedEquipment.type,
       equipmentNameId: equipmentNameId,
-    })) as { id: string; number: string }[];
-    setAvailableEquipment({ ...availableEquipment, numbers: equipment });
+    })) as { id: string; identifier: string }[];
+    setAvailableEquipment({ ...availableEquipment, identifiers: equipment });
   };
 
   const fetchBookings = async () => {
@@ -143,7 +147,7 @@ const BookingComponent = () => {
     const bookingsData: Booking[] = await getBookings({
       equipmentNameId: selectedEquipment.equipmentNameId,
       equipment_type: selectedEquipment.type,
-      equipmentId: selectedEquipment.number,
+      equipmentId: selectedEquipment.identifier,
       date: selectedDate?.format("DD-MM-YYYY") || "",
       time_from: selectedTime.fromTime?.format("HH:mm") || "",
       time_to: selectedTime.toTime?.format("HH:mm") || "",
@@ -154,7 +158,7 @@ const BookingComponent = () => {
   };
 
   const handleClearSelections = (): void => {
-    setSelectedEquipment({ equipmentNameId: "", type: "", number: "" });
+    setSelectedEquipment({ equipmentNameId: "", type: "", identifier: "" });
     setSelectedTime({ ...selectedTime, fromTime: null, toTime: null });
   };
 
@@ -166,7 +170,7 @@ const BookingComponent = () => {
   };
 
   const handleBookEquipmentClick = async () => {
-    const { type, equipmentNameId, number } = selectedEquipment;
+    const { type, equipmentNameId, identifier } = selectedEquipment;
     const date = selectedDate?.format("DD-MM-YYYY").toString();
     const { fromTime, toTime } = selectedTime;
     const newBooking: NewBooking = {
@@ -174,14 +178,14 @@ const BookingComponent = () => {
       time_from: fromTime?.format("HH:mm").toString(),
       time_to: toTime?.format("HH:mm").toString(),
       userId: user?.id,
-      equipmentId: number,
+      equipmentId: identifier,
     };
     try {
       const res = await addBooking(newBooking);
       if (res) {
         showAlert({ severity: "success", message: res });
         fetchBookings();
-        setSelectedEquipment({ ...selectedEquipment, number: "" });
+        setSelectedEquipment({ ...selectedEquipment, identifier: "" });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -199,7 +203,7 @@ const BookingComponent = () => {
       selectedTime.toTime &&
       selectedEquipment.type &&
       selectedEquipment.equipmentNameId &&
-      selectedEquipment.number
+      selectedEquipment.identifier
     )
       return true;
     return false;
@@ -338,33 +342,33 @@ const BookingComponent = () => {
 
               <FormControl fullWidth className="booking-select-item">
                 <InputLabel id="equipment-nbr">
-                  {labels.equipment.number}
+                  {labels.equipment.identifier}
                 </InputLabel>
                 <Select
                   className="booking-select-button"
                   labelId="equipment-nbr-label"
                   disabled={selectedEquipment.equipmentNameId === ""}
                   id="equipment-nbr"
-                  label={labels.equipment.number}
-                  value={selectedEquipment.number}
+                  label={labels.equipment.identifier}
+                  value={selectedEquipment.identifier}
                   onChange={(e: SelectChangeEvent) => {
                     setSelectedEquipment({
                       ...selectedEquipment,
-                      number: e.target.value,
+                      identifier: e.target.value,
                     });
                   }}
                 >
-                  {availableEquipment.numbers.map((number) => (
+                  {availableEquipment.identifiers.map((identifier) => (
                     <MenuItem
-                      key={number.id}
-                      value={number.id}
+                      key={identifier.id}
+                      value={identifier.id}
                       disabled={bookings?.some(
-                        (booking) => booking.equipmentId === number.id
+                        (booking) => booking.equipmentId === identifier.id
                       )}
                     >
-                      {number.number}
+                      {identifier.identifier}
                       {bookings?.some(
-                        (booking) => booking.equipmentId === number.id
+                        (booking) => booking.equipmentId === identifier.id
                       ) && <i> - {t("booked")}</i>}
                     </MenuItem>
                   ))}

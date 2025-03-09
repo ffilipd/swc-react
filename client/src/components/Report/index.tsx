@@ -64,11 +64,11 @@ const ReportComponent = () => {
   const [availableEquipment, setAvailableEquipment] = useState<{
     types: string[];
     names: { id: string; name: string }[];
-    numbers: { id: string; number: string }[];
+    identifiers: { id: string; identifier: string }[];
   }>({
     types: [],
     names: [],
-    numbers: [],
+    identifiers: [],
   });
 
   const initialReportValues: NewReport = {
@@ -81,11 +81,11 @@ const ReportComponent = () => {
   const [newReportWithoutBooking, setNewReportWithoutBooking] = useState<{
     equipmentType: string;
     equipmentNameId: string;
-    equipmentNumber: string;
+    equipmentIdentifier: string;
   }>({
     equipmentType: "",
     equipmentNameId: "",
-    equipmentNumber: "",
+    equipmentIdentifier: "",
   });
   const [reportExistsNote, setReportExistsNote] = useState<boolean>(false);
   const [submitDialogOpen, setSubmitDialogOpen] = useState<boolean>(false);
@@ -168,7 +168,7 @@ const ReportComponent = () => {
       ...newReportWithoutBooking,
       equipmentType,
       equipmentNameId: "",
-      equipmentNumber: "",
+      equipmentIdentifier: "",
     });
     const names = (await getFilters({
       type: equipmentType,
@@ -180,22 +180,22 @@ const ReportComponent = () => {
     setNewReportWithoutBooking({
       ...newReportWithoutBooking,
       equipmentNameId,
-      equipmentNumber: "",
+      equipmentIdentifier: "",
     });
-    const numbers = (await getFilters({
+    const identifiers = (await getFilters({
       type: newReportWithoutBooking.equipmentType,
       equipmentNameId: equipmentNameId,
     })) as {
       id: string;
-      number: string;
+      identifier: string;
     }[];
-    setAvailableEquipment({ ...availableEquipment, numbers });
+    setAvailableEquipment({ ...availableEquipment, identifiers });
   };
 
-  const handleSetEquipmentNumber = (equipmentId: string) => {
+  const handleSetEquipmentIdentifier = (equipmentId: string) => {
     setNewReportWithoutBooking({
       ...newReportWithoutBooking,
-      equipmentNumber: equipmentId,
+      equipmentIdentifier: equipmentId,
     });
   };
 
@@ -205,10 +205,10 @@ const ReportComponent = () => {
       if (damageType === "none") return true;
       if (damageType !== "none" && description) return true;
     }
-    const { equipmentNameId, equipmentNumber, equipmentType } =
+    const { equipmentNameId, equipmentIdentifier, equipmentType } =
       newReportWithoutBooking;
     if (bookingId === "no-booking") {
-      if (equipmentNameId && equipmentNumber && equipmentType) {
+      if (equipmentNameId && equipmentIdentifier && equipmentType) {
         if (damageType === "none") return true;
         if (damageType !== "none" && description) return true;
       }
@@ -218,7 +218,7 @@ const ReportComponent = () => {
 
   const handleSubmitReportClick = async () => {
     if (selectedBookingId === "no-booking") {
-      newReport.description = `no-booking-equipment-id=${newReportWithoutBooking.equipmentNumber}+${newReport.description}`;
+      newReport.description = `no-booking-equipment-id=${newReportWithoutBooking.equipmentIdentifier}+${newReport.description}`;
     }
     try {
       await addReport(newReport);
@@ -283,7 +283,7 @@ const ReportComponent = () => {
                   value={booking.id}
                 >
                   <Box>
-                    {`${booking.equipment_name} #${booking.equipment_number}`}
+                    {`${booking.equipment_name} #${booking.equipment_identifier}`}
                   </Box>
                   <Box>{`${booking.time_from}—${booking.time_to}`}</Box>
                 </MenuItem>
@@ -362,14 +362,14 @@ const ReportComponent = () => {
                   disabled={newReportWithoutBooking.equipmentNameId === ""}
                   id="equipment-nbr"
                   label={labels.number}
-                  value={newReportWithoutBooking.equipmentNumber}
+                  value={newReportWithoutBooking.equipmentIdentifier}
                   onChange={(e: SelectChangeEvent) => {
-                    handleSetEquipmentNumber(e.target.value);
+                    handleSetEquipmentIdentifier(e.target.value);
                   }}
                 >
-                  {availableEquipment.numbers.map((number) => (
-                    <MenuItem key={number.id} value={number.id}>
-                      {number.number}
+                  {availableEquipment.identifiers.map((identifier) => (
+                    <MenuItem key={identifier.id} value={identifier.id}>
+                      {identifier.identifier}
                     </MenuItem>
                   ))}
                 </Select>

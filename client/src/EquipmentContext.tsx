@@ -66,7 +66,7 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
     for (const type of Object.values(equipment)) {
       for (const name of type.names) {
         if (name.name === equipmentName) {
-          return name.numbers;
+          return name.identifiers;
         }
       }
     }

@@ -70,7 +70,7 @@ const EquipmentTable = (props: EquipmentProps) => {
               id: item.id,
               type: item.equipment_name.equipment_type.name,
               name: item.equipment_name.name,
-              number: item.number,
+              identifier: item.identifier,
             };
           });
           setEquipment(simplifiedEquipment);
@@ -109,20 +109,20 @@ const EquipmentTable = (props: EquipmentProps) => {
       setEquipment(
         filteredEquipment.sort((a, b) => {
           if (order === "asc") {
-            if (type === "number") {
+            if (type === "identifier") {
               return (
-                parseInt(a.number as unknown as string, 10) -
-                parseInt(b.number as unknown as string, 10)
+                parseInt(a.identifier as unknown as string, 10) -
+                parseInt(b.identifier as unknown as string, 10)
               );
             }
             return a[type as keyof Equipment] < b[type as keyof Equipment]
               ? -1
               : 1;
           } else {
-            if (type === "number") {
+            if (type === "identifier") {
               return (
-                parseInt(b.number as unknown as string, 10) -
-                parseInt(a.number as unknown as string, 10)
+                parseInt(b.identifier as unknown as string, 10) -
+                parseInt(a.identifier as unknown as string, 10)
               );
             }
             return a[type as keyof Equipment] > b[type as keyof Equipment]
@@ -265,10 +265,10 @@ const EquipmentTable = (props: EquipmentProps) => {
                     <FMEquipmentTableCell align="left">
                       <TableSortLabel
                         // active={true}
-                        direction={orderBy === "number" ? order : "asc"}
-                        onClick={() => onSort("number")}
+                        direction={orderBy === "identifier" ? order : "asc"}
+                        onClick={() => onSort("identifier")}
                       >
-                        {t("Number")}
+                        {t("Number / Identifier")}
                       </TableSortLabel>
                     </FMEquipmentTableCell>
                     <FMEquipmentTableCell />
@@ -304,7 +304,7 @@ const EquipmentTable = (props: EquipmentProps) => {
                         {String(row.name)}
                       </FMEquipmentTableCell>
                       <FMEquipmentTableCell align="left">
-                        {String(row.number)}
+                        {String(row.identifier)}
                       </FMEquipmentTableCell>
                       <FMEquipmentTableCell
                         align="right"

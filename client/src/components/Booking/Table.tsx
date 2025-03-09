@@ -32,7 +32,7 @@ interface BookingsProps {
     equipment: {
       type: string;
       name: string;
-      number: string;
+      identifier: string;
     };
   };
   availableTypes: string[];
@@ -66,20 +66,20 @@ const BookingTable = (props: BookingsProps) => {
   const [filters, setFilters] = useState<{
     type: string;
     name: string;
-    number: string;
+    identifier: string;
   }>({
     type: "",
     name: "",
-    number: "",
+    identifier: "",
   });
   const [availableFilters, setAvailableFilters] = useState<{
     types: string[];
     names: string[];
-    numbers: string[];
+    identifiers: string[];
   }>({
     types: availableTypes,
     names: [],
-    numbers: [],
+    identifiers: [],
   });
 
   //   useEffect(() => {
@@ -88,7 +88,7 @@ const BookingTable = (props: BookingsProps) => {
   //       getBookingsByParams({
   //         type: filters.type,
   //         name: filters.name,
-  //         equipment_number: filters.number,
+  //         equipment_identifier: filters.number,
   //       })
   //     );
   //   }, [filters]);
@@ -137,13 +137,14 @@ const BookingTable = (props: BookingsProps) => {
                   {Array.from(
                     new Set(
                       bookings?.map(
-                        (row) => `${row.equipment_name}-${row.equipment_number}`
+                        (row) =>
+                          `${row.equipment_name}-${row.equipment_identifier}`
                       )
                     )
                   ).map((uniqueKey, i) => {
                     const groupedRows = bookings?.filter(
                       (row) =>
-                        `${row.equipment_name}-${row.equipment_number}` ===
+                        `${row.equipment_name}-${row.equipment_identifier}` ===
                         uniqueKey
                     );
                     const firstRow = groupedRows && groupedRows[0];
@@ -160,7 +161,7 @@ const BookingTable = (props: BookingsProps) => {
                             {firstRow?.equipment_name}
                           </StyledTableCell>
                           <StyledTableCell>
-                            {firstRow?.equipment_number}
+                            {firstRow?.equipment_identifier}
                           </StyledTableCell>
                           <StyledTableCell align="center">
                             <IconButton
@@ -243,7 +244,7 @@ const BookingTable = (props: BookingsProps) => {
                         {row.equipment_name}
                       </StyledTableCell>
                       <StyledTableCell align="left">
-                        {row.equipment_number}
+                        {row.equipment_identifier}
                       </StyledTableCell>
                       <StyledTableCell align="left">{row.date}</StyledTableCell>
                       <StyledTableCell align="left">
