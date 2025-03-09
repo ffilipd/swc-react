@@ -106,6 +106,12 @@ const BookingComponent = () => {
 
   const setFilterTypes = async () => {
     const types = (await getFilters()) as string[];
+    if (types.length === 0) {
+      showAlert({
+        severity: "error",
+        message: t("No equipment available"),
+      });
+    }
     setAvailableEquipment({ ...availableEquipment, types });
   };
 
@@ -294,7 +300,7 @@ const BookingComponent = () => {
                     handleSetType(e.target.value);
                   }}
                 >
-                  {availableEquipment?.types?.map(
+                  {availableEquipment.types?.map(
                     (type: string, index: number) => (
                       <MenuItem key={`${type}-${index}`} value={type}>
                         {type}
