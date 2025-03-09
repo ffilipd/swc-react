@@ -100,7 +100,7 @@ const ReportComponent = () => {
     damageType: i18next.t("Any damages?"),
     type: "*" + i18next.t("Equipment type"),
     name: "*" + i18next.t("Class / Name"),
-    number: "*" + i18next.t("Number"),
+    identifier: "*" + i18next.t("Number / Identifier"),
   };
 
   const handleSubmitDialogClose = () => {
@@ -355,13 +355,13 @@ const ReportComponent = () => {
 
               {/* EQUIPMENT NUMBER */}
               <FormControl fullWidth className="report-select-item">
-                <InputLabel id="equipment-nbr">{labels.number}</InputLabel>
+                <InputLabel id="equipment-nbr">{labels.identifier}</InputLabel>
                 <Select
                   className="booking-select-button"
                   labelId="equipment-nbr-label"
                   disabled={newReportWithoutBooking.equipmentNameId === ""}
                   id="equipment-nbr"
-                  label={labels.number}
+                  label={labels.identifier}
                   value={newReportWithoutBooking.equipmentIdentifier}
                   onChange={(e: SelectChangeEvent) => {
                     handleSetEquipmentIdentifier(e.target.value);
