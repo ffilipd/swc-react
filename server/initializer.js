@@ -23,8 +23,6 @@ const initializeDB = async () => {
                         active: true,
                         role: "admin",
                         access: "all",
-                        first_point_given: new Date(),
-                        latest_point_given: new Date(),
                     });
                 }
             });

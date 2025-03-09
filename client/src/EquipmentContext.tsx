@@ -43,6 +43,7 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
   });
 
   const [equipmentNames, setEquipmentNames] = useState<string[]>(() => {
+    if (equipment && !Array.isArray(equipment)) return [];
     return equipment
       ? equipment.flatMap((equipmentObj: any) =>
           equipmentObj.names.map((name: any) => name.name as string)
@@ -85,6 +86,7 @@ const EquipmentProvider: React.FC<EquipmentProviderProps> = ({ children }) => {
   const populateEquipment = async () => {
     if (user) {
       const equipment = await getEquipmentTree(user.id);
+      if (equipment && !Array.isArray(equipment)) return [];
       localStorage.setItem("equipment", JSON.stringify(equipment));
       setEquipment(equipment);
 

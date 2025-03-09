@@ -153,9 +153,14 @@ exports.findEquipmentTree = async (req, res) => {
             return;
         }
 
-        const filteredEquipmentTree = formattedEquipmentTree.filter(type => {
-            return user.access.includes(type.typeName);
-        });
+        const filteredEquipmentTree = [];
+        if (user.access !== null) {
+            formattedEquipmentTree.filter(type => {
+                return user.access.includes(type.typeName);
+            });
+        } else {
+            return res.status(403).send({ message: 'Access denied' });
+        }
 
         res.send(filteredEquipmentTree);
     } catch (error) {

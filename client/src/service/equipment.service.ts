@@ -35,7 +35,7 @@ export async function getEquipmentTree(userId: string): Promise<EquipmentTree> {
         return res.data;
     } catch (error: any) {
         if (error.response && error.response.status === 401) handleUnauthorized();
-        throw new Error('Error getting equipment tree' + error);
+        return error.response.data;
     }
 };
 
@@ -47,7 +47,7 @@ export async function getEquipmentFilters(_params?: EquipmentSearchParams): Prom
         return res.data;
     } catch (error: any) {
         if (error.response && error.response.status === 401) handleUnauthorized();
-        throw new Error('error getting equipment filters' + error);
+        return error.response.data;
     }
 };
 

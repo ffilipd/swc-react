@@ -34,24 +34,24 @@ module.exports = (sequelize, Sequelize) => {
         },
         password: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true, // google does not provide any password
         },
         role: {
             type: Sequelize.ENUM('admin', 'moderator', 'user'),
             defaultValue: 'user',
         },
-        talkoo_points: {
-            type: Sequelize.INTEGER,
-            defaultValue: 0,
-        },
-        first_point_given: {
-            type: Sequelize.DATE,
-            allowNull: false,
-        },
-        latest_point_given: {
-            type: Sequelize.DATE,
-            allowNull: false,
-        },
+        // talkoo_points: {
+        //     type: Sequelize.INTEGER,
+        //     defaultValue: 0,
+        // },
+        // first_point_given: {
+        //     type: Sequelize.DATE,
+        //     allowNull: false,
+        // },
+        // latest_point_given: {
+        //     type: Sequelize.DATE,
+        //     allowNull: false,
+        // },
         access: {
             type: Sequelize.STRING,
         },

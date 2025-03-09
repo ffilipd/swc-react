@@ -294,7 +294,7 @@ const BookingComponent = () => {
                     handleSetType(e.target.value);
                   }}
                 >
-                  {availableEquipment.types?.map(
+                  {availableEquipment?.types?.map(
                     (type: string, index: number) => (
                       <MenuItem key={`${type}-${index}`} value={type}>
                         {type}

@@ -23,7 +23,6 @@ export const signUp = async (signupform: NewUser) => {
         const response = await axios.post(URL, signupform);
         return response;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) handleUnauthorized();
         throw new Error('Error signing up: ' + error);
     }
 }
@@ -34,7 +33,6 @@ export const loginWithGoogle = async (code: any): Promise<any> => {
         const response = await axios.post(URL, { code });
         return response.data;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) handleUnauthorized();
         if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 }
@@ -45,7 +43,6 @@ export const loginWithCredentials = async (credentials: LoginCredentials): Promi
         const response = await axios.post(URL, credentials);
         return response.data;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) handleUnauthorized();
         if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 }
@@ -56,7 +53,6 @@ export const createUser = async (googleProfile: Profile): Promise<FMProfile | an
         const response = await axios.post(URL, googleProfile);
         return response.data.user;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) handleUnauthorized();
         if (error.response && error.response.status === 401) alert(error.response.data.message);
     }
 };
