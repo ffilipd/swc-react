@@ -86,7 +86,7 @@ export interface EquipmentIdSearchParams {
 export interface NewEquipment {
     type: string;
     name: string;
-    number: string;
+    identifier: string;
     userId: string | undefined;
 }
 
@@ -97,7 +97,7 @@ export interface EquipmentTree {
     typeName: string;
     names: {
         name: string;
-        numbers: string[];
+        number: string[];
     }[]
 }
 

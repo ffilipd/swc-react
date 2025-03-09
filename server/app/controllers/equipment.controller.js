@@ -5,8 +5,8 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Equipment
 exports.create = async (req, res) => {
-    const { type, name, number } = req.body;
-    if (!type || !name || !number) {
+    const { type, name, identifier } = req.body;
+    if (!type || !name || !identifier) {
         res.send({
             message: "Parameters missing!"
         });
@@ -26,16 +26,17 @@ exports.create = async (req, res) => {
 
         // Check for duplicate equipment
         const dupletEquipment = await Equipment.findOne({
-            where: { number: number },
+            where: { identifier: identifier },
             include: {
                 model: Name,
+                as: 'equipment_name',
                 where: { name: name }
             }
         });
 
         if (dupletEquipment) {
             res.send({
-                message: "Equipment with the same name and number already exists!"
+                message: "Equipment with the same name and identifier already exists!"
             });
             return;
         }
@@ -52,7 +53,7 @@ exports.create = async (req, res) => {
         // Create the equipment
         await Equipment.create({
             equipmentNameId: equipmentName.id,
-            number: number
+            identifier: identifier
         });
 
         res.status(200).send({ message: 'Equipment added!' });
@@ -81,9 +82,11 @@ exports.findAll = async (req, res) => {
             include: [
                 {
                     model: Name,
+                    as: 'equipment_name',
                     include: [
                         {
                             model: Type,
+                            as: 'equipment_type',
                             attributes: ['name']
                         }
                     ],
@@ -125,10 +128,12 @@ exports.findEquipmentTree = async (req, res) => {
             include: [
                 {
                     model: Name,
+                    as: 'equipment_names', // Specify the alias
                     include: [
                         {
                             model: Equipment,
-                            attributes: ['number']
+                            as: 'equipment',
+                            attributes: ['identifier']
                         }
                     ],
                     attributes: ['name']
@@ -141,8 +146,8 @@ exports.findEquipmentTree = async (req, res) => {
             const typeName = type.name;
             const names = type.equipment_names.map(name => {
                 const nameString = name.name;
-                const numbers = name.equipment.map(equipment => equipment.number).sort();
-                return { name: nameString, numbers };
+                const identifiers = name.equipment.map(equipment => equipment.identifier).sort();
+                return { name: nameString, identifiers };
             });
             return { typeName, names };
         });
@@ -153,14 +158,9 @@ exports.findEquipmentTree = async (req, res) => {
             return;
         }
 
-        const filteredEquipmentTree = [];
-        if (user.access !== null) {
-            formattedEquipmentTree.filter(type => {
-                return user.access.includes(type.typeName);
-            });
-        } else {
-            return res.status(403).send({ message: 'Access denied' });
-        }
+        const filteredEquipmentTree = formattedEquipmentTree.filter(type => {
+            return user.access.includes(type.typeName);
+        });
 
         res.send(filteredEquipmentTree);
     } catch (error) {
@@ -250,18 +250,18 @@ exports.findFilters = async (req, res) => {
             return res.json(names);
         }
 
-        /** get equipment numbers */
+        /** get equipment identifier */
         const equipment = await Equipment.findAll({
             include: [{
                 model: Name,
                 where: { id: equipmentNameId },
                 attributes: []
             }],
-            attributes: ['number', 'id'],
-            order: [['number', 'asc']]
+            attributes: ['identifier', 'id'],
+            order: [['identifier', 'asc']]
         });
 
-        /** return equipment numbers */
+        /** return equipment identifier */
         res.json(equipment);
 
     } catch (error) {

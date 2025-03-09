@@ -59,7 +59,7 @@ const AddEquipmentDialog = (props: AddEquipmentDialogProps) => {
   const [newEquipment, setNewEquipment] = useState<NewEquipment>({
     type: "",
     name: "",
-    number: "",
+    identifier: "",
     userId: user?.id,
   });
   const [newTypeInputVisible, setNewTypeInputVisible] =
@@ -114,7 +114,7 @@ const AddEquipmentDialog = (props: AddEquipmentDialogProps) => {
         ...newEquipment,
         type: "",
         name: "",
-        number: "",
+        identifier: "",
       });
     } catch (error) {
       console.error(error);
@@ -137,7 +137,7 @@ const AddEquipmentDialog = (props: AddEquipmentDialogProps) => {
     const number = event.target.value;
     const eventName = event.target.name;
     if (eventName === "newNumber")
-      setNewEquipment({ ...newEquipment, number: number });
+      setNewEquipment({ ...newEquipment, identifier: number });
   };
 
   return (
@@ -203,7 +203,7 @@ const AddEquipmentDialog = (props: AddEquipmentDialogProps) => {
             handleSetNumber={handleSetNumber}
           />
           <FmButton2
-            disabled={newEquipment.number === ""}
+            disabled={newEquipment.identifier === ""}
             onClick={handleAddEquipmentClick}
           >
             {t("Add Equipment")}

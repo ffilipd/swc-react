@@ -110,11 +110,12 @@ exports.findAll = async (req, res) => {
         include: [
             {
                 model: Equipment,
-                attributes: ['number', 'id'],
+                attributes: ['identifier', 'id'],
                 where: equipmentIdSearch,
                 include: [
                     {
                         model: Name,
+                        as: 'equipment_name',
                         attributes: ['name'],
                     }
                 ]
@@ -144,9 +145,10 @@ exports.findAll = async (req, res) => {
                 ...bookingsQuery.include,
                 {
                     model: Equipment,
-                    attributes: ['number', 'id'],
+                    attributes: ['identifier', 'id'],
                     include: {
                         model: Name,
+                        as: 'equipment_name',
                         attributes: ['name'],
                         where: user.role === 'admin' || user.role === 'moderator' ? {} : {
                             ...equipmentIdSearch,
