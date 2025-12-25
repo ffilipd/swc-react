@@ -24,11 +24,11 @@ root.render(
         <LanguageProvider>
           <Router>
             <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-              <React.StrictMode>
-                <AlertProvider>
-                  <App />
-                </AlertProvider>
-              </React.StrictMode>
+              {/* <React.StrictMode> */}
+              <AlertProvider>
+                <App />
+              </AlertProvider>
+              {/* </React.StrictMode> */}
             </I18nextProvider>
           </Router>
         </LanguageProvider>

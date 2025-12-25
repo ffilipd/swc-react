@@ -186,7 +186,6 @@ const BookingComponent = () => {
     try {
       const res = await addBooking(newBooking);
       if (res) {
-        console.log(res);
         showAlert({
           severity: res.includes("added") ? "success" : "error",
           message: res,
