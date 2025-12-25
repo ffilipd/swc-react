@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
             }
         });
         if (!userAccess || !userAccess.includes('all') && !userAccess.includes(equipment.equipment_name.name)) {
-            return res.send({ message: 'Looks like you cannot book this equipment' });
+            return res.status(401).send({ message: 'Looks like you cannot book this equipment' });
         }
 
         await Booking.create({
