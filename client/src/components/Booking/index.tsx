@@ -186,7 +186,11 @@ const BookingComponent = () => {
     try {
       const res = await addBooking(newBooking);
       if (res) {
-        showAlert({ severity: "success", message: res });
+        console.log(res);
+        showAlert({
+          severity: res.includes("added") ? "success" : "error",
+          message: res,
+        });
         fetchBookings();
         setSelectedEquipment({ ...selectedEquipment, identifier: "" });
       }
