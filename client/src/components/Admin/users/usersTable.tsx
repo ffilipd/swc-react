@@ -20,6 +20,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { FMProfile, UserRole } from "../../../interfaces";
 import { useTranslation } from "react-i18next";
+// @ts-ignore: allow CSS side-effect import without type declarations
 import "../mytable.css";
 import TablePaginationActions from "../../Pagination";
 import { dummyUser } from "../../../utils/dummy-data";
@@ -32,7 +33,7 @@ import { useUser } from "../../../UserContext";
 import { deleteUser } from "../../../service/user.service";
 import UsersDialog from "./utils/users-dialog";
 import { RiSearchLine } from "react-icons/ri";
-import { set } from "date-fns";
+const SearchIcon = RiSearchLine as unknown as React.ComponentType;
 
 interface UsersProps {
   users: FMProfile[];
@@ -189,7 +190,7 @@ const UsersTable = (props: UsersProps) => {
                         color="action"
                         sx={{ marginLeft: "0", marginRight: "5px" }}
                       >
-                        <RiSearchLine />
+                        <SearchIcon />
                       </Icon>
                     ),
                   }}
