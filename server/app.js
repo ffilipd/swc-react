@@ -23,15 +23,15 @@ app.get('/', (req, res) => {
 });
 
 // Custom middleware to log requests
-app.use((req, res, next) => {
-    logger.info({
-        method: req.method,
-        url: req.url,
-        headers: req.headers,
-        body: req.body
-    });
-    next();
-});
+// app.use((req, res, next) => {
+//     logger.info({
+//         method: req.method,
+//         url: req.url,
+//         headers: req.headers,
+//         body: req.body
+//     });
+//     next();
+// });
 
 app.use(cors({
     origin: '*', // Replace with your allowed origin
