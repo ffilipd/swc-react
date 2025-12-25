@@ -14,6 +14,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import i18next from "i18next";
+// @ts-ignore: Ignore side-effect import for CSS without type declarations
 import "./booking.css";
 import { useEffect, useState } from "react";
 import { getEquipmentFilters } from "../../service/equipment.service";
@@ -22,8 +23,10 @@ import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs";
 import {
   DatePicker,
-  MobileTimePicker,
+  TimePicker,
+  MultiSectionDigitalClock,
   renderTimeViewClock,
+  TimeClock,
 } from "@mui/x-date-pickers";
 import { FmButton2 } from "../../utils/buttons";
 import BookingTable from "./Table";
@@ -58,8 +61,8 @@ const BookingComponent = () => {
     fromTime: Dayjs | null;
     toTime: Dayjs | null;
   }>({
-    fromTime: null,
-    toTime: null,
+    fromTime: roundedTime(dayjs().add(0, "hour")),
+    toTime: roundedTime(dayjs().add(1, "hour")),
   });
 
   const [selectedEquipment, setSelectedEquipment] = useState<{
@@ -253,7 +256,7 @@ const BookingComponent = () => {
           <Box id="time-picker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box>
-                <MobileTimePicker
+                <TimePicker
                   className="time"
                   value={selectedTime.fromTime}
                   ampm={false}
@@ -268,7 +271,7 @@ const BookingComponent = () => {
                 />
               </Box>
               <Box>
-                <MobileTimePicker
+                <TimePicker
                   className="time"
                   value={selectedTime.toTime}
                   sx={{ paddingLeft: "4px" }}
