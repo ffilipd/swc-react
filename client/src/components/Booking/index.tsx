@@ -312,7 +312,14 @@ const BookingComponent = () => {
                 >
                   {availableEquipment.types?.map(
                     (type: string, index: number) => (
-                      <MenuItem key={`${type}-${index}`} value={type}>
+                      <MenuItem
+                        key={`${type}-${index}`}
+                        value={type}
+                        disabled={
+                          user?.role !== "admin" &&
+                          !user?.access?.includes(type)
+                        }
+                      >
                         {type}
                       </MenuItem>
                     )
@@ -337,7 +344,14 @@ const BookingComponent = () => {
                   }}
                 >
                   {availableEquipment.names.map((name) => (
-                    <MenuItem key={name.id} value={name.id}>
+                    <MenuItem
+                      key={name.id}
+                      value={name.id}
+                      disabled={
+                        !user?.access?.includes(name.name) &&
+                        user?.role !== "admin"
+                      }
+                    >
                       {name.name}
                     </MenuItem>
                   ))}
