@@ -67,7 +67,7 @@ exports.findAll = async (req, res) => {
     const equipmentIdSearch = equipmentNameId ? { equipmentNameId: equipmentNameId } : {};
 
     let bookingsWhere = usage === 'booking' ? {
-        userId: userId ?? { [Op.gt]: '' },
+        // userId: userId ?? { [Op.gt]: '' },
         [Op.and]: {
             date: { [Op.eq]: formatDate(date) },
             [Op.or]: {
