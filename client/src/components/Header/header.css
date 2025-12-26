@@ -1,45 +1,74 @@
-#swc-header-text {
-    font-size: var(--font-size-header-lg);
-    color: var(--color-font-white);
-    margin: 20px auto 0 auto;
+#header-wrapper {
+    display: flex;
+    flex-direction: row;
+    min-height: 90px;
+    background-color: var(--color-theme-dark);
+    width: 100%;
+    align-items: flex-start;
+    position: fixed;
+    z-index: 10;
+    border-bottom: 2px solid #fff;
+    padding: 10px 0 0 10px;
+}
+
+#fm-logo{
+    padding: 10px;
 }
 
 #header-and-buttongroup {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     width: 100%;
-    margin: 0 20px 0 0;
-    height:200px;
-    border: "1px solid white";
+    align-content: space-between;
+}
+
+#header-and-buttongroup .login-header-btn, #header-and-buttongroup .login-header-btn:hover {
+    display: flex;
+    border: none;
+    color: #fff;
+    font: inherit;
+    padding: 8px;
+    text-transform: none;
+    flex-wrap: nowrap;
+}
+
+#language-button{
+    padding: 8px 32px 8px 0px ;
+    margin-left: -16px;
+    font-family: 'Oxanium', sans-serif;
+}
+
+#drawer .MuiDrawer-paperAnchorTop {
+        background-color: var(--color-theme-dark);
+        color:#fff
+}
+
+#language-collapse {
+    background-color: var(--color-theme-dark2);
+}
+
+#right-button-group{
+    margin-right: 10px;
 }
 
 @media screen and (max-width: 1200px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-md);
-    }
 }
 @media screen and (max-width: 1000px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-sm);
-    }
 }
 @media screen and (max-width: 800px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-xs);
-    }
+
 }
 @media only screen and (max-width: 600px) {
-    #swc-header-text {
-        font-size: var(--font-size-header-mobile);
-        margin: 10px 0 10px 0;
+    #button-group {
+        padding: 0 10px;
+    }
+    #header-text {
+        align-self: center;
     }
     #header-wrapper {
-        flex-direction: column;
         align-items: center;
     }
-}
-
-.swc-select {
-
+    #hss-logo {
+        display: none;
+    }
 }

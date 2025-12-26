@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Avatar,
   Box,
   Button,
   ButtonGroup,
@@ -7,188 +9,369 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Typography,
+  Slide,
+  Snackbar,
 } from "@mui/material";
-import React, { useState } from "react";
-import { HssLogo } from "../../utils/svg-components";
+import React, { useEffect, useState } from "react";
+import {
+  FMLogoWhite,
+  FleetControlLogoTextWhite,
+  FleetControlTextWhite,
+  HssFleetLogo2,
+} from "../../utils/svg-components";
 import "./header.css";
 import { useTranslation } from "react-i18next";
-import { SwcButton } from "../../utils/buttons";
+import { FmButton } from "../../utils/buttons";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardControlKeyIcon from "@mui/icons-material/KeyboardControlKey";
-import LanguageSharpIcon from "@mui/icons-material/LanguageSharp";
-import LoginSharpIcon from "@mui/icons-material/LoginSharp";
+// import LanguageSharpIcon from "@mui/icons-material/LanguageSharp";
+// import LoginSharpIcon from "@mui/icons-material/LoginSharp";
 import { useNavigate } from "react-router-dom";
+import MobileDrawer from "./MobileDrawer";
+import i18next from "i18next";
+import { useUser } from "../../UserContext";
+import { useAlert } from "../../AlertContext";
+import { useLanguage } from "../../LanguageContext";
 
 function Header() {
-  const [language, setLanguage] = useState<string>("en");
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const isAuth = true;
-  const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
-    null
-  );
+  const languages = {
+    en: "English",
+    sv: "Svenska",
+    fi: "Suomi",
+  };
 
-  const accountMenuOpen = Boolean(menuAnchorEl);
+  // const [language, setLanguage] = useState<string>("en");
+  const { user, logOut, googleLogin } = useUser();
+  const { t } = useTranslation();
+  const { alertProps, alertVisible } = useAlert();
+  const { language, setLanguage } = useLanguage();
+  const navigate = useNavigate();
+  const [userMenuAnchorEl, setUserMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [adminMenuAnchorEl, setAdminMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
+  const { showAlert } = useAlert();
+  window.addEventListener("resize", () => {
+    setIsMobile(window.innerWidth <= 600);
+  });
+
+  // // Update page when language changes
+  // useEffect(() => {
+  //   i18next.changeLanguage(language);
+  // }, [language]);
+
+  useEffect(() => {
+    if (user?.language) {
+      i18next.changeLanguage(user.language);
+      setLanguage(user.language);
+    }
+  }, [user]);
+
+  const accountMenuOpen = Boolean(userMenuAnchorEl) || false;
+  const adminMenuOpen = Boolean(adminMenuAnchorEl) || false;
 
   const updateLanguage = (newLanguage: string) => {
     setLanguage(newLanguage);
+    i18next.changeLanguage(newLanguage);
   };
   function handleAccountMenuClose(e: any) {
     /* eslint-disable */
     e.target.value === 0
       ? null // @TODO: Implement account details fn here!
       : null;
-    setMenuAnchorEl(null);
+    setUserMenuAnchorEl(null);
   }
+  function handleAdminMenuClose(e: any) {
+    setAdminMenuAnchorEl(null);
+  }
+
+  const handleAdminItemClick = (e: any) => {
+    const target = e.target.value;
+    setAdminMenuAnchorEl(null);
+
+    // Equipment
+    if (target === 1) {
+      navigate("/admin/equipment");
+    }
+    // Users
+    if (target === 2) {
+      navigate("/admin/users");
+    }
+    // Talkoo points
+    if (target === 3) {
+      navigate("/admin/talkoo");
+    }
+  };
 
   function handleUserManagement() {
     navigate("/users");
   }
-  function handleLogin() {
-    navigate("/login");
-  }
+
   function handleLogout() {
-    console.log("logout");
+    logOut();
+    navigate("/");
   }
 
   function handleAccountMenuClick(e: React.MouseEvent<HTMLButtonElement>) {
-    setMenuAnchorEl(e.currentTarget);
+    setUserMenuAnchorEl(e.currentTarget);
+  }
+  function handleAdminMenuClick(e: React.MouseEvent<HTMLButtonElement>) {
+    setAdminMenuAnchorEl(e.currentTarget);
   }
 
-  const handleAccountDetailsClick = (event: any) => {
-    // open /accountinfo with current user account details
+  const handleAccountInfoClick = (event: any) => {
     handleAccountMenuClose(event);
-    console.log("navigate to account details");
+    navigate(`/accountinfo?id=${user?.id}`);
   };
 
+  const toggleDrawer = (open: boolean) => (event: any) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  const handleMenuItemClick = (clickedItem: any) => {
+    console.log("clickedItem", clickedItem);
+    setDrawerOpen(false);
+    if (clickedItem === "Home") {
+      showAlert({
+        severity: "info",
+        message: "Home button clicked!",
+      });
+    }
+    // if (clickedItem === "Home") navigate("/");
+    if (clickedItem === "Book equipment") navigate("/booking");
+    if (clickedItem === "Report") navigate("/report");
+    if (clickedItem === "My Bookings") navigate("/mybookings");
+    if (clickedItem === "Accountinfo") navigate("/accountinfo");
+    if (clickedItem === "Login") navigate("/login");
+    if (clickedItem === "Logout") handleLogout();
+  };
+
+  const handleAdministrationClick = () => {
+    navigate("/administration");
+  };
+
+  function stringToColor(string: string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+  }
+
+  function stringAvatar(name: string) {
+    const splitName = name.split(" ").length > 1 ? true : false;
+    const children = splitName
+      ? `${name?.split(" ")[0][0]}${name?.split(" ")[1][0]}`
+      : name[0];
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: children,
+    };
+  }
+
   return (
-    <Box
-      id="header-wrapper"
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        minHeight: "180px",
-        backgroundColor: "var(--color-dark-blue)",
-        width: "100%",
-        alignItems: "flex-start",
-      }}
-    >
-      <Box id={"hss-logo"}>
-        <HssLogo />
-      </Box>
-      <Box id="header-and-buttongroup">
-        <Box sx={{ display: "flex", flexGrow: 1 }}>
-          <Typography id="swc-header-text">
-            SAILING AND WINDSURFING CENTER
-          </Typography>
-        </Box>
-        <Box
+    <Box id="header-wrapper">
+      <Slide
+        direction="down"
+        in={alertVisible}
+        mountOnEnter
+        unmountOnExit
+        easing={"exit: theme.transitions.easing.sharp"}
+      >
+        <Alert
+          severity={alertProps.severity}
           sx={{
-            display: "flex",
-            flexDirection: "row",
+            margin: "0",
+            position: "absolute",
+            top: "120px",
+            left: "0",
             width: "100%",
+            overflow: "ease",
           }}
         >
-          <ButtonGroup variant="outlined" aria-label="header button group">
-            <SwcButton>{t("Report")}</SwcButton>
-            <SwcButton>{t("Book Equipment")}</SwcButton>
-            <Select
-              variant="outlined"
-              className="swc-select"
-              sx={{
-                color: "#fff",
-                ".MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-                ".MuiSvgIcon-root ": {
-                  fill: "#fff",
-                },
-              }}
-              IconComponent={KeyboardArrowDownIcon}
-              labelId="lang"
-              value={language}
-              startAdornment={
-                <InputAdornment position="start">
-                  <LanguageSharpIcon sx={{ color: "#fff" }} />
-                </InputAdornment>
-              }
-              inputProps={{}}
-              onChange={(e: SelectChangeEvent) =>
-                updateLanguage(e.target.value)
-              }
-            >
-              <MenuItem value={"en"}>English</MenuItem>
-              <MenuItem value={"fi"}>Suomi</MenuItem>
-              <MenuItem value={"sv"}>Svenska</MenuItem>
-            </Select>
-            {isAuth ? (
-              <>
-                <Button
-                  fullWidth
-                  id="login-header-btn"
-                  aria-controls={accountMenuOpen ? "account-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={accountMenuOpen ? "true" : undefined}
-                  onClick={handleAccountMenuClick}
-                  //   variant="header"
-                  size="medium"
-                  color="inherit"
-                  sx={{
-                    textTransform: "none",
-                    display: "flex",
-                    flexDirection: "row",
-                    fontWeight: 400,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignContent: "flex-start",
+          {alertProps.message}
+        </Alert>
+      </Slide>
+      {isMobile === false && (
+        <Box id={"fm-logo"}>
+          <FMLogoWhite />
+        </Box>
+      )}
+      <Box id="header-and-buttongroup">
+        <Box id="header-text">
+          <FleetControlTextWhite />
+        </Box>
+        {isMobile ? (
+          <MobileDrawer
+            isOpen={drawerOpen}
+            toggleDrawer={toggleDrawer}
+            language={language}
+            languages={languages}
+            updateLanguage={updateLanguage}
+            handleMenuItemClick={handleMenuItemClick}
+            user={user}
+          />
+        ) : (
+          <ButtonGroup
+            id="button-group"
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+              // border: "1px solid white",
+            }}
+            variant="outlined"
+            aria-label="header button group"
+          >
+            <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
+              <FmButton onClick={() => navigate("/")}>{t("Home")}</FmButton>
+              <FmButton onClick={() => navigate("/report")}>
+                {t("Report")}
+              </FmButton>
+              <FmButton onClick={() => navigate("/booking")}>
+                {t("Book equipment")}
+              </FmButton>
+              <FmButton onClick={() => navigate("/mybookings")}>
+                {user?.role === "admin" || user?.role === "moderator"
+                  ? t("Bookings")
+                  : t("My Bookings")}
+              </FmButton>
+            </Box>
+            <Box sx={{ display: "flex" }} id="right-button-group">
+              {user?.role === "admin" && (
+                <>
+                  <Button
+                    className="login-header-btn"
+                    aria-controls={adminMenuOpen ? "account-menu" : undefined}
+                    aria-haspopup="false"
+                    aria-expanded={adminMenuOpen ? "true" : undefined}
+                    onClick={handleAdminMenuClick}
+                  >
+                    {t("Administration")}
+                    {adminMenuOpen ? (
+                      <KeyboardControlKeyIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )}
+                  </Button>
+                  <Menu
+                    anchorEl={adminMenuAnchorEl}
+                    open={adminMenuOpen}
+                    onClose={handleAdminMenuClose}
+                    MenuListProps={{
+                      "aria-labelledby": "account-button",
                     }}
                   >
-                    <Box sx={{ display: "flex", flexDirection: "row" }}>
-                      {accountMenuOpen ? (
-                        <KeyboardControlKeyIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </Box>
-                    <Box sx={{ margin: "0 0 0 31px" }}>
-                      <Typography align="left" fontSize={14}>
-                        {"user role"}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Button>
-                <Menu
-                  anchorEl={menuAnchorEl}
-                  open={accountMenuOpen}
-                  onClose={handleAccountMenuClose}
-                  MenuListProps={{
-                    "aria-labelledby": "account-button",
-                  }}
-                >
-                  <MenuItem onClick={handleAccountDetailsClick}>
-                    {t("Account details")}
+                    <MenuItem value={1} onClick={handleAdminItemClick}>
+                      {t("Equipment")}
+                    </MenuItem>
+                    <MenuItem value={2} onClick={handleAdminItemClick}>
+                      {t("Users")}
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
+              {user ? (
+                <>
+                  <Button
+                    className="login-header-btn"
+                    aria-controls={accountMenuOpen ? "account-menu" : undefined}
+                    aria-haspopup="false"
+                    aria-expanded={accountMenuOpen ? "true" : undefined}
+                    onClick={handleAccountMenuClick}
+                  >
+                    <Avatar {...stringAvatar(user.name)} />
+                    {/* {user.name} */}
+                    {accountMenuOpen ? (
+                      <KeyboardControlKeyIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )}
+                  </Button>
+                  <Menu
+                    anchorEl={userMenuAnchorEl}
+                    open={accountMenuOpen}
+                    onClose={handleAccountMenuClose}
+                    MenuListProps={{
+                      "aria-labelledby": "account-button",
+                    }}
+                  >
+                    <MenuItem onClick={handleAccountInfoClick}>
+                      {t("Account info")}
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>{t("Logout")}</MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <FmButton id="login-button" onClick={() => navigate("/login")}>
+                  {t("Login")}
+                </FmButton>
+              )}
+              <Select
+                id="language-button"
+                variant="outlined"
+                className="select"
+                sx={{
+                  color: "#fff",
+                  ".MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  ".MuiSvgIcon-root ": {
+                    fill: "#fff",
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
+                labelId="lang"
+                value={language}
+                startAdornment={
+                  <InputAdornment position="start">
+                    {/* <LanguageSharpIcon sx={{ color: "#fff" }} /> */}
+                  </InputAdornment>
+                }
+                inputProps={{ style: { textTransform: "capitalize" } }}
+                onChange={(e: SelectChangeEvent) =>
+                  updateLanguage(e.target.value)
+                }
+              >
+                {Object.entries(languages).map((lang) => (
+                  <MenuItem key={`language-${lang[0]}`} value={lang[0]}>
+                    {lang[1]}
                   </MenuItem>
-                  <MenuItem value={1} onClick={handleLogout}>
-                    {t("Logout")}
-                  </MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <SwcButton>{t("Login")}</SwcButton>
-            )}
+                ))}
+              </Select>
+            </Box>
           </ButtonGroup>
-        </Box>
+        )}
       </Box>
     </Box>
   );

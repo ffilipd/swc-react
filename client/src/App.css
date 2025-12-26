@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+
+.new-item-textfield {
+  border: 1px solid lightblue;
+  border-radius: 5px;
+  box-shadow: 0 0 10px lightblue;
+}
+
+.new-item-textfield:hover {
+  box-shadow: 0 0 20px lightblue;
+}
