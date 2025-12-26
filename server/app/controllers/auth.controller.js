@@ -59,7 +59,8 @@ exports.googleAuth = async (req, res) => {
                     role: user.role,
                     last_login: user.last_login,
                     accessToken: token,
-                    language: user.language
+                    language: user.language,
+                    access: user.access
                 });
             })
             .catch(err => {
